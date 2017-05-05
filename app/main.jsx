@@ -6,6 +6,7 @@ import {render} from 'react-dom'
 import WhoAmI from './components/WhoAmI'
 import NotFound from './components/NotFound'
 import Navbar from './components/Navbar'
+import Footer from './components/Footer'
 
 import firebase from 'APP/fire'
 
@@ -49,6 +50,7 @@ const App = ({children}) =>
       <Navbar />
     {/* Render our children (whatever the router gives us) */}
     {children}
+    <Footer />
   </div>
 
 render(
