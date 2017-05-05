@@ -25,7 +25,7 @@ export default class extends Component {
             <label className="control-label">Story title:</label>
             <input className="form-control input-lg" onChange={this.handleTitle}/>
           </div>
-          <Link to={`/demos/scratchpad/${this.state.title}`}><button className='btn btn-info' type='submit'>Create new story</button></Link>
+          <Link to={`/write/${this.state.title}`}><button className='btn btn-info' type='submit'>Create new story</button></Link>
         </form>
       </div>
     )
