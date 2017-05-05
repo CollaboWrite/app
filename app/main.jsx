@@ -7,6 +7,7 @@ import WhoAmI from './components/WhoAmI'
 import NotFound from './components/NotFound'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
+import Home from './components/Home'
 
 import firebase from 'APP/fire'
 
@@ -56,7 +57,8 @@ const App = ({children}) =>
 render(
   <Router history={browserHistory}>
     <Route path="/" component={App}>
-      <IndexRedirect to="demos"/>
+      <IndexRedirect to="/home" />
+      <Route path="/home" component={Home} />
       {Demos /* Put all the demos and a description page at /demos */}
     </Route>
     <Route path='*' component={NotFound}/>
