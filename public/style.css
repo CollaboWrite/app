@@ -9,3 +9,20 @@ footer {
 footer * {
 	text-align: center;
 }
+
+.scratchpad {
+    padding: 10px;
+    margin: 0 auto;
+}
+
+.speechBtn {
+    margin: 10px 0;
+}
+
+.container {
+    margin: 0 50px;
+}
+
+body {
+    background-color: #f2edcb;
+}

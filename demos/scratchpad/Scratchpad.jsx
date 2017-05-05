@@ -1,6 +1,13 @@
 import React from 'react'
 
 export default class extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      value: ''
+    }
+  }
+  
   componentDidMount() {
     // When the component mounts, start listening to the fireRef
     // we were given.
@@ -41,9 +48,10 @@ export default class extends React.Component {
     this.props.fireRef.set(event.target.value)
 
   render() {
-    const {value} = this.state || {}
+    const value = this.state.value
     return (
       <textarea
+        className='scratchpad'
         rows={10}
         cols={120}
         value={value}
