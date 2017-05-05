@@ -16,5 +16,5 @@ export default ({params: {title}}) =>
         stored in Firebase. Each scratchpad is just a string that the
         component will listen to, but it could be the root of a more complex
         data structure if we wanted. */}
-    <Scratchpad fireRef={db.ref('scratchpads').child(title)}/>
+    <Scratchpad fireRef={db.ref(`scratchpad-${title}`).child(title)}/>
   </div>
