@@ -5,6 +5,8 @@ import {render} from 'react-dom'
 
 import WhoAmI from './components/WhoAmI'
 import NotFound from './components/NotFound'
+import Navbar from './components/Navbar'
+import Footer from './components/Footer'
 
 import firebase from 'APP/fire'
 
@@ -41,14 +43,14 @@ auth.onAuthStateChanged(user => user || auth.signInAnonymously())
 // and whatever children the router gave us.
 const App = ({children}) =>
   <div>
-    <nav>
       {/* WhoAmI takes a firebase auth API and renders either a
           greeting and a logout button, or sign in buttons, depending
-          on if anyone's logged in */}
-      <WhoAmI auth={auth}/>
-    </nav>
+          on if anyone's logged in
+      <WhoAmI auth={auth}/> */}
+      <Navbar />
     {/* Render our children (whatever the router gives us) */}
     {children}
+    <Footer />
   </div>
 
 render(
