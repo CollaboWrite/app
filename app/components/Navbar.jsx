@@ -1,4 +1,5 @@
 import React from 'react'
+import {Link} from 'react-router'
 
 export default (props) => {
   return (
@@ -16,7 +17,7 @@ export default (props) => {
 
         <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul className="nav navbar-nav">
-            <li className="active"><a href="#">Home <span className="sr-only">(current)</span></a></li>
+            <li className="active"><Link to='/home'>Home <span className="sr-only">(current)</span></Link></li>
             <li><a href="#">List</a></li>
             <li><a href="#">Tree</a></li>
           </ul>
