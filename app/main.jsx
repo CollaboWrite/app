@@ -54,7 +54,7 @@ const App = ({children}) =>
 render(
   <Router history={browserHistory}>
     <Route path="/" component={App}>
-      <IndexRedirect to="demos"/>
+      <IndexRedirect to="/write/welcome"/>
       {Demos /* Put all the demos and a description page at /demos */}
     </Route>
     <Route path='*' component={NotFound}/>
