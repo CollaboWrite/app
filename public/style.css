@@ -7,7 +7,7 @@ footer {
 }
 
 footer * {
-	text-align: center;
+    text-align: center;
 }
 
 .scratchpad {
@@ -25,4 +25,9 @@ footer * {
 
 body {
     background-color: #f2edcb;
+}
+
+#react-quill {
+    height: 80vh;
+    width: 45vw;
 }

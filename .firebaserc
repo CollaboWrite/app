@@ -1,5 +1,6 @@
 {
   "projects": {
-    "firebones": "capstone-c9e61"
+    "firebones": "capstone-c9e61",
+    "staging": "capstone-c9e61"
   }
 }

@@ -5,9 +5,10 @@ import {render} from 'react-dom'
 
 import WhoAmI from './components/WhoAmI'
 import NotFound from './components/NotFound'
-import Navbar from './components/Navbar'
-import Footer from './components/Footer'
-import Home from './components/Home'
+// import Navbar from './components/Navbar'
+// import Footer from './components/Footer'
+// import Home from './components/Home'
+import AppContainer from './containers/AppContainer'
 
 import firebase from 'APP/fire'
 
@@ -42,24 +43,12 @@ auth.onAuthStateChanged(user => user || auth.signInAnonymously())
 
 // Our root App component just renders a little frame with a nav
 // and whatever children the router gave us.
-const App = ({children}) =>
-  <div>
-      {/* WhoAmI takes a firebase auth API and renders either a
-          greeting and a logout button, or sign in buttons, depending
-          on if anyone's logged in
-      <WhoAmI auth={auth}/> */}
-      <Navbar />
-    {/* Render our children (whatever the router gives us) */}
-    {children}
-    <Footer />
-  </div>
 
 render(
   <Router history={browserHistory}>
-    <Route path="/" component={App}>
+    <Route path="/">
       <IndexRedirect to="/home" />
-      <Route path="/home" component={Home} />
-      {Demos /* Put all the demos and a description page at /demos */}
+      <Route path="/home" component={AppContainer} />
     </Route>
     <Route path='*' component={NotFound}/>
   </Router>,
