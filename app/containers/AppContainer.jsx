@@ -18,7 +18,6 @@ export default class AppContainer extends React.Component {
   }
   
   render() {
-    console.log("what are the props in appContainer", this.props)
     return (
       <div>
         <div className='col-lg-12'>
