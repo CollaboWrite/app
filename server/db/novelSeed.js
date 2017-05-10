@@ -1,6 +1,6 @@
 const { parseString } = require('xml2js')
 const fs = require('fs')
-const db = require('./server/db')
+const db = require('.index')
 const glob = require('glob-promise')
 const Promise = require('bluebird')
 const textract = require('textract')
