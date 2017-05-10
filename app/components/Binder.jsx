@@ -24,12 +24,12 @@ export default class extends React.Component {
   handleSelect = (evt) => {
     evt.preventDefault()
     console.log('evt.target.value in handleSelect in Binder.jsx', evt.target.value)
-    // this.props.selectItem(evt.target.value)
+    this.props.selectAtom(evt.target.value)
   }
 
   render() {
     // const items = this.props.selectedProject.items
-    const items = ['dummy', 'data', 'of', 'items', 'array']
+    const items = this.props.atoms
     return (
       <div className='panel panel-info'>
         <div className='panel-heading'>
