@@ -23,13 +23,15 @@ export default class extends React.Component {
 
   handleSelect = (evt) => {
     evt.preventDefault()
-    console.log('evt.target.value in handleSelect in Binder.jsx', evt.target.value)
-    this.props.selectAtom(evt.target.value)
+    // console.log('evt.target.value in handleSelect in Binder.jsx', evt.target.value)
+    this.props.selectAtom(this.props.atoms[evt.target.value])
+    // console.log('handle select in binder', this.props.atoms[evt.target.value])
   }
 
   render() {
     // const items = this.props.selectedProject.items
     const items = (this.props.atoms) ? Object.keys(this.props.atoms) : []
+    console.log('all the items', items)
     return (
       <div className='panel panel-info'>
         <div className='panel-heading'>
@@ -38,7 +40,10 @@ export default class extends React.Component {
         <div className='panel-body'>
           <ul>
             {
-              items && items.map(item => <li key={item} value={item} onClick={this.handleSelect}>{this.props.atoms[item].title}</li>)
+              items && items.map(item => {
+                console.log('we are inside the map', item)
+                return (<li><button value={item} onClick={this.handleSelect} >{this.props.atoms[item].title}</button></li>)
+              })
             }
           </ul>
           <form onSubmit={this.handleSubmit}>

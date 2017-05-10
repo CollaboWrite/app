@@ -59,9 +59,9 @@ export default class AppContainer extends React.Component {
       project1Ref.off('value', listenerProjects)
     }
   }
-  selectAtom = (evt) => {
-    evt.preventDefault()
-    this.setState({ selected: evt.target.value })
+  selectAtom = (atom) => {
+    // evt.preventDefault()
+    this.setState({ selected: atom })
   }
   render() {
     // const currentProject = this.state.projects[1] ? this.state.projects[1].current : {}
@@ -74,7 +74,7 @@ export default class AppContainer extends React.Component {
           <Toolbar projects={this.state.projects} />
         </div>
         <div className='col-lg-3 sidebar-right'>
-          <Binder atoms={currentProject.atoms} selectAtom={this.selectAtom} />
+          <Binder atoms={this.state.project.atoms} selectAtom={this.selectAtom} />
           <Trashcan project={currentProject} />
         </div>
         <div className='col-lg-6 project-center'>
