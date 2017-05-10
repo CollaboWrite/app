@@ -29,7 +29,7 @@ export default class extends React.Component {
 
   render() {
     // const items = this.props.selectedProject.items
-    const items = this.props.atoms
+    const items = (this.props.atoms) ? Object.keys(this.props.atoms) : []
     return (
       <div className='panel panel-info'>
         <div className='panel-heading'>
@@ -38,7 +38,7 @@ export default class extends React.Component {
         <div className='panel-body'>
           <ul>
             {
-              items && items.map(item => <li key={item} value={item} onClick={this.handleSelect}>{item}</li>)
+              items && items.map(item => <li key={item} value={item} onClick={this.handleSelect}>{this.props.atoms[item].title}</li>)
             }
           </ul>
           <form onSubmit={this.handleSubmit}>
