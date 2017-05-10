@@ -10,16 +10,13 @@ import NotFound from './components/NotFound'
 // import Home from './components/Home'
 import AppContainer from './containers/AppContainer'
 
-import firebase from 'APP/fire'
 
 import Demos from 'APP/demos'
 
 // Get the auth API from Firebase.
-const auth = firebase.auth()
 
 // Ensure that we have (almost) always have a user ID, by creating
 // an anonymous user if nobody is signed in.
-auth.onAuthStateChanged(user => user || auth.signInAnonymously())
 
 // Further explanation:
 //
@@ -46,9 +43,10 @@ auth.onAuthStateChanged(user => user || auth.signInAnonymously())
 
 render(
   <Router history={browserHistory}>
-    <Route path="/">
-      <IndexRedirect to="/home" />
-      <Route path="/home" component={AppContainer} />
+    <Route path='/'>
+      <IndexRedirect to='/login' />
+      <Route path='/project/:id' component={AppContainer} />
+      <Route path='/login' component={WhoAmI} />
     </Route>
     <Route path='*' component={NotFound}/>
   </Router>,
