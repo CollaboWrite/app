@@ -12,6 +12,9 @@ import Resources from '../components/Resources'
 import firebase from 'APP/fire'
 const projectsRef = firebase.database().ref('projects')
 
+// use props.params.id to get the project id for the firebase query
+// being passed from the userPage when the user chooses the project to view
+
 export default class AppContainer extends React.Component {
   constructor(props) {
     super(props)

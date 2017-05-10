@@ -3,6 +3,10 @@ import firebase from 'APP/fire'
 const auth = firebase.auth()
 
 import Login from './Login'
+import UserPage from './UserPage'
+
+auth.onAuthStateChanged(user => user || auth.signInAnonymously())
+
 
 export const name = user => {
   if (!user) return 'Nobody'
@@ -18,12 +22,14 @@ export const WhoAmI = ({user, auth}) =>
       // ...then show signin links...
       <Login auth={auth}/>
       /// ...otherwise, show a logout button.
-      : <button className='logout' onClick={() => auth.signOut()}>logout</button> }
+      : <div>
+          <UserPage user={user}/>
+          <button className='logout' onClick={() => auth.signOut()}>logout</button>
+        </div> }
   </div>
 
 export default class extends React.Component {
   componentDidMount() {
-    const {auth} = this.props
     this.unsubscribe = auth.onAuthStateChanged(user => this.setState({user}))
   }
 
