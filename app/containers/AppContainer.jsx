@@ -41,7 +41,7 @@ export default class AppContainer extends React.Component {
     if (this.unsubscribe) this.unsubscribe()
     // Whenever our ref's value changes, set {value} on our state.
     const listener = project1Ref.on('value', snapshot =>
-      this.setState({ project: snapshot.val() })
+      this.setState({ project: snapshot.val(), selected: snapshot.child('root').val() })
     )
     const listenerProjects = projectsRef.on('value', snapshot => {
       snapshot.forEach(childsnap => {
@@ -66,7 +66,7 @@ export default class AppContainer extends React.Component {
   render() {
     // const currentProject = this.state.projects[1] ? this.state.projects[1].current : {}
     const currentProject = this.state.project || { title: '', summary: '', notes: '', resources: '', text: '', atoms: {} }
-    console.log('projects', this.state.projects)
+    console.log('state in appcontainer', this.state)
     // console.log('current project', currentProject)
     return (
       <div>

@@ -14,7 +14,8 @@ import React from 'react'
     />
 }*/
 
-export default (props) =>
+export default (props) => {
+  return (
   <div className="panel panel-danger">
     <div className="panel-heading">
       <h3>Notes</h3>
@@ -23,7 +24,10 @@ export default (props) =>
       <textarea
         rows={4}
         cols={40}
-        value='some text goes here from the item off the props, was replaced with this dummy data'
+        value={props.atom.notes}
       />
     </div>
   </div>
+  )
+}
+

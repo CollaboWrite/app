@@ -2,10 +2,7 @@ import React from 'react'
 
 const statusOptions = ['To Do', 'First Draft', 'Revised Draft', 'Final Draft']
 
-export default (props) => {
-  // let stateStatus = props.item ? props.item.status : null
-  let stateStatus = 'To Do'
-  return (
+export default (props) =>
     <div className="panel panel-warning">
     <div className="panel-heading">
       <h3>Summary</h3>
@@ -14,6 +11,7 @@ export default (props) => {
       <textarea
         rows={4}
         cols={40}
+        value={props.atom.summary}
       />
       <form>
         <div>
@@ -21,7 +19,7 @@ export default (props) => {
           <select>
             {
               statusOptions.map(status =>
-                status === stateStatus
+                status === props.atom.status
                   ? (<option key={status} selected>{status}</option>)
                   : (<option key={status}>{status}</option>)
               )
@@ -31,19 +29,3 @@ export default (props) => {
       </form>
     </div>
   </div>
-  )
-}
-
-/*{
-  props.item
-    ? <textarea
-      className='scratchpad'
-      rows={4}
-      cols={40}
-      value={props.item.summary}
-    />
-    : <textarea
-      rows={4}
-      cols={40}
-    />
-}*/
