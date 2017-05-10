@@ -1,0 +1,156 @@
+{
+    "project1": {
+        "current": {
+            "root": {
+                "title": "My First Novel",
+                "text" : "My First Novel Is The Title Of This Book",
+                "summary": "Bob and Jill go to Disneyland",
+                "notes": "Make sure Jill is likeable",
+                "resources": {
+                    "google": "google.com"
+                },
+                "status": "First Draft",
+                "type": "Project",
+                "children": {
+                    "a1": "true",
+                    "a2": "true"
+                }
+            },
+            "atoms": {
+                "a1": {
+                    "title": "Chapter 1",
+                    "text": "Chapter 1",
+                    "summary": "Bob and Jill meet for the very first time",
+                    "notes": "Make sure this is funny",
+                    "resources": {
+                        "bing": "bing.com"
+                    },
+                    "status": "To-Do",
+                    "type": "Folder",
+                    "children": {
+                        "b1": "true"
+                    }
+                },
+                "a2": {
+                    "title": "Chapter 2",
+                    "text" : "Chapter 2",
+                    "summary": "Bob and Jill buy tickets for Disneyland",
+                    "notes": "Make sure they fly Jetblue",
+                    "resources": {
+                        "jetblue": "jetblue.com"
+                    },
+                    "status": "Final Draft",
+                    "type": "Folder",
+                    "children": {
+                        "b2": "true"
+                    }
+                },
+                "b1": {
+                    "title": "Meetcute",
+                    "text" : "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum ullamcorper libero vel nunc varius, sed convallis leo interdum. Aenean pretium purus rhoncus, aliquet ipsum tempor, volutpat lorem. Sed condimentum ut mauris feugiat interdum. Morbi consequat sem sed porttitor mollis. Phasellus rutrum in eros quis gravida. Fusce vitae scelerisque diam. Pellentesque maximus commodo maximus. Integer ut metus ac orci sodales ultrices ut id nisi.",
+                    "summary": "Bob works at a coffee shop and Jill comes in everyday",
+                    "notes": "The coffee shop is in Barcelona",
+                    "resources": {
+                        "maps": "maps.google.com"
+                    },
+                    "status": "To-Do",
+                    "type": "Text",
+                    "children" : "null"
+                },
+                "b2": {
+                    "title": "Booking the tickets",
+                    "text" : "Duis ut porta arcu, eu hendrerit sapien. Sed pretium neque vel ex viverra, eu aliquam massa efficitur. Nulla ut erat id massa consectetur vestibulum in vitae mi. Fusce ultrices, leo a viverra efficitur, nisl lectus dictum ante, id lobortis purus urna et velit. Sed vehicula pulvinar purus ut aliquet. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Praesent odio sapien, rutrum pretium condimentum ut, euismod non massa. Nulla varius risus erat, ac rhoncus nunc mattis in. Quisque ut eros nisi. In viverra justo nec ipsum hendrerit luctus. Phasellus tristique enim eu mollis ornare. Sed at risus a diam tincidunt tristique. Cras fermentum justo enim, a finibus sem hendrerit eget.",
+                    "summary": "After a fight, they decide to go to Disneyland",
+                    "notes": "What time of year is this?",
+                    "resources": {
+                        "weather": "weather.com"
+                    },
+                    "status": "Final Draft",
+                    "type": "Text",
+                    "children": "null"  
+                }          
+            }
+        },
+        "snapshots": {
+            "snapshot1": "thisKeyWillPointToSnapshotID1",
+            "snapshot2": "thisKeyWillPointToSnapshotID2"
+        }
+    },
+    "project2": {
+        "current": {
+            "root": {
+                "title": "My Second Novel",
+                "text" : "My Second Novel Is The Title Of This Book",
+                "summary": "Dan and Jose go to Seaworld",
+                "notes": "Make sure Jose is likeable",
+                "resources": {
+                    "google": "google.com"
+                },
+                "status": "First Draft",
+                "type": "Project",
+                "children": {
+                    "a1": "true",
+                    "a2": "true"
+                }
+            },
+            "atoms": {
+                "a1": {
+                    "title": "Chapter 1",
+                    "text": "Chapter 1",
+                    "summary": "Dan and Jose meet for the very first time",
+                    "notes": "Make sure this is funny",
+                    "resources": {
+                        "bing": "bing.com"
+                    },
+                    "status": "To-Do",
+                    "type": "Folder",
+                    "children": {
+                        "b1": "true"
+                    }
+                },
+                "a2": {
+                    "title": "Chapter 2",
+                    "text" : "Chapter 2",
+                    "summary": "Dan and Jose buy tickets for Seaworld",
+                    "notes": "Make sure they fly Jetblue",
+                    "resources": {
+                        "jetblue": "jetblue.com"
+                    },
+                    "status": "Final Draft",
+                    "type": "Folder",
+                    "children": {
+                        "b2": "true"
+                    }
+                },
+                "b1": {
+                    "title": "Meetcute",
+                    "text" : "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum ullamcorper libero vel nunc varius, sed convallis leo interdum. Aenean pretium purus rhoncus, aliquet ipsum tempor, volutpat lorem. Sed condimentum ut mauris feugiat interdum. Morbi consequat sem sed porttitor mollis. Phasellus rutrum in eros quis gravida. Fusce vitae scelerisque diam. Pellentesque maximus commodo maximus. Integer ut metus ac orci sodales ultrices ut id nisi.",
+                    "summary": "Dan works at a coffee shop and Jose comes in everyday",
+                    "notes": "The coffee shop is in Barcelona",
+                    "resources": {
+                        "maps": "maps.google.com"
+                    },
+                    "status": "To-Do",
+                    "type": "Text",
+                    "children" : "null"
+                },
+                "b2": {
+                    "title": "Booking the tickets",
+                    "text" : "Duis ut porta arcu, eu hendrerit sapien. Sed pretium neque vel ex viverra, eu aliquam massa efficitur. Nulla ut erat id massa consectetur vestibulum in vitae mi. Fusce ultrices, leo a viverra efficitur, nisl lectus dictum ante, id lobortis purus urna et velit. Sed vehicula pulvinar purus ut aliquet. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Praesent odio sapien, rutrum pretium condimentum ut, euismod non massa. Nulla varius risus erat, ac rhoncus nunc mattis in. Quisque ut eros nisi. In viverra justo nec ipsum hendrerit luctus. Phasellus tristique enim eu mollis ornare. Sed at risus a diam tincidunt tristique. Cras fermentum justo enim, a finibus sem hendrerit eget.",
+                    "summary": "After a fight, they decide to go to Disneyland",
+                    "notes": "What time of year is this?",
+                    "resources": {
+                        "weather": "weather.com"
+                    },
+                    "status": "Final Draft",
+                    "type": "Text",
+                    "children": "null"  
+                }          
+            }
+        },
+        "snapshots": {
+            "snapshot1": "thisKeyWillPointToSnapshotID1",
+            "snapshot2": "thisKeyWillPointToSnapshotID2"
+        }
+    }
+}
