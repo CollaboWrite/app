@@ -46,11 +46,8 @@ import firebase from 'APP/server/db'
 
 const RootAtomEditor = (props) => {
   firebase.database().ref('projects').child(props.params.id).child('current').child('root').on('value', snapshot => {
-    console.log('props.params.id',props.params.id)
-    console.log('atom root id', snapshot.val())
     browserHistory.push(`/project/${props.params.id}/${snapshot.val()}`)
   })
-  // console.log('', props)
   return (<p>Loading...</p>)
 }
 

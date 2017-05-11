@@ -66,7 +66,7 @@ export default class AppContainer extends React.Component {
   render() {
     // const currentProject = this.state.projects[1] ? this.state.projects[1].current : {}
     const currentProject = this.state.project || { title: '', summary: '', notes: '', resources: '', text: '', atoms: {} }
-    console.log('state in appcontainer', this.state)
+    // console.log('state in appcontainer', this.state)
     // console.log('current project', currentProject)
     return (
       <div>

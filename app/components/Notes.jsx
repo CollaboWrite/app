@@ -14,20 +14,55 @@ import React from 'react'
     />
 }*/
 
-export default (props) => {
-  return (
-  <div className="panel panel-danger">
-    <div className="panel-heading">
-      <h3>Notes</h3>
-    </div>
-    <div className="panel-body">
-      <textarea
-        rows={4}
-        cols={40}
-        value={props.atom.notes}
-      />
-    </div>
-  </div>
-  )
+export default class Notes extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      value: ''
+    }
+  }
+
+  componentDidMount() {
+    // When the component mounts, start listening to the fireRef
+    // we were given.
+    this.listenTo(this.props.atomRef.child('notes'))
+  }
+  componentWillUnmount() {
+    // When we unmount, stop listening.
+    this.unsubscribe()
+  }
+  // listen to the fireRef.child
+  listenTo(atomRef) {
+    // If we're already listening to a ref, stop listening there.
+    if (this.unsubscribe) this.unsubscribe()
+    // Whenever our ref's value changes, set {value} on our state.
+    const listener = atomRef.on('value', snapshot =>
+      this.setState({ value: snapshot.val() })
+    )
+    this.unsubscribe = () => {
+      atomRef.off('value', listener)
+    }
+  }
+  write = (evt) => {
+    evt.preventDefault()
+    this.setState({ value: evt.target.value }, () => this.props.atomRef.child('notes').set(this.state.value))
+  }
+  render() {
+    return (
+      <div className="panel panel-danger">
+        <div className="panel-heading">
+          <h3>Notes</h3>
+        </div>
+        <div className="panel-body">
+          <textarea
+            onChange={this.write}
+            rows={4}
+            cols={40}
+            value={this.state.value}
+          />
+        </div>
+      </div>
+    )
+  }
 }
 

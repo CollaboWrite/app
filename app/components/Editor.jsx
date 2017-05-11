@@ -8,25 +8,39 @@ export default class extends React.Component {
       value: ''
     }
     this.write = this.write.bind(this)
-    this.saveBlurb = this.saveBlurb.bind(this)
   }
 
+  componentDidMount() {
+    // When the component mounts, start listening to the fireRef
+    // we were given.
+    this.listenTo(this.props.atomRef.child('text'))
+  }
+  componentWillUnmount() {
+    // When we unmount, stop listening.
+    this.unsubscribe()
+  }
+  // listen to the fireRef.child
+  listenTo(atomRef) {
+    // If we're already listening to a ref, stop listening there.
+    if (this.unsubscribe) this.unsubscribe()
+    // Whenever our ref's value changes, set {value} on our state.
+    const listener = atomRef.on('value', snapshot =>
+      this.setState({ value: snapshot.val() })
+    )
+    this.unsubscribe = () => {
+      atomRef.off('value', listener)
+    }
+  }
   write(html) {
     this.setState({
       value: html
-    })
-  }
-
-  saveBlurb(evt) {
-    evt.preventDefault()
-    // this.props.updateItem({
-    //   id: this.props.item.id,
-    //   text: this.state.value
-    // })
-    console.log('text in saveBlurb in Editor.jsx', this.state.value)
+    },
+  () => this.props.atomRef && this.props.atomRef.child('text').set(this.state.value)
+)
   }
 
   render() {
+    const text = this.props.atom ? this.props.atom.text : ''
     return (
       <div className="container">
         <div>
@@ -34,9 +48,6 @@ export default class extends React.Component {
                   value={this.state.value}
                   onChange={this.write}
                   theme={'snow'}/>
-        </div>
-        <div>
-        <button onClick={this.saveBlurb}>Save Blurb</button>
         </div>
       </div>
     )
