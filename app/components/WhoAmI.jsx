@@ -20,7 +20,7 @@ export const WhoAmI = ({user, auth}) =>
     { // If nobody is logged in, or the current user is anonymous,
       (!user || user.isAnonymous)?
       // ...then show signin links...
-      <Login auth={auth}/>
+        <Login auth={auth}/>
       /// ...otherwise, show a logout button.
       : <div>
           <UserPage user={user}/>

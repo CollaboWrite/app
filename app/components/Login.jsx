@@ -25,9 +25,56 @@ const google = new firebase.auth.GoogleAuthProvider()
 //
 // google.addScope('https://mail.google.com/')
 
-export default ({ auth }) =>
+export default class extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      email: '',
+      password: ''
+    }
+  }
+
+  onSignupSubmit(evt) {
+    firebase.auth().createUserWithEmailAndPassword(evt.target.email.value, evt.target.password.value).catch(console.error)
+  }
+
+  render() {
+    return (
+      <div className='row'>
+        <div className='col-md-6'>
+          <h3>Log In</h3>
+          {/*<form onSubmit={this.onSignupSubmit}>
+            <div className="form-group">
+              <label>email</label>
+              <input
+                name="email"
+                type="email"
+                className="form-control"
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label>password</label>
+              <input
+                name="password"
+                type="password"
+                className="form-control"
+                required
+              />
+            </div>
+            <button type="submit" className="btn btn-block btn-primary">Log In</button>
+          </form>*/}
+
+          <button className='google login'
+            onClick={() => this.props.auth.signInWithPopup(google)}>Log In with Google</button>
+        </div>
+
+      </div>
+    )
+  }
+
   // signInWithPopup will try to open a login popup, and if it's blocked, it'll
   // redirect. If you prefer, you can signInWithRedirect, which always
   // redirects.
-  <button className='google login'
-          onClick={() => auth.signInWithPopup(google)}>Login with Google</button>
+
+}
