@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import {Link} from 'react-router'
 
-import firebase from 'APP/fire'
+import firebase from 'APP/server/db'
 
 export default class extends Component {
   constructor(props) {

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Route } from 'react-router'
-import firebase from 'APP/fire'
+import firebase from 'APP/server/db'
 const db = firebase.database()
 
 
@@ -61,7 +61,7 @@ export default class ScratchpadContainer extends React.Component {
         stored in Firebase. Each scratchpad is just a string that the
         component will listen to, but it could be the root of a more complex
         data structure if we wanted. */}
-        <Scratchpad fireRef={db.ref(`scratchpads-${title}`).child('text')} /> 
+        <Scratchpad fireRef={db.ref(`scratchpads-${title}`).child('text')} />
       </div>
     )
   }

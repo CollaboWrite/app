@@ -56,7 +56,15 @@ export default class extends React.Component {
     // })
     console.log('url in submitUrl from Resources.jsx', this.state.url)
   }
+  makeResources(resources) {
+    const resourceArr = []
+    for (let resource in resources) {
+      resourceArr.push(`${resource}: ${resources[resource]}`)
+    }
+    return resourceArr
+  }
   render() {
+    const resourcesArr = this.makeResources(this.props.atom.resources)
     return (
       <div className='panel panel-primary'>
         <div className='panel-heading'>
@@ -64,9 +72,7 @@ export default class extends React.Component {
         </div>
         <div className='panel-body'>
           <ul>
-            <li>Dummy data</li>
-            <li>To be resources</li>
-            <li>Eventually</li>
+          {resourcesArr.map(resource => <li>{resource}</li>)}
           </ul>
           <h4>Add a new resource</h4>
           <form onSubmit={this.submitUrl}>
