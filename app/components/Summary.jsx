@@ -33,12 +33,10 @@ export default class Summary extends React.Component {
     }
   }
   write = (evt) => {
-    evt.preventDefault()
-    this.setState({ value: evt.target.value }, () => this.props.atomRef.child('summary').set(this.state.value))
+    this.props.atomRef.child('summary').set(evt.target.value)
   }
   writeStatus = (evt) => {
-    evt.preventDefault()
-    this.setState({ status: evt.target.value }, () => this.props.atomRef.child('status').set(this.state.status))
+    this.props.atomRef.child('status').set(evt.target.value)
   }
   render() {
     return (
