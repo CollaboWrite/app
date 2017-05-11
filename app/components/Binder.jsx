@@ -17,7 +17,7 @@ export default class extends React.Component {
 
   handleSubmit = (evt) => {
     evt.preventDefault()
-    console.log('this.state.newAtom in handleSubmit in Binder.jsx', this.state.newAtom)
+    // console.log('this.state.newAtom in handleSubmit in Binder.jsx', this.state.newAtom)
     // this.props.createContainer({ title: this.state.newContainer })
   }
 
@@ -31,7 +31,7 @@ export default class extends React.Component {
   render() {
     // const items = this.props.selectedProject.items
     const items = (this.props.atoms) ? Object.keys(this.props.atoms) : []
-    console.log('all the items', items)
+    // console.log('all the items', items)
     return (
       <div className='panel panel-info'>
         <div className='panel-heading'>
@@ -41,8 +41,8 @@ export default class extends React.Component {
           <ul>
             {
               items && items.map(item => {
-                console.log('we are inside the map', item)
-                return (<li><button value={item} onClick={this.handleSelect} >{this.props.atoms[item].title}</button></li>)
+                {/*console.log('we are inside the map', item)*/}
+                return (<li key={item} ><button value={item} onClick={this.handleSelect} >{this.props.atoms[item].title}</button></li>)
               })
             }
           </ul>

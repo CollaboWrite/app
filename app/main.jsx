@@ -1,6 +1,6 @@
 'use strict'
 import React from 'react'
-import {Router, Route, IndexRedirect, browserHistory} from 'react-router'
+import {Router, Route, IndexRedirect, browserHistory, IndexRoute} from 'react-router'
 import {render} from 'react-dom'
 
 import WhoAmI from './components/WhoAmI'
@@ -9,9 +9,12 @@ import NotFound from './components/NotFound'
 // import Footer from './components/Footer'
 // import Home from './components/Home'
 import AppContainer from './containers/AppContainer'
-
+import ProjectContainer from './containers/ProjectContainer'
+import AtomEditor from './containers/AtomEditor'
 
 import Demos from 'APP/demos'
+
+import firebase from 'APP/server/db'
 
 // Get the auth API from Firebase.
 
@@ -41,11 +44,24 @@ import Demos from 'APP/demos'
 // Our root App component just renders a little frame with a nav
 // and whatever children the router gave us.
 
+const RootAtomEditor = (props) => {
+  firebase.database().ref('projects').child(props.params.id).child('current').child('root').on('value', snapshot => {
+    console.log('props.params.id',props.params.id)
+    console.log('atom root id', snapshot.val())
+    browserHistory.push(`/project/${props.params.id}/${snapshot.val()}`)
+  })
+  // console.log('', props)
+  return (<p>Loading...</p>)
+}
+
 render(
   <Router history={browserHistory}>
     <Route path='/'>
       <IndexRedirect to='/login' />
-      <Route path='/project/:id' component={AppContainer} />
+      <Route path='/project/:id' component={ProjectContainer} >
+        <Route path=':atomId' component={AtomEditor} />
+        <IndexRoute component={RootAtomEditor}/>
+      </Route>
       <Route path='/login' component={WhoAmI} />
     </Route>
     <Route path='*' component={NotFound}/>
