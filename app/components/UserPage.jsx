@@ -72,11 +72,16 @@ export default class extends React.Component {
   listenTo = (userRef) => {
     if (this.unsubscribe) this.unsubscribe()
     const listener = userRef.on('value', snapshot => {
+      console.log(snapshot.val())
+      // getting keys from the user's database
       const projectKeys = Object.keys(snapshot.val())
       const projects = []
+      // we are putting the key for each key into the projectList
       projectKeys.forEach(projectKey => {
-        console.log(projectKey)
-        firebase.database().ref('projects').orderByKey().equalTo(projectKey).on('value', snapshot => projects.push(snapshot.val()))
+        console.log('projectKey', projectKey)
+        firebase.database().ref('projects').orderByKey().equalTo(projectKey).on('value', snapshot => {
+          projects.push(snapshot.val()[projectKey].projectTitle)
+        })
       }
       )
       this.setState({projectList: projects})
@@ -85,9 +90,17 @@ export default class extends React.Component {
       userRef.off('value', listener)
     }
   }
-
+  // generateTitles = (list) => {
+  //   const result = []
+  //   for (let i = 0; i < list.length; i++) {
+  //     result.push(<option key={i}>{list[i]}</option>)
+  //   }
+  //   return result
+  // }
   render() {
-    console.log(this.state.projectList)
+    const projectList = this.state.projectList
+    console.log(this.state)
+    console.log('projectList', projectList)
     return (
       <div>
         <h2>Welcome, {this.props.user.displayName}</h2>
@@ -97,16 +110,22 @@ export default class extends React.Component {
           <input type="text" onChange={this.setProjectName} />
           <button type="submit">Create</button>
         </form>
-
-        <h3>Pick a project to view:</h3>
-        <select onChange={this.selectProject}>
-          <option></option>
-          {
-            
+        <ul>
+          {projectList && projectList.map(projectTitle => {
+            return (<li>{projectTitle}</li>)
+          })
           }
-        </select>
+        </ul>
+        <h3>Pick a project to view:</h3>
+
         <button type='button' onClick={this.goToPage}>Go to project</button>
       </div>
     )
   }
 }
+
+        // <select onChange={this.selectProject}>
+        //   <option> </option>
+        //   <option>{projectList[0]}</option>
+        //   {/*this.generateTitles(projectList)*/}
+        // </select>
