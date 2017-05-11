@@ -44,8 +44,7 @@ export default class Notes extends React.Component {
     }
   }
   write = (evt) => {
-    evt.preventDefault()
-    this.setState({ value: evt.target.value }, () => this.props.atomRef.child('notes').set(this.state.value))
+    this.props.atomRef.child('notes').set(this.state.value)
   }
   render() {
     return (
