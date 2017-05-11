@@ -1,5 +1,5 @@
 import React from 'react'
-import firebase from 'APP/fire'
+import firebase from 'APP/server/db'
 const auth = firebase.auth()
 
 import Login from './Login'
@@ -20,7 +20,7 @@ export const WhoAmI = ({user, auth}) =>
     { // If nobody is logged in, or the current user is anonymous,
       (!user || user.isAnonymous)?
       // ...then show signin links...
-      <Login auth={auth}/>
+        <Login auth={auth}/>
       /// ...otherwise, show a logout button.
       : <div>
           <UserPage user={user}/>
