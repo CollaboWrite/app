@@ -17,6 +17,8 @@ export default class extends React.Component {
     this.state = {
       projects: {},
       project: {},
+      root: null,
+      children: []
     }
     this.listenTo = this.listenTo.bind(this)
   }
@@ -24,7 +26,12 @@ export default class extends React.Component {
   componentDidMount() {
     // When the component mounts, start listening to the fireRef
     // we were given.
-    this.listenTo(projectsRef.child('Ella&Maritza').child('current'), projectsRef)
+    const rootRef = projectsRef.child('Ella&Maritza').child('current').child('root').once('value')
+    .then(snapshot => {
+      this.setState({root: snapshot.val()})
+    })
+    .then(() => this.listenTo(projectsRef.child('Ella&Maritza').child('current'), projectsRef))
+    .catch(error => console.error(error))
   }
   componentWillUnmount() {
     // When we unmount, stop listening.
@@ -45,26 +52,36 @@ export default class extends React.Component {
         this.setState({ projects: [ ...this.state.projects, title ] })
       })
     })
+    const rootListener = projectRef.child('atoms').child(this.state.root).child('children').on('value', snapshot =>
+      snapshot.forEach(childSnap => {
+        projectRef.child('atoms').on('value', childSnapshot =>
+          childSnapshot.forEach(atomSnap => {
+            if (atomSnap.key === childSnap.key) {
+              this.setState({children: [...this.state.children, atomSnap.val()]})
+            }
+          }))
+      })
+    )
     this.unsubscribe = () => {
       projectsRef.off('value', listener)
     }
   }
 
   render() {
-    console.log('state', this.state)
+    // console.log('state', this.state)
     return (
       <div>
         <div className='col-lg-12'>
           <Toolbar projects={this.state.projects} />
         </div>
         <div className='col-lg-3 sidebar-right'>
-          <Binder atoms={this.state.project.atoms} />
+          <Binder atoms={this.state.children} />
           <Trashcan project={this.state.project} />
         </div>
         <div>
           { this.props.children }
         </div>
-      </div>      
+      </div>
     )
   }
 }

@@ -40,16 +40,16 @@ export default class AtomEditor extends React.Component {
 
   render() {
     const atomRef = projectsRef.child(this.props.params.id).child('current').child('atoms').child(this.props.params.atomId)
-    console.log('state in atomeditor', this.state)
-    console.log('props in atomeditor', this.props)
+    // console.log('state in atomeditor', this.state)
+    // console.log('props in atomeditor', this.props)
     return (
       <div>
         <div className='col-lg-6 project-center'>
-          <Editor atom={this.state.selected} atomRef={atomRef}/>
+          <Editor atomRef={atomRef}/>
         </div>
         <div className='col-lg-3 sidebar-left'>
-          <Notes atom={this.state.selected} atomRef={atomRef} />
-          <Summary atom={this.state.selected} atomRef={atomRef} />
+          <Notes atomRef={atomRef} />
+          <Summary atomRef={atomRef} />
         </div>
       </div>
     )
