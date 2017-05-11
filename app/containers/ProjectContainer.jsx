@@ -26,11 +26,9 @@ export default class extends React.Component {
   componentDidMount() {
     // When the component mounts, start listening to the fireRef
     // we were given.
-    const rootRef = projectsRef.child('Ella&Maritza').child('current').child('root').once('value')
-    .then(snapshot => {
-      this.setState({root: snapshot.val()})
-    })
-    .then(() => this.listenTo(projectsRef.child('Ella&Maritza').child('current'), projectsRef))
+    const rootRef = projectsRef.child(this.props.params.id).child('current').child('root').once('value')
+    .then(snapshot => { this.setState({root: snapshot.val()}) })
+    .then(() => this.listenTo(projectsRef.child(this.props.params.id).child('current'), projectsRef))
     .catch(error => console.error(error))
   }
   componentWillUnmount() {
