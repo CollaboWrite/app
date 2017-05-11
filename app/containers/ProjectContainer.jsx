@@ -42,19 +42,18 @@ export default class extends React.Component {
     // If we're already listening to a ref, stop listening there.
     if (this.unsubscribe) this.unsubscribe()
     // Whenever our ref's value changes, set {value} on our state.
-    const listener = projectRef.on('value', snapshot => {
-        this.setState({ project: snapshot.val() })
-      }
+    const listener = projectRef.on('value', snapshot =>
+      this.setState({ project: snapshot.val() })
     )
-    const listenerProjects = projectsRef.once('value', snapshot => {
+    const listenerProjects = projectsRef.on('value', snapshot => {
       snapshot.forEach(childsnap => {
         let title = childsnap.child('projectTitle').val()
         this.setState({ projects: [ ...this.state.projects, title ] })
       })
     })
-    const rootListener = projectRef.child('atoms').child(this.state.root).child('children').on('value', snapshot =>
+    const rootListener = projectRef.child('atoms').child(this.state.root).child('children').once('value', snapshot =>
       snapshot.forEach(childSnap => {
-        projectRef.child('atoms').on('value', childSnapshot =>
+        projectRef.child('atoms').once('value', childSnapshot =>
           childSnapshot.forEach(atomSnap => {
             if (atomSnap.key === childSnap.key) {
               this.setState({children: [...this.state.children, atomSnap.val()]})
@@ -68,7 +67,6 @@ export default class extends React.Component {
   }
 
   render() {
-    // console.log('state', this.state)
     return (
       <div>
         <div className='col-lg-12'>

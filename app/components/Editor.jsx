@@ -32,11 +32,7 @@ export default class extends React.Component {
     }
   }
   write(html) {
-    this.setState({
-      value: html
-    },
-  () => this.props.atomRef && this.props.atomRef.child('text').set(this.state.value)
-)
+    this.props.atomRef.child('text').set(html)
   }
 
   render() {
