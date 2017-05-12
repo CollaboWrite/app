@@ -6,10 +6,11 @@ export default class extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      projectId: null,
+      projectId: '',
       projectList: [],
       newProjectName: '',
-      userKey: ''
+      userKey: '',
+      currentAtom: null
     }
     // this.generateList = this.generateList.bind(this)
   }
@@ -21,12 +22,14 @@ export default class extends React.Component {
   }
 
   goToPage = (evt) => {
-    browserHistory.push(`/project/${this.state.projectId}`)
+    console.log('project id', this.state.projectId)
+    browserHistory.push(`/project/${this.state.projectId}/${this.state.currentAtom}`) // this needs to navigate to project selected, then to current location on that project
   }
 
   selectProject = (evt) => {
-    evt.preventDefault()
-    this.setState({ projectId: evt.target.value })
+    console.log('select project id & atom', evt.target.value)
+    const valueObj = evt.target.value.split(':')
+    this.setState({ projectId: valueObj[0], currentAtom: +valueObj[1] })
   }
 
   setProjectName = (evt) => {
@@ -88,8 +91,9 @@ export default class extends React.Component {
       projectKeys.forEach(projectKey => {
         firebase.database().ref('projects').child(projectKey).on('value', snapshot => {
           const currentProject = snapshot.val()
+          console.log('current root', currentProject.current.root)
           // add each project title into the projectsList - MUST BE DONE THIS WAY TO UPDATE STATE
-          this.setState({projectList: [...this.state.projectList, currentProject.projectTitle]})
+          this.setState({projectList: [...this.state.projectList, {title: currentProject.projectTitle, id: projectKey, currentAtom: currentProject.current.root}]})
         })
       })
     })
@@ -98,6 +102,7 @@ export default class extends React.Component {
     }
   }
   render() {
+    console.log('state in userpage', this.state)
     return (
       <div>
         <h2>Welcome, {this.props.user.displayName}</h2>
@@ -108,9 +113,12 @@ export default class extends React.Component {
           <button type="submit">Create</button>
         </form>
         <h3>Pick a project to view:</h3>
-        <select>
+        <select onChange={this.selectProject}>
         <option> </option>
-        {this.state.projectList.map(project => <option key={project}>{project}</option>)}
+        {this.state.projectList.map(project => {
+          const valueObj = project.id + ':' + project.currentAtom
+          return (<option value={valueObj} key={project.id}>{project.title}</option>)
+        })}
         </select>
         <button type='button' onClick={this.goToPage}>Go to project</button>
       </div>
