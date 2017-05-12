@@ -12,7 +12,6 @@ export default class extends React.Component {
       userKey: '',
       currentAtom: null
     }
-    // this.generateList = this.generateList.bind(this)
   }
 
   componentDidMount() {
@@ -22,12 +21,14 @@ export default class extends React.Component {
   }
 
   goToPage = (evt) => {
-    console.log('project id', this.state.projectId)
-    browserHistory.push(`/project/${this.state.projectId}/${this.state.currentAtom}`) // this needs to navigate to project selected, then to current location on that project
+  // this needs to navigate to project selected, then to current atom on that project
+  // you can add USER id here as well if needed
+    browserHistory.push(`/project/${this.state.projectId}/${this.state.currentAtom}`)
   }
 
   selectProject = (evt) => {
-    console.log('select project id & atom', evt.target.value)
+    // console.log('select project id & atom', evt.target.value)
+    // had to do this b/c value can only carry string
     const valueObj = evt.target.value.split(':')
     this.setState({ projectId: valueObj[0], currentAtom: +valueObj[1] })
   }
@@ -91,7 +92,6 @@ export default class extends React.Component {
       projectKeys.forEach(projectKey => {
         firebase.database().ref('projects').child(projectKey).on('value', snapshot => {
           const currentProject = snapshot.val()
-          console.log('current root', currentProject.current.root)
           // add each project title into the projectsList - MUST BE DONE THIS WAY TO UPDATE STATE
           this.setState({projectList: [...this.state.projectList, {title: currentProject.projectTitle, id: projectKey, currentAtom: currentProject.current.root}]})
         })
@@ -125,3 +125,7 @@ export default class extends React.Component {
     )
   }
 }
+
+
+// this.state.projectList map creates a 'valueObj' to pass into this.selectProject
+// since we need to grab both the project id & current atom of the project into option's value
