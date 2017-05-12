@@ -56,7 +56,7 @@ export default class extends React.Component {
         </div>
         <div className='panel-body'>
           <ul>
-            {collaborators && collaborators.map((collab) => <li key={collab.name}>{collab.name}</li>) }
+            {collaborators && collaborators.map((collab, idx) => <li key={idx}>{collab.name}</li>) }
           </ul>
           <form onSubmit={this.handleSubmit}>
             <label>Collaborator Email</label>

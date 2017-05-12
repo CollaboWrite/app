@@ -20,22 +20,55 @@ export default class extends React.Component {
 
   handleSubmit = (evt) => {
     evt.preventDefault()
-    // this.props.createContainer({ title: this.state.newContainer })
+    const newTitle = evt.target.value
+    const parent = this.state.selectedAtom || this.props.root
+    const newAtomKey = firebase.database().ref('projects').child(this.props.projectId).child('current').child('atoms').push().key
+    const newAtom = {title: newTitle}
+    firebase.database().ref('projects').child(this.props.projectId).child('current').child('atoms').child(parent).child('children').child(newAtomKey).set(true)
+    firebase.database().ref('projects').child(this.props.projectId).child('current').child('atoms').child(newAtomKey).set(newAtom)
+    evt.target.remove()
   }
 
   handleSelect = (evt) => {
     evt.preventDefault()
+    document.getElementsByClassName('current-atom')[0]
+      ? document.getElementsByClassName('current-atom')[0].classList.remove('current-atom')
+      : console.log()
+    evt.target.classList.add('current-atom')
+    this.setState({selectedAtom: evt.target.value})
     browserHistory.push(`/${this.props.uid}/project/${this.props.projectId}/${evt.target.value}`)
     firebase.database().ref('projects').child(this.props.projectId).child('current').child('atoms').child(evt.target.value).on('value', snapshot => {
       firebase.database().ref('users').child(this.props.uid).child('projects').child(this.props.projectId).set(evt.target.value)
     })
   }
 
+  addAtom = (evt) => {
+    evt.preventDefault()
+    var newAtom = document.createElement('li')
+    var inputTitle = document.createElement('input')
+
+    inputTitle.setAttribute('id', 'atom-name')
+    inputTitle.addEventListener('keypress', evt => {
+      if (evt.keyCode === 13) this.handleSubmit(evt)
+    })
+    inputTitle.type = 'text'
+
+    newAtom.append(inputTitle)
+
+    if (this.state.selectedAtom) {
+      document.getElementById(this.state.selectedAtom).after(newAtom)
+    } else {
+      document.getElementById('binder-list').append(newAtom)
+    }
+  }
+
   render() {
     return (
       <div className='panel panel-info'>
         <div className='panel-heading'>
-          <h3>Binder</h3>
+          <h3 id='binder-head'>Binder</h3>
+          <span className='fa fa-plus-circle add-atom'
+                onClick={this.addAtom} />
         </div>
         <div className='panel-body'>
           <ul id='binder-list'>
@@ -45,14 +78,13 @@ export default class extends React.Component {
                 const atomObj = atomArr[1]
                 const level = atomArr[2]
                 const expanded = atomArr[3]
-                const iconClass = atomObj.children ? (expanded ? 'minus' : 'plus') : 'file-text-o'
+                const iconClass = atomObj.children ? (expanded ? 'chevron-down' : 'chevron-right') : 'file-text-o'
                 return (
-                  <li key={key}
+                  <li key={key} id={key}
                   style={{paddingLeft: level * 25}}>
                     <span className={`fa fa-${iconClass}`}
                       value='value'
-                      onClick={() => this.props.toggleChildren(key, ind, level, expanded)}>
-                    </span>
+                      onClick={() => this.props.toggleChildren(key, ind, level, expanded)} />
                     <button className='binder-item'
                       value={key}
                       onClick={this.handleSelect} >
@@ -62,13 +94,6 @@ export default class extends React.Component {
               })
             }
           </ul>
-          <form onSubmit={this.handleSubmit}>
-            <div>
-              <label>New Folder</label>
-              <input type='text' onChange={this.handleChange} />
-            </div>
-            <button type='submit'>Add Folder</button>
-          </form>
         </div>
       </div>
     )
