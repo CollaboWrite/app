@@ -27,6 +27,10 @@ export default class Notes extends React.Component {
     // we were given.
     this.listenTo(this.props.atomRef.child('notes'))
   }
+  componentWillReceiveProps(incoming) {
+    this.unsubscribe()
+    this.listenTo(incoming.atomRef.child('notes'))
+  }
   componentWillUnmount() {
     // When we unmount, stop listening.
     this.unsubscribe()
