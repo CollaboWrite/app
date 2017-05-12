@@ -65,42 +65,33 @@ export default class extends React.Component {
       if (!snapshot.val()) {
         firebase.database().ref('/users/' + this.props.user.uid).set(user)
       }
-      this.setState({userKey: Object.keys(snapshot.val())[0]})
+      this.setState({ userKey: Object.keys(snapshot.val())[0] })
     })
   }
 
   listenTo = (userRef) => {
     if (this.unsubscribe) this.unsubscribe()
     const listener = userRef.on('value', snapshot => {
-      console.log(snapshot.val())
       // getting keys from the user's database
       const projectKeys = Object.keys(snapshot.val())
       const projects = []
       // we are putting the key for each key into the projectList
       projectKeys.forEach(projectKey => {
-        console.log('projectKey', projectKey)
-        firebase.database().ref('projects').orderByKey().equalTo(projectKey).on('value', snapshot => {
-          projects.push(snapshot.val()[projectKey].projectTitle)
+        firebase.database().ref('projects').child(projectKey).on('value', snapshot => {
+          projects.push(snapshot.val().projectTitle)
         })
-      }
-      )
-      this.setState({projectList: projects})
+      })
+      this.setState({ projectList: projects })
     })
     this.unsubscribe = () => {
       userRef.off('value', listener)
     }
   }
-  // generateTitles = (list) => {
-  //   const result = []
-  //   for (let i = 0; i < list.length; i++) {
-  //     result.push(<option key={i}>{list[i]}</option>)
-  //   }
-  //   return result
-  // }
+
   render() {
-    const projectList = this.state.projectList
-    console.log(this.state)
-    console.log('projectList', projectList)
+    console.log('state', this.state)
+    // this is not able to grab individual project but it's in state..
+    console.log('project is undefined', this.state.projectList[0])
     return (
       <div>
         <h2>Welcome, {this.props.user.displayName}</h2>
@@ -110,22 +101,25 @@ export default class extends React.Component {
           <input type="text" onChange={this.setProjectName} />
           <button type="submit">Create</button>
         </form>
-        <ul>
-          {projectList && projectList.map(projectTitle => {
-            return (<li>{projectTitle}</li>)
-          })
-          }
-        </ul>
         <h3>Pick a project to view:</h3>
-
+        <p>{this.state.projectList[0]}</p>
         <button type='button' onClick={this.goToPage}>Go to project</button>
       </div>
     )
   }
 }
+        // {this.state.projectList.map(projectTitle => <p>{projectTitle}</p>)}
 
-        // <select onChange={this.selectProject}>
-        //   <option> </option>
-        //   <option>{projectList[0]}</option>
-        //   {/*this.generateTitles(projectList)*/}
-        // </select>
+            // <select onChange={this.selectProject}>
+            //   <option> </option>
+            //   {projectList && projectList.map(project => <option>{project}</option>)}
+            // </select>
+
+// function generateTitles(list) {
+//   let result = []
+//   for (let i = 0; i < list.length; i++) {
+//     result.push(<option key={i}>{list[i]}</option>)
+//   }
+//   console.log('am i here', list)
+//   return result
+// }
