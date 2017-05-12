@@ -66,18 +66,20 @@ export default class extends React.Component {
   }
 
   render() {
-    const uid = user ? user.uid : 'qln1WPVpP1fGQPBRAnigIrhOOi23'
+    const uid = this.props.params.uid
+    const projectId = this.props.params.id
+    const atomId = this.props.params.atomId
     return (
       <div>
         <div className='col-lg-12'>
           <Toolbar projects={this.state.projects} />
         </div>
         <div className='col-lg-3 sidebar-right'>
-          <Binder atoms={this.state.children} projectId={this.props.params.id} keys={this.state.childrenKeys} />
+          <Binder uid={uid} atoms={this.state.children} projectId={projectId} keys={this.state.childrenKeys} />
           <Trashcan project={this.state.project} />
         </div>
         <div>
-          <AtomEditor uid={uid} projectId={this.props.params.id} atomId={this.props.params.atomId} />
+          <AtomEditor uid={uid} projectId={projectId} atomId={atomId} />
         </div>
       </div>
     )
