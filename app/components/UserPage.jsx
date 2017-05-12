@@ -75,26 +75,19 @@ export default class extends React.Component {
     const listener = userRef.on('value', snapshot => {
       // getting keys from the user's database
       const projectKeys = Object.keys(snapshot.val())
-      const projects = []
       // we are putting the key for each key into the projectList
       projectKeys.forEach(projectKey => {
         firebase.database().ref('projects').child(projectKey).on('value', snapshot => {
           const currentProject = snapshot.val()
-          projects.push(currentProject.projectTitle)
+          this.setState({projectList: [...this.state.projectList, currentProject.projectTitle]})
         })
       })
-      this.setState({ projectList: projects })
     })
     this.unsubscribe = () => {
       userRef.off('value', listener)
     }
   }
   render() {
-    console.log('state', this.state)
-    // const projectList = this.generateList(this.state.projectList)
-    // this is not able to grab individual project but it's in state..
-    // ONCE YOU START TYPING INTO NEW PROJECT - GENERATES THE LIST @_@
-    console.log('project is undefined', this.state.projectList[0])
     return (
       <div>
         <h2>Welcome, {this.props.user.displayName}</h2>
