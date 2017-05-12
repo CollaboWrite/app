@@ -55,7 +55,7 @@ render(
   <Router history={browserHistory}>
     <Route path='/'>
       <IndexRedirect to='/login' />
-      <Route path='/project/:id' component={ProjectContainer} >
+      <Route path='/:uid/project/:id' component={ProjectContainer} >
         <Route path=':atomId' component={AtomEditor} />
         <IndexRoute component={RootAtomEditor}/>
       </Route>
