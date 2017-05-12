@@ -26,13 +26,8 @@ export default class Chat extends React.Component {
   listenTo = (ref) => {
     if (this.unsubscribe) this.unsubscribe()
     // retreiving all messages for this project
-    const listener = ref.limitToLast(10).on('value', snapshot => {
-      const messagesObj = snapshot.val()
-      const messageKeys = Object.keys(snapshot.val())
-      messageKeys.forEach(key => {
-        const messageObj = messagesObj[key]
-        this.setState({ messages: [...this.state.messages, messageObj] })
-      })
+    const listener = ref.limitToLast(10).on('child_added', snapshot => {
+      this.setState({messages: [...this.state.messages, snapshot.val()]})
     })
     this.unsubscribe = () => {
       ref.off('value', listener)
@@ -48,7 +43,7 @@ export default class Chat extends React.Component {
   submitMessage = (evt) => {
     evt.preventDefault()
     const newMessage = {}
-    firebase.database().ref('/users/' + this.props.uid).child('name').on('value', snapshot => {
+    firebase.database().ref('/users/' + this.props.uid).child('name').once('value', snapshot => {
       const userName = snapshot.val()
       newMessage[userName] = this.state.currentMessage
       firebase.database().ref('/projects/' + this.props.projectId + '/messages/').push(newMessage)
@@ -57,7 +52,6 @@ export default class Chat extends React.Component {
     this.listenTo(messagesRef)
   }
   render() {
-    console.log('state', this.state)
     const messages = this.state.messages
     const chatHeaderStyle = { backgroundColor: '#f5f5f5'
                             , borderStyle: 'solid'
