@@ -3,12 +3,15 @@
 }
 
 body {
+    font-family: Helvetica, sans-serif;
     background-color: #f2edcb;
+    color: black;
 }
 
 #react-quill {
     height: 80vh;
     width: 48vw;
+    background-color: white;
 }
 
 #binder-list {
@@ -19,3 +22,27 @@ body {
     border: none;
     background-color: transparent
 }
+
+.current-atom {
+    background-color: lightblue;
+}
+
+#binder-head {
+    display: inline;
+}
+
+.add-atom {
+    color: white;
+    float: right;
+    margin-right: 2%;
+    margin-top: auto;
+    font-size: 150% !important;
+    margin-bottom: auto;
+}
+
+
+/*
+#atom-name {
+    background-color: red;
+}
+*/
