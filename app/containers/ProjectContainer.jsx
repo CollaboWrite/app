@@ -92,7 +92,7 @@ export default class extends React.Component {
           <Toolbar projects={this.state.projects} projectId={projectId} />
         </div>
         <div className='col-lg-3 sidebar-left'>
-          <Binder toggleChildren={this.toggleChildren} uid={uid} atoms={this.state.binderView} projectId={projectId} />
+          <Binder toggleChildren={this.toggleChildren} uid={uid} atoms={this.state.binderView} projectId={projectId} root={this.state.root} />
           <Trashcan project={this.state.project} />
         </div>
         <div>

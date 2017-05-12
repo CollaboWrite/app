@@ -26,3 +26,23 @@ body {
 .current-atom {
     background-color: lightblue;
 }
+
+#binder-head {
+    display: inline;
+}
+
+.add-atom {
+    color: white;
+    float: right;
+    margin-right: 2%;
+    margin-top: auto;
+    font-size: 150% !important;
+    margin-bottom: auto;
+}
+
+
+/*
+#atom-name {
+    background-color: red;
+}
+*/
