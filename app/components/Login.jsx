@@ -33,10 +33,10 @@ export default class extends React.Component {
       password: ''
     }
   }
-
-  onSignupSubmit(evt) {
-    firebase.auth().createUserWithEmailAndPassword(evt.target.email.value, evt.target.password.value).catch(console.error)
-  }
+// This can be used to create our own users
+//   onSignupSubmit(evt) {
+//     firebase.auth().createUserWithEmailAndPassword(evt.target.email.value, evt.target.password.value).catch(console.error)
+//   }
 
   render() {
     return (
