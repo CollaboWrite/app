@@ -99,7 +99,7 @@ export default class extends React.Component {
           <AtomEditor uid={uid} projectId={projectId} atomId={atomId} />
         </div>
         <div className='col-lg-3 sidebar-right'>
-          <CollabForm projectId={projectId} atomId={atomId} />
+          <CollabForm uid={uid} projectId={projectId} atomId={atomId} />
         </div>
       </div>
     )
