@@ -1,5 +1,5 @@
 import React from 'react'
-
+import firebase from 'APP/server/db'
 const statusOptions = ['To Do', 'First Draft', 'Revised Draft', 'Final Draft']
 
 export default class Summary extends React.Component {
@@ -16,6 +16,10 @@ export default class Summary extends React.Component {
     // we were given.
     this.listenTo(this.props.atomRef.child('summary'))
   }
+  componentWillReceiveProps(incoming) {
+    // When the atomRef in the AtomEditor, we start listening to the new one
+    this.listenTo(incoming.atomRef.child('summary'))
+  }
   componentWillUnmount() {
     // When we unmount, stop listening.
     this.unsubscribe()
@@ -25,9 +29,10 @@ export default class Summary extends React.Component {
     // If we're already listening to a ref, stop listening there.
     if (this.unsubscribe) this.unsubscribe()
     // Whenever our ref's value changes, set {value} on our state.
-    const listener = atomRef.on('value', snapshot =>
-      this.setState({ value: snapshot.val() })
-    )
+    const listener = atomRef.on('value', snapshot => {
+      const newValue = snapshot.val() || ''
+      this.setState({ value: newValue })
+    })
     this.unsubscribe = () => {
       atomRef.off('value', listener)
     }

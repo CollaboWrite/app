@@ -8,8 +8,10 @@ import Editor from '../components/Editor'
 import Notes from '../components/Notes'
 import Summary from '../components/Summary'
 import Resources from '../components/Resources'
+import AtomEditor from './AtomEditor'
 
 const projectsRef = firebase.database().ref('projects')
+
 
 export default class extends React.Component {
   constructor(props) {
@@ -18,7 +20,8 @@ export default class extends React.Component {
       projects: {},
       project: {},
       root: null,
-      children: []
+      children: [],
+      childrenKeys: []
     }
     this.listenTo = this.listenTo.bind(this)
   }
@@ -51,12 +54,9 @@ export default class extends React.Component {
     })
     const rootListener = projectRef.child('atoms').child(this.state.root).child('children').once('value', snapshot =>
       snapshot.forEach(childSnap => {
-        projectRef.child('atoms').once('value', childSnapshot =>
-          childSnapshot.forEach(atomSnap => {
-            if (atomSnap.key === childSnap.key) {
-              this.setState({children: [...this.state.children, atomSnap.val()]})
-            }
-          }))
+        projectRef.child('atoms').child(childSnap.key).once('value', childSnap => {
+          this.setState({ children: [ ...this.state.children, childSnap.val() ], childrenKeys: [ ...this.state.childrenKeys, childSnap.key ] })
+        })
       })
     )
     this.unsubscribe = () => {
@@ -65,17 +65,20 @@ export default class extends React.Component {
   }
 
   render() {
+    const uid = this.props.params.uid
+    const projectId = this.props.params.id
+    const atomId = this.props.params.atomId
     return (
       <div>
         <div className='col-lg-12'>
           <Toolbar projects={this.state.projects} />
         </div>
         <div className='col-lg-3 sidebar-right'>
-          <Binder atoms={this.state.children} />
+          <Binder uid={uid} atoms={this.state.children} projectId={projectId} keys={this.state.childrenKeys} />
           <Trashcan project={this.state.project} />
         </div>
         <div>
-          { this.props.children }
+          <AtomEditor uid={uid} projectId={projectId} atomId={atomId} />
         </div>
       </div>
     )

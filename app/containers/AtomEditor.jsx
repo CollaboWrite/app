@@ -6,11 +6,34 @@ import Resources from '../components/Resources'
 
 import firebase from 'APP/server/db'
 const projectsRef = firebase.database().ref('projects')
+
 export default class AtomEditor extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      selected: {}
+      atomVal: {},
+    }
+  }
+
+  componentDidMount() {
+    // When the component mounts, start listening to the fireRef
+    // we were given.
+    this.listenTo(firebase.database().ref('users').child(this.props.uid).child('projects').child(this.props.projectId))
+  }
+  componentWillUnmount() {
+    // When we unmount, stop listening.
+    this.unsubscribe()
+  }
+  // listen to the fireRef.child
+  listenTo(atomRef) {
+    // If we're already listening to a ref, stop listening there.
+    if (this.unsubscribe) this.unsubscribe()
+    // Whenever our ref's value changes, set {value} on our state.
+    const listener = atomRef.on('value', snapshot => {
+      this.setState({ atomVal: snapshot.val() })
+    })
+    this.unsubscribe = () => {
+      atomRef.off('value', listener)
     }
   }
 
@@ -18,17 +41,16 @@ export default class AtomEditor extends React.Component {
     projectsRef.child(this.props.params.id).child('current').child('atoms').child(this.props.params.atomId).update(updateObj)
 
   render() {
-    const atomRef = projectsRef.child(this.props.params.id).child('current').child('atoms').child(this.props.params.atomId)
-    // console.log('state in atomeditor', this.state)
-    // console.log('props in atomeditor', this.props)
+    console.log('atom editor state', this.state)
+    const ref = this.state.atomRef || projectsRef.child(this.props.projectId).child('current').child('atoms').child(this.props.atomId)
     return (
       <div>
         <div className='col-lg-6 project-center'>
-          <Editor atomRef={atomRef}/>
+          <Editor atomRef={ref} />
         </div>
         <div className='col-lg-3 sidebar-left'>
-          <Notes atomRef={atomRef} />
-          <Summary atomRef={atomRef} />
+          <Notes atomRef={ref} />
+          <Summary atomRef={ref} />
         </div>
       </div>
     )

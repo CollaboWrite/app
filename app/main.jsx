@@ -5,14 +5,9 @@ import {render} from 'react-dom'
 
 import WhoAmI from './components/WhoAmI'
 import NotFound from './components/NotFound'
-// import Navbar from './components/Navbar'
-// import Footer from './components/Footer'
-// import Home from './components/Home'
 import AppContainer from './containers/AppContainer'
 import ProjectContainer from './containers/ProjectContainer'
 import AtomEditor from './containers/AtomEditor'
-
-import Demos from 'APP/demos'
 
 import firebase from 'APP/server/db'
 
@@ -46,7 +41,7 @@ import firebase from 'APP/server/db'
 
 const RootAtomEditor = (props) => {
   firebase.database().ref('projects').child(props.params.id).child('current').child('root').on('value', snapshot => {
-    browserHistory.push(`/project/${props.params.id}/${snapshot.val()}`)
+    browserHistory.push(`${props.params.uid}/project/${props.params.id}/${snapshot.val()}`)
   })
   return (<p>Loading...</p>)
 }
