@@ -18,7 +18,6 @@ export default class extends React.Component {
     if (this.unsubscribe) this.unsubscribe()
     const listener = ref.on('child_added', snapshot => {
       const collaborations = snapshot.val().collaborations || {}
-      console.log('what is collaborations', collaborations[this.props.projectId])
       if (collaborations[this.props.projectId] === 0 || collaborations[this.props.projectId]) {
         if (snapshot.val().uid !== this.props.uid) {
           this.setState({ collaborators: [...this.state.collaborators, { name: snapshot.val().name }] })
