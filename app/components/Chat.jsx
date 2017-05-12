@@ -48,8 +48,6 @@ export default class Chat extends React.Component {
       newMessage[userName] = this.state.currentMessage
       firebase.database().ref('/projects/' + this.props.projectId + '/messages/').push(newMessage)
     })
-    const messagesRef = firebase.database().ref('/projects/' + this.props.projectId + '/messages/')
-    this.listenTo(messagesRef)
   }
   render() {
     const messages = this.state.messages
