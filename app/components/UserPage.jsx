@@ -17,27 +17,36 @@ export default class extends React.Component {
   componentDidMount() {
     this.createUser()
     const userId = this.props.user.uid
-    this.listenTo(firebase.database().ref('users').child(userId).child('projects'))
+    const projectsRef = firebase.database().ref('users').child(userId).child('projects')
+    // TO DO: to get collaborations
+    // const collabRef = firebase.database().ref('users').child(userId).child('collaborations')
+    this.listenTo(projectsRef)
+  }
+  listenTo = (userRef) => {
+    if (this.unsubscribe) this.unsubscribe()
+    const listener = userRef.on('value', snapshot => {
+      // getting keys from the user's database
+      const projectKeys = Object.keys(snapshot.val())
+      // we are putting the key for each key into the projectList
+      projectKeys.forEach(projectKey => {
+        firebase.database().ref('projects').child(projectKey).on('value', snapshot => {
+          const currentProject = snapshot.val()
+          // add each project title into the projectsList - MUST BE DONE THIS WAY TO UPDATE STATE
+          this.setState({projectList: [...this.state.projectList, {title: currentProject.projectTitle, id: projectKey, currentAtom: currentProject.current.root}]})
+        })
+      })
+    })
+    this.unsubscribe = () => {
+      userRef.off('value', listener)
+    }
   }
 
-  goToPage = (evt) => {
-  // this needs to navigate to project selected, then to current atom on that project
-  // you can add USER id here as well if needed
-    browserHistory.push(`/project/${this.state.projectId}/${this.state.currentAtom}`)
-  }
-
-  selectProject = (evt) => {
-    // console.log('select project id & atom', evt.target.value)
-    // had to do this b/c value can only carry string
-    const valueObj = evt.target.value.split(':')
-    this.setState({ projectId: valueObj[0], currentAtom: +valueObj[1] })
-  }
+  // ****** CREATE NEW PROJECTS ****** //
 
   setProjectName = (evt) => {
     evt.preventDefault()
     this.setState({ newProjectName: evt.target.value })
   }
-
   createProject = () => {
     // create project object to add to projects db
     const project = {
@@ -65,6 +74,8 @@ export default class extends React.Component {
     return firebase.database().ref().update(updates)
   }
 
+  // ****** CHECK FOR USER & CREATE USER ****** //
+
   createUser = () => {
     // create new user object
     const user = {
@@ -83,24 +94,21 @@ export default class extends React.Component {
     })
   }
 
-  listenTo = (userRef) => {
-    if (this.unsubscribe) this.unsubscribe()
-    const listener = userRef.on('value', snapshot => {
-      // getting keys from the user's database
-      const projectKeys = Object.keys(snapshot.val())
-      // we are putting the key for each key into the projectList
-      projectKeys.forEach(projectKey => {
-        firebase.database().ref('projects').child(projectKey).on('value', snapshot => {
-          const currentProject = snapshot.val()
-          // add each project title into the projectsList - MUST BE DONE THIS WAY TO UPDATE STATE
-          this.setState({projectList: [...this.state.projectList, {title: currentProject.projectTitle, id: projectKey, currentAtom: currentProject.current.root}]})
-        })
-      })
-    })
-    this.unsubscribe = () => {
-      userRef.off('value', listener)
-    }
+  // ******* SELECT & NAV TO SELECTED PAGE ****** //
+
+  goToPage = (evt) => {
+  // this needs to navigate to project selected, then to current atom on that project
+  // you can add USER id here as well if needed
+    browserHistory.push(`/project/${this.state.projectId}/${this.state.currentAtom}`)
   }
+
+  selectProject = (evt) => {
+    // console.log('select project id & atom', evt.target.value)
+    // had to do this b/c value can only carry string
+    const valueObj = evt.target.value.split(':')
+    this.setState({ projectId: valueObj[0], currentAtom: +valueObj[1] })
+  }
+
   render() {
     console.log('state in userpage', this.state)
     return (
