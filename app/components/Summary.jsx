@@ -45,7 +45,7 @@ export default class Summary extends React.Component {
   }
   render() {
     return (
-      <div className="panel panel-warning">
+      <div className="panel panel-info">
         <div className="panel-heading">
           <h3>Summary</h3>
         </div>

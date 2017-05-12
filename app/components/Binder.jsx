@@ -2,8 +2,6 @@ import React from 'react'
 import { browserHistory } from 'react-router'
 
 import firebase from 'APP/server/db'
-let user
-const auth = firebase.auth().onAuthStateChanged(authUser => user = authUser)
 
 export default class extends React.Component {
   constructor(props) {
@@ -29,7 +27,7 @@ export default class extends React.Component {
     evt.preventDefault()
     browserHistory.push(`/${this.props.uid}/project/${this.props.projectId}/${evt.target.value}`)
     firebase.database().ref('projects').child(this.props.projectId).child('current').child('atoms').child(evt.target.value).on('value', snapshot => {
-      firebase.database().ref('users').child(user.uid).child('projects').child(this.props.projectId).set(evt.target.value)
+      firebase.database().ref('users').child(this.props.uid).child('projects').child(this.props.projectId).set(evt.target.value)
     })
   }
 

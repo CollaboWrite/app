@@ -6,8 +6,6 @@ import Resources from '../components/Resources'
 
 import firebase from 'APP/server/db'
 const projectsRef = firebase.database().ref('projects')
-let user
-const auth = firebase.auth().onAuthStateChanged(authUser => user = authUser)
 
 export default class AtomEditor extends React.Component {
   constructor(props) {
@@ -49,7 +47,7 @@ export default class AtomEditor extends React.Component {
         <div className='col-lg-6 project-center'>
           <Editor atomRef={ref} />
         </div>
-        <div className='col-lg-3 sidebar-left'>
+        <div className='col-lg-3 sidebar-right'>
           <Notes atomRef={ref} />
           <Summary atomRef={ref} />
         </div>
