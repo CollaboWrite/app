@@ -97,9 +97,8 @@ export default class extends React.Component {
   // ******* SELECT & NAV TO SELECTED PAGE ****** //
 
   goToPage = (evt) => {
-  // this needs to navigate to project selected, then to current atom on that project
-  // you can add USER id here as well if needed
-    browserHistory.push(`/project/${this.state.projectId}/${this.state.currentAtom}`)
+  // this needs to navigate to project selected, then to current atom on that project ${this.props.user.uid}
+    browserHistory.push(`/${this.props.user.uid}/project/${this.state.projectId}/${this.state.currentAtom}`)
   }
 
   selectProject = (evt) => {
