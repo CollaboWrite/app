@@ -14,7 +14,6 @@ const Toolbar = (props) => {
     </select>
     <button>Tree View</button>
     <button>Timeline View</button>
-    <button>ETC</button>
 
   </nav>)
 }
