@@ -21,8 +21,7 @@ export default class extends React.Component {
       projects: {},
       project: {},
       root: null,
-      children: [],
-      childrenKeys: []
+      binderView: []
     }
     this.listenTo = this.listenTo.bind(this)
   }
@@ -31,9 +30,9 @@ export default class extends React.Component {
     // When the component mounts, start listening to the fireRef
     // we were given.
     const rootRef = projectsRef.child(this.props.params.id).child('current').child('root').once('value')
-    .then(snapshot => { this.setState({root: snapshot.val()}) })
-    .then(() => this.listenTo(projectsRef.child(this.props.params.id).child('current'), projectsRef))
-    .catch(error => console.error(error))
+      .then(snapshot => { this.setState({ root: snapshot.val() }) })
+      .then(() => this.listenTo(projectsRef.child(this.props.params.id).child('current'), projectsRef))
+      .catch(error => console.error(error))
   }
   componentWillUnmount() {
     // When we unmount, stop listening.
@@ -50,13 +49,13 @@ export default class extends React.Component {
     const listenerProjects = projectsRef.on('value', snapshot => {
       snapshot.forEach(childsnap => {
         let title = childsnap.child('projectTitle').val()
-        this.setState({ projects: [ ...this.state.projects, title ] })
+        this.setState({ projects: [...this.state.projects, title] })
       })
     })
     const rootListener = projectRef.child('atoms').child(this.state.root).child('children').once('value', snapshot =>
       snapshot.forEach(childSnap => {
         projectRef.child('atoms').child(childSnap.key).once('value', childSnap => {
-          this.setState({ children: [ ...this.state.children, childSnap.val() ], childrenKeys: [ ...this.state.childrenKeys, childSnap.key ] })
+          this.setState({ binderView: [...this.state.binderView, [childSnap.key, childSnap.val()]] })
         })
       })
     )
@@ -65,7 +64,21 @@ export default class extends React.Component {
     }
   }
 
+  handleExpand = (atomId) => {
+    const projectId = this.props.params.id
+    const atomPointer = firebase.database().ref('projects').child(projectId).child('current').child('atoms')
+    firebase.database().ref('projects').child(projectId).child('current').child('atoms').child(atomId).child('children').on('value', childList => {
+      childList.forEach(child => {
+        atomPointer.child(child.key).once('value', atomSnap => {
+          console.log('child.key is', child.key)
+          console.log('atomSnap.val() is', atomSnap.val())
+        })
+      })
+    })
+  }
+
   render() {
+    console.log(this.state.binderView)
     const uid = this.props.params.uid
     const projectId = this.props.params.id
     const atomId = this.props.params.atomId
@@ -75,7 +88,7 @@ export default class extends React.Component {
           <Toolbar projects={this.state.projects} />
         </div>
         <div className='col-lg-3 sidebar-right'>
-          <Binder uid={uid} atoms={this.state.children} projectId={projectId} keys={this.state.childrenKeys} />
+          <Binder handleExpand={this.handleExpand} uid={uid} atoms={this.state.binderView} projectId={projectId} />
           <Trashcan project={this.state.project} />
         </div>
         <div>

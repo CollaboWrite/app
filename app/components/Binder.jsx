@@ -1,5 +1,5 @@
 import React from 'react'
-import {browserHistory} from 'react-router'
+import { browserHistory } from 'react-router'
 
 import firebase from 'APP/server/db'
 let user
@@ -33,8 +33,19 @@ export default class extends React.Component {
     })
   }
 
+  // handleExpand = (atomId) => {
+  //   const atomPointer = firebase.database().ref('projects').child(this.props.projectId).child('current').child('atoms')
+  //   firebase.database().ref('projects').child(this.props.projectId).child('current').child('atoms').child(atomId).child('children').on('value', childList => {
+  //     childList.forEach(child => {
+  //       atomPointer.child(child.key).once('value', atomSnap => {
+  //         console.log('child.key is', child.key)
+  //         console.log('atomSnap.val() is', atomSnap.val())
+  //       })
+  //     })
+  //   })
+  // }
+
   render() {
-    const items = (this.props.atoms) ? Object.keys(this.props.atoms) : []
     return (
       <div className='panel panel-info'>
         <div className='panel-heading'>
@@ -43,8 +54,10 @@ export default class extends React.Component {
         <div className='panel-body'>
           <ul>
             {
-              items && items.map((item, idx) => {
-                return (<li key={item} ><button value={this.props.keys[idx]} onClick={this.handleSelect} >{this.props.atoms[item].title}</button></li>)
+              this.props.atoms && this.props.atoms.map((atomArr) => {
+                const key = atomArr[0]
+                const atomObj = atomArr[1]
+                return (<li key={key}><span value='value' onClick={() => this.props.handleExpand(key)}>+</span><button value={key} onClick={this.handleSelect} >{atomObj.title}</button></li>)
               })
             }
           </ul>
