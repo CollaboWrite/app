@@ -1,5 +1,6 @@
 import React from 'react'
 import firebase from 'APP/server/db'
+import Chat from './Chat'
 
 export default class extends React.Component {
   constructor(props) {
@@ -26,6 +27,10 @@ export default class extends React.Component {
     this.unsubscribe = () => {
       ref.off('value', listener)
     }
+  }
+  componentWillUnmount() {
+    // When we unmount, stop listening.
+    this.unsubscribe()
   }
   handleChange = (evt) => {
     evt.preventDefault()
@@ -64,6 +69,7 @@ export default class extends React.Component {
             <button type='submit'>Add Collaborator</button>
           </form>
         </div>
+        <Chat uid={this.props.uid} collaborators={this.props.collaborators} projectId={this.props.projectId}/>
       </div>
     )
   }
