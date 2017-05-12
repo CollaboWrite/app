@@ -4,11 +4,8 @@ import firebase from 'APP/server/db'
 import Toolbar from '../components/Toolbar'
 import Binder from '../components/Binder'
 import Trashcan from '../components/Trashcan'
-import Editor from '../components/Editor'
-import Notes from '../components/Notes'
-import Summary from '../components/Summary'
-import Resources from '../components/Resources'
 import AtomEditor from './AtomEditor'
+import CollabForm from '../components/CollabForm'
 
 const projectsRef = firebase.database().ref('projects')
 
@@ -71,14 +68,17 @@ export default class extends React.Component {
     return (
       <div>
         <div className='col-lg-12'>
-          <Toolbar projects={this.state.projects} />
+          <Toolbar projects={this.state.projects} projectId={projectId}/>
         </div>
-        <div className='col-lg-3 sidebar-right'>
+        <div className='col-lg-3 sidebar-left'>
           <Binder uid={uid} atoms={this.state.children} projectId={projectId} keys={this.state.childrenKeys} />
           <Trashcan project={this.state.project} />
         </div>
         <div>
           <AtomEditor uid={uid} projectId={projectId} atomId={atomId} />
+        </div>
+        <div className='col-lg-3 sidebar-right'>
+          <CollabForm projectId={projectId} atomId={atomId}/>
         </div>
       </div>
     )

@@ -39,7 +39,7 @@ export default class Notes extends React.Component {
   }
   render() {
     return (
-      <div className="panel panel-danger">
+      <div className="panel panel-info">
         <div className="panel-heading">
           <h3>Notes</h3>
         </div>
