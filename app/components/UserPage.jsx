@@ -109,7 +109,6 @@ export default class extends React.Component {
   }
 
   render() {
-    console.log('state in userpage', this.state)
     return (
       <div>
         <h2>Welcome, {this.props.user.displayName}</h2>
