@@ -38,13 +38,27 @@ export default class extends React.Component {
           <h3>Binder</h3>
         </div>
         <div className='panel-body'>
-          <ul>
+          <ul id='binder-list'>
             {
               this.props.atoms && this.props.atoms.map((atomArr, ind) => {
                 const key = atomArr[0]
                 const atomObj = atomArr[1]
                 const level = atomArr[2]
-                return (<li key={key}><span value='value' onClick={() => this.props.handleExpand(key, ind, level)}>+</span><button value={key} onClick={this.handleSelect} >{atomObj.title}</button></li>)
+                const expanded = atomArr[3]
+                const iconClass = atomObj.children ? (expanded ? 'minus' : 'plus') : 'file-text-o'
+                return (
+                  <li key={key}
+                  style={{paddingLeft: level * 25}}>
+                    <span className={`fa fa-${iconClass}`}
+                      value='value'
+                      onClick={() => this.props.toggleChildren(key, ind, level, expanded)}>
+                    </span>
+                    <button className='binder-item'
+                      value={key}
+                      onClick={this.handleSelect} >
+                      {atomObj.title}
+                    </button>
+                  </li>)
               })
             }
           </ul>

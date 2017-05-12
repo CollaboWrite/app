@@ -51,7 +51,7 @@ export default class extends React.Component {
     const rootListener = projectRef.child('atoms').child(this.state.root).child('children').once('value', snapshot =>
       snapshot.forEach(childSnap => {
         projectRef.child('atoms').child(childSnap.key).once('value', childSnap => {
-          this.setState({ binderView: [...this.state.binderView, [childSnap.key, childSnap.val(), 0]] })
+          this.setState({ binderView: [...this.state.binderView, [childSnap.key, childSnap.val(), 0, false]] })
         })
       })
     )
@@ -60,42 +60,46 @@ export default class extends React.Component {
     }
   }
 
-  handleExpand = (atomId, ind, level) => {
+  toggleChildren = (atomId, ind, level, expanded) => {
     const projectId = this.props.params.id
     const atomPointer = firebase.database().ref('projects').child(projectId).child('current').child('atoms')
     firebase.database().ref('projects').child(projectId).child('current').child('atoms').child(atomId).child('children').on('value', childList => {
       const newBinderView = [...this.state.binderView]
-      const newLevel = ++level
-      childList.forEach(child => {
-        atomPointer.child(child.key).once('value', atomSnap => {
-          const atomToPush = [child.key, atomSnap.val(), newLevel]
-          newBinderView.splice(++ind, 0, atomToPush)
-          console.log(atomToPush)
+      if (expanded) {
+        newBinderView[ind][3]=false
+        newBinderView.splice(++ind, Object.keys(childList.val()).length)
+      } else {
+        const newLevel = ++level
+        newBinderView[ind][3]=true
+        childList.forEach(child => {
+          atomPointer.child(child.key).once('value', atomSnap => {
+            const atomToPush = [child.key, atomSnap.val(), newLevel, false]
+            newBinderView.splice(++ind, 0, atomToPush)
+          })
         })
-      })
-      this.setState({binderView: newBinderView})
+      }
+      this.setState({ binderView: newBinderView })
     })
   }
 
   render() {
-    console.log(this.state.binderView)
     const uid = this.props.params.uid
     const projectId = this.props.params.id
     const atomId = this.props.params.atomId
     return (
       <div>
         <div className='col-lg-12'>
-          <Toolbar projects={this.state.projects} projectId={projectId}/>
+          <Toolbar projects={this.state.projects} projectId={projectId} />
         </div>
         <div className='col-lg-3 sidebar-left'>
-          <Binder handleExpand={this.handleExpand} uid={uid} atoms={this.state.binderView} projectId={projectId} />
+          <Binder toggleChildren={this.toggleChildren} uid={uid} atoms={this.state.binderView} projectId={projectId} />
           <Trashcan project={this.state.project} />
         </div>
         <div>
           <AtomEditor uid={uid} projectId={projectId} atomId={atomId} />
         </div>
         <div className='col-lg-3 sidebar-right'>
-          <CollabForm projectId={projectId} atomId={atomId}/>
+          <CollabForm projectId={projectId} atomId={atomId} />
         </div>
       </div>
     )
