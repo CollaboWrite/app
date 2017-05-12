@@ -39,7 +39,6 @@ export default class extends React.Component {
     })
 
     const collabListener = usersCollabRef.on('value', snapshot => {
-      console.log(snapshot.val())
       const collabKeys = Object.keys(snapshot.val())
       // we are putting the key for each key into the projectList
       collabKeys.forEach(collabKey => {
