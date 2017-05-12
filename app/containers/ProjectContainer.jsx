@@ -51,7 +51,7 @@ export default class extends React.Component {
     const rootListener = projectRef.child('atoms').child(this.state.root).child('children').once('value', snapshot =>
       snapshot.forEach(childSnap => {
         projectRef.child('atoms').child(childSnap.key).once('value', childSnap => {
-          this.setState({ binderView: [...this.state.binderView, [childSnap.key, childSnap.val()]] })
+          this.setState({ binderView: [...this.state.binderView, [childSnap.key, childSnap.val(), 0]] })
         })
       })
     )
@@ -60,16 +60,20 @@ export default class extends React.Component {
     }
   }
 
-  handleExpand = (atomId) => {
+  handleExpand = (atomId, ind, level) => {
     const projectId = this.props.params.id
     const atomPointer = firebase.database().ref('projects').child(projectId).child('current').child('atoms')
     firebase.database().ref('projects').child(projectId).child('current').child('atoms').child(atomId).child('children').on('value', childList => {
+      const newBinderView = [...this.state.binderView]
+      const newLevel = ++level
       childList.forEach(child => {
         atomPointer.child(child.key).once('value', atomSnap => {
-          console.log('child.key is', child.key)
-          console.log('atomSnap.val() is', atomSnap.val())
+          const atomToPush = [child.key, atomSnap.val(), newLevel]
+          newBinderView.splice(++ind, 0, atomToPush)
+          console.log(atomToPush)
         })
       })
+      this.setState({binderView: newBinderView})
     })
   }
 
