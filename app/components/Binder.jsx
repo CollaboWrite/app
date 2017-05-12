@@ -2,8 +2,6 @@ import React from 'react'
 import {browserHistory} from 'react-router'
 
 import firebase from 'APP/server/db'
-let user
-const auth = firebase.auth().onAuthStateChanged(authUser => user = authUser)
 
 export default class extends React.Component {
   constructor(props) {
