@@ -46,16 +46,12 @@ const RootAtomEditor = (props) => {
   return (<p>Loading...</p>)
 }
 
-function onAtomEnter(nextRouterParams) {
-  console.log('we are entering the atom', nextRouterParams)
-}
-
 render(
   <Router history={browserHistory}>
     <Route path='/'>
       <IndexRedirect to='/login' />
-      <Route path='/project/:id' component={ProjectContainer} >
-        <Route path=':atomId' component={AtomEditor} onEnter={onAtomEnter} />
+      <Route path='/:uid/project/:id' component={ProjectContainer} >
+        <Route path=':atomId' component={AtomEditor} />
         <IndexRoute component={RootAtomEditor}/>
       </Route>
       <Route path='/login' component={WhoAmI} />
