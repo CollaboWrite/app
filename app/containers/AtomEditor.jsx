@@ -6,8 +6,6 @@ import Resources from '../components/Resources'
 
 import firebase from 'APP/server/db'
 const projectsRef = firebase.database().ref('projects')
-let user
-const auth = firebase.auth().onAuthStateChanged(authUser => user = authUser)
 
 export default class AtomEditor extends React.Component {
   constructor(props) {
