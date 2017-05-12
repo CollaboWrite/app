@@ -5,14 +5,9 @@ import {render} from 'react-dom'
 
 import WhoAmI from './components/WhoAmI'
 import NotFound from './components/NotFound'
-// import Navbar from './components/Navbar'
-// import Footer from './components/Footer'
-// import Home from './components/Home'
 import AppContainer from './containers/AppContainer'
 import ProjectContainer from './containers/ProjectContainer'
 import AtomEditor from './containers/AtomEditor'
-
-import Demos from 'APP/demos'
 
 import firebase from 'APP/server/db'
 
@@ -51,12 +46,16 @@ const RootAtomEditor = (props) => {
   return (<p>Loading...</p>)
 }
 
+function onAtomEnter(nextRouterParams) {
+  console.log('we are entering the atom', nextRouterParams)
+}
+
 render(
   <Router history={browserHistory}>
     <Route path='/'>
       <IndexRedirect to='/login' />
       <Route path='/project/:id' component={ProjectContainer} >
-        <Route path=':atomId' component={AtomEditor} />
+        <Route path=':atomId' component={AtomEditor} onEnter={onAtomEnter} />
         <IndexRoute component={RootAtomEditor}/>
       </Route>
       <Route path='/login' component={WhoAmI} />

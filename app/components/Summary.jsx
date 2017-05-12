@@ -1,5 +1,5 @@
 import React from 'react'
-
+import firebase from 'APP/server/db'
 const statusOptions = ['To Do', 'First Draft', 'Revised Draft', 'Final Draft']
 
 export default class Summary extends React.Component {
