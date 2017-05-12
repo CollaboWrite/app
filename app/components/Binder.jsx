@@ -25,6 +25,10 @@ export default class extends React.Component {
 
   handleSelect = (evt) => {
     evt.preventDefault()
+    document.getElementsByClassName('current-atom')[0]
+      ? document.getElementsByClassName('current-atom')[0].classList.remove('current-atom')
+      : console.log()
+    evt.target.classList.add('current-atom')
     browserHistory.push(`/${this.props.uid}/project/${this.props.projectId}/${evt.target.value}`)
     firebase.database().ref('projects').child(this.props.projectId).child('current').child('atoms').child(evt.target.value).on('value', snapshot => {
       firebase.database().ref('users').child(this.props.uid).child('projects').child(this.props.projectId).set(evt.target.value)
@@ -36,6 +40,7 @@ export default class extends React.Component {
       <div className='panel panel-info'>
         <div className='panel-heading'>
           <h3>Binder</h3>
+          <span className='fa fa-plus-circle'/>
         </div>
         <div className='panel-body'>
           <ul id='binder-list'>
@@ -51,8 +56,7 @@ export default class extends React.Component {
                   style={{paddingLeft: level * 25}}>
                     <span className={`fa fa-${iconClass}`}
                       value='value'
-                      onClick={() => this.props.toggleChildren(key, ind, level, expanded)}>
-                    </span>
+                      onClick={() => this.props.toggleChildren(key, ind, level, expanded)} />
                     <button className='binder-item'
                       value={key}
                       onClick={this.handleSelect} >
