@@ -43,13 +43,11 @@ export default class extends React.Component {
   render() {
     const text = this.props.atom ? this.props.atom.text : ''
     return (
-      <div className="container">
-        <div>
+      <div>
         <ReactQuill id='react-quill'
-                  value={this.state.value}
-                  onChange={this.write}
-                  theme={'snow'}/>
-        </div>
+          value={this.state.value}
+          onChange={this.write}
+          theme={'snow'} />
       </div>
     )
   }

@@ -17,8 +17,7 @@ export default class extends React.Component {
       projects: {},
       project: {},
       root: null,
-      children: [],
-      childrenKeys: []
+      binderView: []
     }
     this.listenTo = this.listenTo.bind(this)
   }
@@ -27,9 +26,9 @@ export default class extends React.Component {
     // When the component mounts, start listening to the fireRef
     // we were given.
     const rootRef = projectsRef.child(this.props.params.id).child('current').child('root').once('value')
-    .then(snapshot => { this.setState({root: snapshot.val()}) })
-    .then(() => this.listenTo(projectsRef.child(this.props.params.id).child('current'), projectsRef))
-    .catch(error => console.error(error))
+      .then(snapshot => { this.setState({ root: snapshot.val() }) })
+      .then(() => this.listenTo(projectsRef.child(this.props.params.id).child('current'), projectsRef))
+      .catch(error => console.error(error))
   }
   componentWillUnmount() {
     // When we unmount, stop listening.
@@ -46,19 +45,41 @@ export default class extends React.Component {
     const listenerProjects = projectsRef.on('value', snapshot => {
       snapshot.forEach(childsnap => {
         let title = childsnap.child('projectTitle').val()
-        this.setState({ projects: [ ...this.state.projects, title ] })
+        this.setState({ projects: [...this.state.projects, title] })
       })
     })
     const rootListener = projectRef.child('atoms').child(this.state.root).child('children').once('value', snapshot =>
       snapshot.forEach(childSnap => {
         projectRef.child('atoms').child(childSnap.key).once('value', childSnap => {
-          this.setState({ children: [ ...this.state.children, childSnap.val() ], childrenKeys: [ ...this.state.childrenKeys, childSnap.key ] })
+          this.setState({ binderView: [...this.state.binderView, [childSnap.key, childSnap.val(), 0, false]] })
         })
       })
     )
     this.unsubscribe = () => {
       projectsRef.off('value', listener)
     }
+  }
+
+  toggleChildren = (atomId, ind, level, expanded) => {
+    const projectId = this.props.params.id
+    const atomPointer = firebase.database().ref('projects').child(projectId).child('current').child('atoms')
+    firebase.database().ref('projects').child(projectId).child('current').child('atoms').child(atomId).child('children').on('value', childList => {
+      const newBinderView = [...this.state.binderView]
+      if (expanded) {
+        newBinderView[ind][3]=false
+        newBinderView.splice(++ind, Object.keys(childList.val()).length)
+      } else {
+        const newLevel = ++level
+        newBinderView[ind][3]=true
+        childList.forEach(child => {
+          atomPointer.child(child.key).once('value', atomSnap => {
+            const atomToPush = [child.key, atomSnap.val(), newLevel, false]
+            newBinderView.splice(++ind, 0, atomToPush)
+          })
+        })
+      }
+      this.setState({ binderView: newBinderView })
+    })
   }
 
   render() {
@@ -68,25 +89,19 @@ export default class extends React.Component {
     return (
       <div>
         <div className='col-lg-12'>
-          <Toolbar projects={this.state.projects} projectId={projectId}/>
+          <Toolbar projects={this.state.projects} projectId={projectId} />
         </div>
         <div className='col-lg-3 sidebar-left'>
-          <Binder uid={uid} atoms={this.state.children} projectId={projectId} keys={this.state.childrenKeys} />
+          <Binder toggleChildren={this.toggleChildren} uid={uid} atoms={this.state.binderView} projectId={projectId} />
           <Trashcan project={this.state.project} />
         </div>
         <div>
           <AtomEditor uid={uid} projectId={projectId} atomId={atomId} />
         </div>
         <div className='col-lg-3 sidebar-right'>
-          <CollabForm projectId={projectId} atomId={atomId}/>
+          <CollabForm projectId={projectId} atomId={atomId} />
         </div>
       </div>
     )
   }
 }
-
-//<Toolbar projects={this.state.projects} />
-/*const ProjectContainer = ({children}) =>
-  <div>
-    {children}
-  </div>*/
