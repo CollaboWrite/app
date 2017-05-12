@@ -92,11 +92,13 @@ export default class extends React.Component {
   // ****** CHECK FOR USER & CREATE USER ****** //
 
   createUser = () => {
+    const project = {'Ella&Maritza': 55}
     // create new user object
     const user = {
       name: this.props.user.displayName,
       email: this.props.user.email,
-      uid: this.props.user.uid
+      uid: this.props.user.uid,
+      projects: project
     }
 
     // finding user by current user's uid
