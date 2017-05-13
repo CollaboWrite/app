@@ -35,12 +35,6 @@ export default class extends React.Component {
   handleSubmit = (evt) => {
     evt.preventDefault()
     const parentArr = this.state.selectedAtomArr
-    // if (parentArr[3]) {
-    //   this.props.toggleChildren(parentArr[0], parentArr[1], parentArr[2], parentArr[3])
-    // }    
-    
-    
-
     const newTitle = evt.target.value
     const parent = this.state.selectedAtom || this.props.root
     const newAtomKey = firebase.database().ref('projects').child(this.props.projectId).child('current').child('atoms').push().key
@@ -53,21 +47,12 @@ export default class extends React.Component {
           if (userErr) {
             console.error(userErr)
           } else {
-            // if (!parentArr[3]) {
-              this.props.toggleChildren(parentArr[0], parentArr[1], parentArr[2], parentArr[3])
-            // }
+              this.props.toggleAddedChildren(parentArr[0], parentArr[1], parentArr[2], parentArr[3])
           }
         })
       }
     })
     evt.target.remove()
-    // if (!parentArr[3]) {
-    //   this.props.toggleChildren(parentArr[0], parentArr[1], parentArr[2], parentArr[3])
-    // } 
-    // else {
-    //   this.props.toggleChildren(parentArr[0], parentArr[1], parentArr[2], true)
-    //   this.props.toggleChildren(parentArr[0], parentArr[1], parentArr[2], false)      
-    // }
   }
 
   handleClickSelect = (evt, atomArr) => {
