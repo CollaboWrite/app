@@ -1,7 +1,6 @@
 import React from 'react'
 import { Link, browserHistory } from 'react-router'
 import firebase from 'APP/server/db'
-firebase.database.enableLogging(true)
 
 export default class extends React.Component {
   constructor(props) {
@@ -137,7 +136,6 @@ export default class extends React.Component {
   }
 
   render() {
-    console.log('this is the stae', this.state)
     return (
       <div>
         <h2>Welcome, {this.props.user.displayName}</h2>

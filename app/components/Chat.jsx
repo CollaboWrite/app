@@ -49,6 +49,7 @@ export default class Chat extends React.Component {
       const userName = snapshot.val()
       newMessage[userName] = this.state.currentMessage
       firebase.database().ref('/projects/' + this.props.projectId + '/messages/').push(newMessage)
+      this.setState({currentMessage: ''})
     })
   }
   render() {
@@ -81,7 +82,7 @@ export default class Chat extends React.Component {
           </List>
         </MuiThemeProvider>
         <form onSubmit={this.submitMessage}>
-          <input onChange={this.handleMessage}></input>
+          <input onChange={this.handleMessage} value={this.state.currentMessage}></input>
           <button>Send</button>
         </form>
       </div>
