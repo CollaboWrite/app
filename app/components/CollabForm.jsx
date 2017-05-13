@@ -30,7 +30,6 @@ export default class extends React.Component {
     const removedCollabListener = ref.on('child_removed', snapshot => {
       // snapshot is  the removed user node
       // snapshot.key === uid, snapshot.val() === user name
-      console.log('Collaborator ' + snapshot.key + ':' + snapshot.val() + ' was removed.')
       // deletes collaborator reference to this project under the removed user collaborator
       firebase.database().ref('users').child(snapshot.key).child('collaborations').child(this.props.projectId).remove()
       const deletedUserIndex = this.state.collabKeys.indexOf(snapshot.key)
@@ -86,7 +85,7 @@ export default class extends React.Component {
                 <div>
                   <li className='collab-list' key={collab}>
                     {collab}
-                    <span className='fa fa-trash delete-collab' 
+                    <span className='fa fa-times delete-collab' 
                           onClick={() => this.deleteCollab(collab, this.state.collabKeys[idx])}>
                     </span>
                   </li>
