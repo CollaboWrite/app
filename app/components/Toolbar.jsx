@@ -3,12 +3,10 @@ import React from 'react'
 const Toolbar = (props) => {
   return (<nav className='toolbar navbar'>
     <select onChange={(evt) => {
-      {/*props.fetchProject(evt.target.value)*/}
-      {/*console.log('selected project in onChange from Toolbar.jsx', evt.target.value)*/}
     }}>
       {
         props.projects.length && props.projects.map((project, indx) => (
-          <option value={project} key={indx}>{project}</option>
+          <option value={project.key} key={project.key}>{project.title}</option>
         ))
       }
     </select>

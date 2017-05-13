@@ -42,10 +42,14 @@ export default class extends React.Component {
     const listener = projectRef.on('value', snapshot =>
       this.setState({ project: snapshot.val() })
     )
-    const listenerProjects = projectsRef.on('value', snapshot => {
-      snapshot.forEach(childsnap => {
-        let title = childsnap.child('projectTitle').val()
-        this.setState({ projects: [...this.state.projects, title] })
+    // grabs THIS user's projects and adds it as an object {projectKey: projectTitle}
+    const listenerProjects = firebase.database().ref(`/users/${this.props.params.uid}/projects`).on('child_added', projectSnap => {
+      // making a projects obj to add to projects list
+      const projectObj = {}
+      projectObj.key = projectSnap.key
+      projectsRef.child(projectSnap.key).on('value', project => {
+        projectObj.title = project.val().projectTitle
+        this.setState({projects: [...this.state.projects, projectObj]})
       })
     })
     const rootListener = projectRef.child('atoms').child(this.state.root).child('children').once('value', snapshot =>
@@ -86,6 +90,7 @@ export default class extends React.Component {
     const uid = this.props.params.uid
     const projectId = this.props.params.id
     const atomId = this.props.params.atomId
+    console.log('projects', this.state.projects)
     return (
       <div>
         <div className='col-lg-12'>
