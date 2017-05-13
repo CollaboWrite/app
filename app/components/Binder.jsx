@@ -7,6 +7,7 @@ export default class extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
+
       showInput: false,
       newAtom: ''
     }
@@ -23,7 +24,7 @@ export default class extends React.Component {
     const newTitle = evt.target.value
     const parent = this.state.selectedAtom || this.props.root
     const newAtomKey = firebase.database().ref('projects').child(this.props.projectId).child('current').child('atoms').push().key
-    const newAtom = {title: newTitle}
+    const newAtom = { title: newTitle }
     firebase.database().ref('projects').child(this.props.projectId).child('current').child('atoms').child(parent).child('children').child(newAtomKey).set(true)
     firebase.database().ref('projects').child(this.props.projectId).child('current').child('atoms').child(newAtomKey).set(newAtom)
     evt.target.remove()
@@ -35,7 +36,7 @@ export default class extends React.Component {
       ? document.getElementsByClassName('current-atom')[0].classList.remove('current-atom')
       : console.log()
     evt.target.classList.add('current-atom')
-    this.setState({selectedAtom: evt.target.value})
+    this.setState({ selectedAtom: evt.target.value })
     browserHistory.push(`/${this.props.uid}/project/${this.props.projectId}/${evt.target.value}`)
     firebase.database().ref('projects').child(this.props.projectId).child('current').child('atoms').child(evt.target.value).on('value', snapshot => {
       firebase.database().ref('users').child(this.props.uid).child('projects').child(this.props.projectId).set(evt.target.value)
@@ -68,7 +69,7 @@ export default class extends React.Component {
         <div className='panel-heading'>
           <h3 id='binder-head'>Binder</h3>
           <span className='fa fa-plus-circle add-atom'
-                onClick={this.addAtom} />
+            onClick={this.addAtom} />
         </div>
         <div className='panel-body'>
           <ul id='binder-list'>
@@ -81,7 +82,7 @@ export default class extends React.Component {
                 const iconClass = atomObj.children ? (expanded ? 'chevron-down' : 'chevron-right') : 'file-text-o'
                 return (
                   <li key={key} id={key}
-                  style={{paddingLeft: level * 25}}>
+                    style={{ paddingLeft: level * 25 }}>
                     <span className={`fa fa-${iconClass}`}
                       value='value'
                       onClick={() => this.props.toggleChildren(key, ind, level, expanded)} />

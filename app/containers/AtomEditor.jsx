@@ -37,11 +37,8 @@ export default class AtomEditor extends React.Component {
     }
   }
 
-  updateAtom = (updateObj) =>
-    projectsRef.child(this.props.params.id).child('current').child('atoms').child(this.props.params.atomId).update(updateObj)
-
   render() {
-    const ref = this.state.atomRef || projectsRef.child(this.props.projectId).child('current').child('atoms').child(this.props.atomId)
+    const ref = projectsRef.child(this.props.projectId).child('current').child('atoms').child(this.props.atomId)
     return (
       <div>
         <div className='col-lg-6 project-center'>
