@@ -11,22 +11,19 @@ export default class extends React.Component {
     }
   }
   componentDidMount() {
-    const usersRef = firebase.database().ref('users')
-    this.listenTo(usersRef)
+    const collaboratorsRef = firebase.database().ref('projects').child(this.props.projectId).child('collaborators')
+    this.listenTo(collaboratorsRef)
   }
   listenTo = (ref) => {
     if (this.unsubscribe) this.unsubscribe()
+    // listen to each child on 'collaborators' branch for this project
     const listener = ref.on('child_added', snapshot => {
-      const collaborations = snapshot.val().collaborations || {}
-      if (collaborations[this.props.projectId] === 0 || collaborations[this.props.projectId]) {
-        if (snapshot.val().uid !== this.props.uid) {
-          this.setState({ collaborators: [...this.state.collaborators, { name: snapshot.val().name }] })
-        }
+      // if the id matches current user, don't display him/herself as collaborators
+      if (snapshot.key !== this.props.uid) {
+        this.setState({collaborators: [...this.state.collaborators, snapshot.val()]}) // gets the NAME value
       }
     })
-    this.unsubscribe = () => {
-      ref.off('value', listener)
-    }
+    this.unsubscribe = () => ref.off('value', listener)
   }
   componentWillUnmount() {
     // When we unmount, stop listening.
@@ -42,19 +39,19 @@ export default class extends React.Component {
     findUserByEmail.on('value', snapshot => {
       const userObj = snapshot.val() // { uniqueKey: {}}
       const id = Object.keys(snapshot.val())[0] // grabs uniqueKey of user
-
       // if newCollaborator doesn't have any projects OR isn't the owner of THIS project
       // then they can be a collaborator
       if (!userObj[id].projects || !userObj[id].projects[this.props.projectId]) {
         const updates = {}
         const projectId = this.props.projectId
         const atomId = this.props.atomId
-        updates['/users/' + id + '/collaborations/' + projectId] = atomId
+        const name = userObj[id].name
+        updates['/projects/' + projectId + '/collaborators/' + id] = name // saves {id: name} of new collaborator
+        updates['/users/' + id + '/collaborations/' + projectId] = atomId // saves {projectId: root} for in collab field for new collaborator
         return firebase.database().ref().update(updates)
       }
     })
   }
-
   render() {
     const collaborators = this.state.collaborators
     return (
@@ -64,7 +61,7 @@ export default class extends React.Component {
         </div>
         <div className='panel-body'>
           <ul>
-            {collaborators && collaborators.map((collab) => <li key={collab.name}>{collab.name}</li>)}
+            {collaborators && collaborators.map((collab) => <li key={collab}>{collab}</li>)}
           </ul>
           <form onSubmit={this.handleSubmit}>
             <label>Collaborator Email</label>
