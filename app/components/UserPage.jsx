@@ -87,7 +87,6 @@ export default class extends React.Component {
         root: '0'
       }
     }
-    console.log('project create fire', project)
     // create a new 'key' under 'projects' db
     const projectKey = firebase.database().ref('projects').push().key
 
@@ -138,7 +137,6 @@ export default class extends React.Component {
   }
 
   render() {
-    console.log('state in userpage', this.state)
     return (
       <div>
         <h2>Welcome, {this.props.user.displayName}</h2>
