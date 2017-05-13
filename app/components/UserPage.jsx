@@ -115,12 +115,12 @@ export default class extends React.Component {
     }
     // finding user by current user's uid
     firebase.database().ref('users').orderByChild('uid').equalTo(this.props.user.uid).on('value', snapshot => {
-      // if there is no user with current user's uid, set create new user in users db
-      const userKey = Object.keys(snapshot.val())[0]
+      // if there is no user with current user's uid, set create new user in users db 
+      const userKey = this.props.user.uid
       if (!snapshot.val()) {
         firebase.database().ref('/users/' + this.props.user.uid).set(user)
       }
-      this.setState({ userKey: userKey, currentName: snapshot.val()[userKey].name})
+      this.setState({ userKey: userKey, currentName: snapshot.val()[userKey].name })
     })
   }
 

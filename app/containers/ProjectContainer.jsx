@@ -73,6 +73,11 @@ export default class extends React.Component {
     }
   }
 
+  toggleProject = (evt) => {
+    const projectId = evt.target.value
+    firebase.database().ref('/users/' + this.props.params.uid + '/viewingProject').set(projectId)
+  }
+
   toggleChildren = (atomId, ind, level, expanded) => {
     const projectId = this.props.params.id
     const atomPointer = firebase.database().ref('projects').child(projectId).child('current').child('atoms')
@@ -97,12 +102,12 @@ export default class extends React.Component {
 
   render() {
     const uid = this.props.params.uid
-    const projectId = this.props.params.id
+    const projectId = this.props.params.id // Should this should be informed by users/uid/viewingProject?
     const atomId = this.props.params.atomId
     return (
       <div>
         <div className='col-lg-12'>
-          <Toolbar projects={this.state.projects} projectId={projectId} />
+          <Toolbar projects={this.state.projects} projectId={projectId} toggleProject={this.toggleProject} />
         </div>
         <div className='col-lg-3 sidebar-left'>
           <Binder toggleChildren={this.toggleChildren} uid={uid} atoms={this.state.binderView} projectId={projectId} root={this.state.root} />
