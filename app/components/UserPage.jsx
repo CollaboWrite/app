@@ -90,6 +90,7 @@ export default class extends React.Component {
     updates['/projects/' + projectKey] = project
     // update users db at the current user's object with new {project key: project key} object
     updates['/users/' + this.props.user.uid + '/projects/' + projectKey] = projectKey
+    this.setState({newProjectName: ''})
     return firebase.database().ref().update(updates)
   }
 
@@ -137,7 +138,7 @@ export default class extends React.Component {
         <h3>Create a new project</h3>
         <form onSubmit={this.createProject}>
           <label>Project Name</label>
-          <input type="text" onChange={this.setProjectName} />
+          <input type="text" value={this.state.newProjectName} onChange={this.setProjectName} />
           <button type="submit">Create</button>
         </form>
         <h3>Your Projects:</h3>
