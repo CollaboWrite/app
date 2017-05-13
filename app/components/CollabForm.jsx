@@ -48,6 +48,7 @@ export default class extends React.Component {
         const name = userObj[id].name
         updates['/projects/' + projectId + '/collaborators/' + id] = name // saves {id: name} of new collaborator
         updates['/users/' + id + '/collaborations/' + projectId] = atomId // saves {projectId: root} for in collab field for new collaborator
+        this.setState({collaboratorEmail: ''})
         return firebase.database().ref().update(updates)
       }
     })
@@ -65,7 +66,7 @@ export default class extends React.Component {
           </ul>
           <form onSubmit={this.handleSubmit}>
             <label>Collaborator Email</label>
-            <input type='text' onChange={this.handleChange} />
+            <input value={this.state.collaboratorEmail} type='text' onChange={this.handleChange} />
             <button type='submit'>Add Collaborator</button>
           </form>
         </div>
