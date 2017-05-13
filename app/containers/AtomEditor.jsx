@@ -44,10 +44,10 @@ export default class AtomEditor extends React.Component {
     const ref = this.state.atomRef || projectsRef.child(this.props.projectId).child('current').child('atoms').child(this.props.atomId)
     return (
       <div>
-        <div className='col-lg-6 project-center'>
+        <div className='col-xs-6 project-center'>
           <Editor atomRef={ref} />
         </div>
-        <div className='col-lg-3 sidebar-right'>
+        <div className='col-xs-3 sidebar-right'>
           <Summary atomRef={ref} />
           <Notes atomRef={ref} />
         </div>

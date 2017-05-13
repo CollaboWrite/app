@@ -7,7 +7,8 @@ export default class extends React.Component {
     super(props)
     this.state = {
       collaboratorEmail: '',
-      collaborators: []
+      collaborators: [],
+      collabKeys: []
     }
   }
   componentDidMount() {
@@ -22,8 +23,20 @@ export default class extends React.Component {
       if (snapshot.key !== this.props.uid) {
         this.setState({collaborators: [...this.state.collaborators, snapshot.val()]}) // gets the NAME value
       }
+      if (snapshot.key !== this.props.uid) {
+        this.setState({collabKeys: [...this.state.collabKeys, snapshot.key]}) // gets the uid value
+      }
     })
+    const removedCollabListener = ref.on('child_removed', snapshot => {
+      // snapshot is  the removed user node
+      // snapshot.key === uid, snapshot.val() === user name
+      // deletes collaborator reference to this project under the removed user collaborator
+      firebase.database().ref('users').child(snapshot.key).child('collaborations').child(this.props.projectId).remove()
+      const deletedUserIndex = this.state.collabKeys.indexOf(snapshot.key)
+      this.setState({collaborators: this.state.collaborators.splice(deletedUserIndex-1, 1), collabKeys: this.state.collabKeys.splice(deletedUserIndex-1, 1)})
+  })
     this.unsubscribe = () => ref.off('value', listener)
+    this.unsubscribe = () => ref.off('value', removedCollabListener)
   }
   componentWillUnmount() {
     // When we unmount, stop listening.
@@ -53,7 +66,13 @@ export default class extends React.Component {
       }
     })
   }
+  deleteCollab = (name, uid) => {
+    // deletes user from the collaborator list under the project, which triggers the removedCollabListener listener above
+    firebase.database().ref('projects').child(this.props.projectId).child('collaborators').child(uid).remove()
+  }
   render() {
+    // console.log('state', this.state)
+    // console.log('props', this.props)  
     const collaborators = this.state.collaborators
     return (
       <div className="panel panel-default">
@@ -62,7 +81,17 @@ export default class extends React.Component {
         </div>
         <div className='panel-body'>
           <ul>
-            {collaborators && collaborators.map((collab) => <li key={collab}>{collab}</li>)}
+            {collaborators && collaborators.map((collab, idx) => {
+              return (
+                <div>
+                  <li className='collab-list' key={collab}>
+                    {collab}
+                    <span className='fa fa-times delete-collab' 
+                          onClick={() => this.deleteCollab(collab, this.state.collabKeys[idx])}>
+                    </span>
+                  </li>
+                </div>)
+              }) }
           </ul>
           <form onSubmit={this.handleSubmit}>
             <label>Collaborator Email</label>
