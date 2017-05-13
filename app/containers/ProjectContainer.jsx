@@ -56,8 +56,8 @@ export default class extends React.Component {
       // making a projects obj to add to projects list
       const projectObj = {}
       projectObj.key = projectSnap.key
-      projectsRef.child(projectSnap.key).on('value', project => {
-        projectObj.title = project.val().projectTitle
+      projectsRef.child(projectSnap.key).child('projectTitle').on('value', project => {
+        projectObj.title = project.val()
         this.setState({ projects: [...this.state.projects, projectObj] })
       })
     })
