@@ -62,7 +62,8 @@ export default class extends React.Component {
     evt.preventDefault()
     this.setState({ newProjectName: evt.target.value })
   }
-  createProject = () => {
+  createProject = (evt) => {
+    evt.preventDefault()
     // create project object to add to projects db
     const project = {
       projectTitle: this.state.newProjectName,
