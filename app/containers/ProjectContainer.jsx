@@ -90,7 +90,6 @@ export default class extends React.Component {
     const uid = this.props.params.uid
     const projectId = this.props.params.id
     const atomId = this.props.params.atomId
-    console.log('projects', this.state.projects)
     return (
       <div>
         <div className='col-lg-12'>
