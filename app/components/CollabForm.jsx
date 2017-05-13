@@ -16,12 +16,13 @@ export default class extends React.Component {
   }
   listenTo = (ref) => {
     if (this.unsubscribe) this.unsubscribe()
+    // listen to each child on 'collaborators' branch for this project
     const listener = ref.on('child_added', snapshot => {
+      // if the id matches current user, don't display him/herself as collaborators
       if (snapshot.key !== this.props.uid) {
-        this.setState({collaborators: [...this.state.collaborators, snapshot.val()]})
+        this.setState({collaborators: [...this.state.collaborators, snapshot.val()]}) // gets the NAME value
       }
     })
-    // console.log('snapshot in ListenTo', snapshot.child('collaborations'))
     this.unsubscribe = () => ref.off('value', listener)
   }
   componentWillUnmount() {
@@ -40,14 +41,13 @@ export default class extends React.Component {
       const id = Object.keys(snapshot.val())[0] // grabs uniqueKey of user
       // if newCollaborator doesn't have any projects OR isn't the owner of THIS project
       // then they can be a collaborator
-      console.log('userObj', userObj)
       if (!userObj[id].projects || !userObj[id].projects[this.props.projectId]) {
         const updates = {}
         const projectId = this.props.projectId
         const atomId = this.props.atomId
         const name = userObj[id].name
-        updates['/projects/' + projectId + '/collaborators/' + id] = name
-        updates['/users/' + id + '/collaborations/' + projectId] = atomId
+        updates['/projects/' + projectId + '/collaborators/' + id] = name // saves {id: name} of new collaborator
+        updates['/users/' + id + '/collaborations/' + projectId] = atomId // saves {projectId: root} for in collab field for new collaborator
         return firebase.database().ref().update(updates)
       }
     })
