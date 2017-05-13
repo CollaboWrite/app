@@ -14,8 +14,8 @@ export default class extends React.Component {
       currentAtom: null
     }
   }
-
   componentDidMount() {
+    console.log('im mounting agian~~~')
     this.createUser()
     const userId = this.props.user.uid
     const usersProjectsRef = firebase.database().ref('users').child(userId).child('projects')
@@ -24,18 +24,17 @@ export default class extends React.Component {
     this.listenTo(usersProjectsRef, usersCollabRef)
   }
   listenTo = (usersProjectsRef, usersCollabRef) => {
+    console.log('listening....')
     if (this.unsubscribe) this.unsubscribe()
-    const projectListener = usersProjectsRef.on('value', snapshot => {
-      // getting keys from the user's database
-      const projectKeys = Object.keys(snapshot.val())
-      // we are putting the key for each key into the projectList
-      projectKeys.forEach(projectKey => {
-        firebase.database().ref('projects').child(projectKey).on('value', snapshot => {
-          const currentProject = snapshot.val()
-          // add each project title into the projectsList - MUST BE DONE THIS WAY TO UPDATE STATE
-          this.setState({ projectList: [...this.state.projectList, { title: currentProject.projectTitle, id: projectKey, currentAtom: currentProject.current.root }] })
-        })
+    const projectListener = usersProjectsRef.on('child_added', snapshot => {
+      const userProjectKey = snapshot.val()
+      firebase.database().ref('projects').child(userProjectKey).on('value', project => {
+        const currentProject = project.val()
+        console.log('key', userProjectKey)
+        console.log('current project', currentProject)
+        this.setState({ projectList: [...this.state.projectList, { title: currentProject.projectTitle, id: userProjectKey, currentAtom: currentProject.current.root }] })
       })
+      console.log('what is this projectListener doing', snapshot.val())
     })
 
     const collabListener = usersCollabRef.on('value', snapshot => {
@@ -54,6 +53,10 @@ export default class extends React.Component {
       usersProjectsRef.off('value', projectListener)
       usersCollabRef.off('value', collabListener)
     }
+  }
+  componentWillUnmount() {
+    console.log('Im unmounting!')
+    this.unsubscribe()
   }
 
   // ****** CREATE NEW PROJECTS ****** //
@@ -127,6 +130,7 @@ export default class extends React.Component {
   }
 
   render() {
+    console.log('this is the stae', this.state)
     return (
       <div>
         <h2>Welcome, {this.props.user.displayName}</h2>
@@ -162,3 +166,15 @@ export default class extends React.Component {
 
 // this.state.projectList map creates a 'valueObj' to pass into this.selectProject
 // since we need to grab both the project id & current atom of the project into option's value
+
+
+      // // getting keys from the user's database
+      // const projectKeys = Object.keys(snapshot.val())
+      // // we are putting the key for each key into the projectList
+      // projectKeys.forEach(projectKey => {
+      //   firebase.database().ref('projects').child(projectKey).on('value', snapshot => {
+      //     const currentProject = snapshot.val()
+      //     // add each project title into the projectsList - MUST BE DONE THIS WAY TO UPDATE STATE
+      //     this.setState({ projectList: [...this.state.projectList, { title: currentProject.projectTitle, id: projectKey, currentAtom: currentProject.current.root }] })
+      //   })
+      // })
