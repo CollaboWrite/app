@@ -1,5 +1,5 @@
 import React from 'react'
-import { browserHistory } from 'react-router'
+import { Link, browserHistory } from 'react-router'
 import firebase from 'APP/server/db'
 
 export default class extends React.Component {
@@ -11,11 +11,12 @@ export default class extends React.Component {
       collabList: [],
       newProjectName: '',
       userKey: '',
-      currentAtom: null
+      currentAtom: null,
+      projectKeys: [],
+      collabKeys: []
     }
   }
   componentDidMount() {
-    console.log('im mounting agian~~~')
     const userId = this.props.user.uid
     const usersProjectsRef = firebase.database().ref('users').child(userId).child('projects')
     const usersCollabRef = firebase.database().ref('users').child(userId).child('collaborations')
@@ -24,26 +25,35 @@ export default class extends React.Component {
   }
   listenTo = (usersProjectsRef, usersCollabRef) => {
     if (this.unsubscribe) this.unsubscribe()
+    let innerProjectListener
     const projectListener = usersProjectsRef.on('child_added', snapshot => {
-      const userProjectKey = snapshot.key
-      firebase.database().ref('projects').child(userProjectKey).on('value', project => {
+      const projectKey = snapshot.key
+      innerProjectListener = firebase.database().ref('projects').child(projectKey).on('value', project => {
         const currentProject = project.val()
-        this.setState({ projectList: [...this.state.projectList, { title: currentProject.projectTitle, id: userProjectKey, currentAtom: currentProject.current.root }] })
+        this.setState({
+          projectKeys: [...this.state.projectKeys, projectKey],
+          projectList: [...this.state.projectList, { title: currentProject.projectTitle, id: projectKey, currentAtom: currentProject.current.root }] })
       })
     })
-
+    let innerCollabListener
     const collabListener = usersCollabRef.on('child_added', snapshot => {
       const collabKey = snapshot.key
-      const collabsRef = firebase.database().ref('projects').child(collabKey)
-      const collabProjectsListener = collabsRef.on('value', project => {
-        console.log('collab val', project.val())
+      innerCollabListener = firebase.database().ref('projects').child(collabKey).on('value', project => {
         const currentProject = project.val()
-        this.setState({ collabList: [...this.state.collabList, { title: currentProject.projectTitle, id: collabKey, currentAtom: currentProject.current.root }] })
+        this.setState({
+          collabKeys: [...this.state.collabKeys, collabKey],
+          collabList: [...this.state.collabList, { title: currentProject.projectTitle, id: collabKey, currentAtom: currentProject.current.root }] })
       })
     })
     this.unsubscribe = () => {
       usersProjectsRef.off('child_added', projectListener)
       usersCollabRef.off('child_added', collabListener)
+      this.state.projectKeys.forEach(key => {
+        firebase.database().ref('projects').child(key).off('value', innerProjectListener)
+      })
+      this.state.collabKeys.forEach(key => {
+        firebase.database().ref('projects').child(key).off('value', innerCollabListener)
+      })
     }
   }
   componentWillUnmount() {
