@@ -76,23 +76,24 @@ export default class extends React.Component {
         root: '0'
       }
     }
-
+    const updates = {}
     // create a new 'key' under 'projects' db
     const projectKey = firebase.database().ref('projects').push().key
-
-    // create updates object
-    const updates = {}
     // update projects db with new project
     updates['/projects/' + projectKey] = project
     // update users db at the current user's object with new {project key: project key} object
-    updates['/users/' + this.props.user.uid + '/projects/' + projectKey] = projectKey
+    updates['/users/' + this.props.user.uid + '/projects/' + projectKey] = '0'
+    // set the new project as the viewingProject
+    updates['/users/' + this.props.user.uid + '/viewingProject'] = projectKey
+    // redirect to the newly created project's root
+    browserHistory.push(`/${this.props.user.uid}/project/${projectKey}/0`)
     return firebase.database().ref().update(updates)
   }
 
   // ****** CHECK FOR USER & CREATE USER ****** //
 
   createUser = () => {
-    const project = {'Ella&Maritza': 55}
+    const project = { 'Ella&Maritza': 55 }
     // create new user object
     const user = {
       name: this.props.user.displayName,
@@ -100,26 +101,21 @@ export default class extends React.Component {
       uid: this.props.user.uid,
       projects: project
     }
-
     // finding user by current user's uid
     firebase.database().ref('users').orderByChild('uid').equalTo(this.props.user.uid).on('value', snapshot => {
       // if there is no user with current user's uid, set create new user in users db
-      if (!snapshot.val()) {
-        firebase.database().ref('/users/' + this.props.user.uid).set(user)
-      }
+      if (!snapshot.val()) firebase.database().ref('/users/' + this.props.user.uid).set(user)
       this.setState({ userKey: Object.keys(snapshot.val())[0] })
     })
   }
 
   // ******* SELECT & NAV TO SELECTED PAGE ****** //
 
-  goToPage = (evt) => {
-    // this needs to navigate to project selected, then to current atom on that project ${this.props.user.uid}
+  goToPage = () => {
     browserHistory.push(`/${this.props.user.uid}/project/${this.state.projectId}/${this.state.currentAtom}`)
   }
 
   selectProject = (evt) => {
-    // console.log('select project id & atom', evt.target.value)
     // had to do this b/c value can only carry string
     const valueObj = evt.target.value.split(':')
     this.setState({ projectId: valueObj[0], currentAtom: +valueObj[1] })
