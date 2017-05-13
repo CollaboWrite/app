@@ -11,7 +11,8 @@ export default class extends React.Component {
       collabList: [],
       newProjectName: '',
       userKey: '',
-      currentAtom: null
+      currentAtom: null,
+      currentName: ''
     }
   }
 
@@ -37,6 +38,11 @@ export default class extends React.Component {
         })
       })
     })
+
+    // collaboratorsObj[uid] = firebase.database().ref('/users/' + uid).on('value', snapshot => {
+    //   this.setState({currentName: snapshot.val().name})
+    // })
+
 
     const collabListener = usersCollabRef.on('value', snapshot => {
       const collabKeys = Object.keys(snapshot.val())
@@ -64,8 +70,13 @@ export default class extends React.Component {
   }
   createProject = () => {
     // create project object to add to projects db
+    const uid = this.props.user.uid
+    const collaboratorsObj = {}
+    const userKey = this.state.userKey
+    collaboratorsObj[userKey] = this.state.currentName
     const project = {
       projectTitle: this.state.newProjectName,
+      collaborators: collaboratorsObj,
       current: {
         atoms: {
           '0': {
@@ -76,6 +87,7 @@ export default class extends React.Component {
         root: '0'
       }
     }
+
     const updates = {}
     // create a new 'key' under 'projects' db
     const projectKey = firebase.database().ref('projects').push().key
@@ -104,8 +116,11 @@ export default class extends React.Component {
     // finding user by current user's uid
     firebase.database().ref('users').orderByChild('uid').equalTo(this.props.user.uid).on('value', snapshot => {
       // if there is no user with current user's uid, set create new user in users db
-      if (!snapshot.val()) firebase.database().ref('/users/' + this.props.user.uid).set(user)
-      this.setState({ userKey: Object.keys(snapshot.val())[0] })
+      const userKey = Object.keys(snapshot.val())[0]
+      if (!snapshot.val()) {
+        firebase.database().ref('/users/' + this.props.user.uid).set(user)
+      }
+      this.setState({ userKey: userKey, currentName: snapshot.val()[userKey].name})
     })
   }
 
