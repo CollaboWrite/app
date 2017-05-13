@@ -48,8 +48,8 @@ export default class AtomEditor extends React.Component {
           <Editor atomRef={ref} />
         </div>
         <div className='col-lg-3 sidebar-right'>
-          <Notes atomRef={ref} />
           <Summary atomRef={ref} />
+          <Notes atomRef={ref} />
         </div>
       </div>
     )
