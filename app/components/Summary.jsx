@@ -1,40 +1,45 @@
 import React from 'react'
 import firebase from 'APP/server/db'
-const statusOptions = ['To Do', 'First Draft', 'Revised Draft', 'Final Draft']
+const statusOptions = ['', 'To Do', 'First Draft', 'Revised Draft', 'Final Draft']
 
 export default class Summary extends React.Component {
   constructor() {
     super()
     this.state = {
-      value: '',
-      status: 'To Do'
+      summary: '',
+      status: ''
     }
   }
 
   componentDidMount() {
     // When the component mounts, start listening to the fireRef
     // we were given.
-    this.listenTo(this.props.atomRef.child('summary'))
+    this.listenTo(this.props.atomRef.child('summary'), this.props.atomRef.child('status'))
   }
   componentWillReceiveProps(incoming) {
     // When the atomRef in the AtomEditor, we start listening to the new one
-    this.listenTo(incoming.atomRef.child('summary'))
+    this.listenTo(incoming.atomRef.child('summary'), incoming.atomRef.child('status'))
   }
   componentWillUnmount() {
     // When we unmount, stop listening.
     this.unsubscribe()
   }
   // listen to the fireRef.child
-  listenTo(atomRef) {
+  listenTo(summaryAtomRef, statusAtomRef) {
     // If we're already listening to a ref, stop listening there.
     if (this.unsubscribe) this.unsubscribe()
     // Whenever our ref's value changes, set {value} on our state.
-    const listener = atomRef.on('value', snapshot => {
-      const newValue = snapshot.val() || ''
-      this.setState({ value: newValue })
+    const summaryListener = summaryAtomRef.on('value', snapshot => {
+      const newSummary = snapshot.val() || ''
+      this.setState({ summary: newSummary })
+    })
+    const statusListener = statusAtomRef.on('value', snapshot => {
+      const newStatus = snapshot.val()
+      this.setState({ status: newStatus })
     })
     this.unsubscribe = () => {
-      atomRef.off('value', listener)
+      summaryAtomRef.off('value', summaryListener)
+      statusAtomRef.off('value', statusListener)
     }
   }
   write = (evt) => {
@@ -54,7 +59,7 @@ export default class Summary extends React.Component {
             onChange={this.write}
             rows={4}
             cols={40}
-            value={this.state.value}
+            value={this.state.summary}
           />
           <form>
             <div>
