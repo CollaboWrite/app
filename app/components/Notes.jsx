@@ -1,19 +1,5 @@
 import React from 'react'
 
-// this was from capstone 2, replaced with dummy text area below
-/*{
-  props.item
-    ? <textarea
-      rows={4}
-      cols={40}
-      value={props.item.notes}
-    />
-    : <textarea
-      rows={4}
-      cols={40}
-    />
-}*/
-
 export default class Notes extends React.Component {
   constructor(props) {
     super(props)
@@ -27,6 +13,10 @@ export default class Notes extends React.Component {
     // we were given.
     this.listenTo(this.props.atomRef.child('notes'))
   }
+  componentWillReceiveProps(incoming) {
+    // When the atomRef in the AtomEditor, we start listening to the new one
+    this.listenTo(incoming.atomRef.child('notes'))
+  }
   componentWillUnmount() {
     // When we unmount, stop listening.
     this.unsubscribe()
@@ -36,9 +26,10 @@ export default class Notes extends React.Component {
     // If we're already listening to a ref, stop listening there.
     if (this.unsubscribe) this.unsubscribe()
     // Whenever our ref's value changes, set {value} on our state.
-    const listener = atomRef.on('value', snapshot =>
-      this.setState({ value: snapshot.val() })
-    )
+    const listener = atomRef.on('value', snapshot => {
+      const newValue = snapshot.val() || ''
+      this.setState({ value: newValue })
+    })
     this.unsubscribe = () => {
       atomRef.off('value', listener)
     }
@@ -48,7 +39,7 @@ export default class Notes extends React.Component {
   }
   render() {
     return (
-      <div className="panel panel-danger">
+      <div className="panel panel-info">
         <div className="panel-heading">
           <h3>Notes</h3>
         </div>
