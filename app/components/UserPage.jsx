@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link, browserHistory } from 'react-router'
 import firebase from 'APP/server/db'
+firebase.database.enableLogging(true)
 
 export default class extends React.Component {
   constructor(props) {
@@ -56,10 +57,7 @@ export default class extends React.Component {
       })
     }
   }
-  componentWillUnmount() {
-    // When we unmount, stop listening.
-    this.unsubscribe()
-  }
+  componentWillUnmount = () => this.unsubscribe()
 
   // ****** CREATE NEW PROJECTS ****** //
 
