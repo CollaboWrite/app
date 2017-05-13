@@ -16,46 +16,38 @@ export default class extends React.Component {
   }
   componentDidMount() {
     console.log('im mounting agian~~~')
-    this.createUser()
     const userId = this.props.user.uid
     const usersProjectsRef = firebase.database().ref('users').child(userId).child('projects')
-    // TO DO: to get collaborations
     const usersCollabRef = firebase.database().ref('users').child(userId).child('collaborations')
     this.listenTo(usersProjectsRef, usersCollabRef)
+    this.createUser()
   }
   listenTo = (usersProjectsRef, usersCollabRef) => {
-    console.log('listening....')
     if (this.unsubscribe) this.unsubscribe()
     const projectListener = usersProjectsRef.on('child_added', snapshot => {
-      const userProjectKey = snapshot.val()
+      const userProjectKey = snapshot.key
       firebase.database().ref('projects').child(userProjectKey).on('value', project => {
         const currentProject = project.val()
-        console.log('key', userProjectKey)
-        console.log('current project', currentProject)
         this.setState({ projectList: [...this.state.projectList, { title: currentProject.projectTitle, id: userProjectKey, currentAtom: currentProject.current.root }] })
       })
-      console.log('what is this projectListener doing', snapshot.val())
     })
 
-    const collabListener = usersCollabRef.on('value', snapshot => {
-      const collabKeys = Object.keys(snapshot.val())
-      // we are putting the key for each key into the projectList
-      collabKeys.forEach(collabKey => {
-        firebase.database().ref('projects').child(collabKey).on('value', snapshot => {
-          const currentCollab = snapshot.val()
-          // add each project title into the projectsList - MUST BE DONE THIS WAY TO UPDATE STATE
-          this.setState({ collabList: [...this.state.collabList, { title: currentCollab.projectTitle, id: collabKey, currentAtom: currentCollab.current.root }] })
-        })
+    const collabListener = usersCollabRef.on('child_added', snapshot => {
+      const collabKey = snapshot.key
+      const collabsRef = firebase.database().ref('projects').child(collabKey)
+      const collabProjectsListener = collabsRef.on('value', project => {
+        console.log('collab val', project.val())
+        const currentProject = project.val()
+        this.setState({ collabList: [...this.state.collabList, { title: currentProject.projectTitle, id: collabKey, currentAtom: currentProject.current.root }] })
       })
     })
-
     this.unsubscribe = () => {
-      usersProjectsRef.off('value', projectListener)
-      usersCollabRef.off('value', collabListener)
+      usersProjectsRef.off('child_added', projectListener)
+      usersCollabRef.off('child_added', collabListener)
     }
   }
   componentWillUnmount() {
-    console.log('Im unmounting!')
+    // When we unmount, stop listening.
     this.unsubscribe()
   }
 

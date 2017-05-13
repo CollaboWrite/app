@@ -96,7 +96,6 @@ export default class extends React.Component {
   }
 
   render() {
-    console.log('state', this.state)
     const uid = this.props.params.uid
     const projectId = this.props.params.id
     const atomId = this.props.params.atomId
