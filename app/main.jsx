@@ -3,6 +3,7 @@ import React from 'react'
 import {Router, Route, IndexRedirect, browserHistory, IndexRoute} from 'react-router'
 import {render} from 'react-dom'
 
+import LandingPage from './components/LandingPage'
 import WhoAmI from './components/WhoAmI'
 import NotFound from './components/NotFound'
 import AppContainer from './containers/AppContainer'
@@ -48,8 +49,7 @@ const RootAtomEditor = (props) => {
 
 render(
   <Router history={browserHistory}>
-    <Route path='/'>
-      <IndexRedirect to='/login' />
+    <Route path='/' component={LandingPage}>
       <Route path='/:uid/project/:id' component={ProjectContainer} >
         <Route path=':atomId' component={AtomEditor} />
         <IndexRoute component={RootAtomEditor}/>
