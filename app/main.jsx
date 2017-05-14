@@ -1,7 +1,7 @@
 'use strict'
 import React from 'react'
-import {Router, Route, IndexRedirect, browserHistory, IndexRoute} from 'react-router'
-import {render} from 'react-dom'
+import { Router, Route, IndexRedirect, browserHistory, IndexRoute } from 'react-router'
+import { render } from 'react-dom'
 
 import LandingPage from './components/LandingPage'
 import WhoAmI from './components/WhoAmI'
@@ -49,14 +49,13 @@ const RootAtomEditor = (props) => {
 
 render(
   <Router history={browserHistory}>
-    <Route path='/' component={LandingPage}>
-      <Route path='/:uid/project/:id' component={ProjectContainer} >
-        <Route path=':atomId' component={AtomEditor} />
-        <IndexRoute component={RootAtomEditor}/>
-      </Route>
-      <Route path='/login' component={WhoAmI} />
+    <Route path='/' component={LandingPage} />
+    <Route path='/:uid/project/:id' component={ProjectContainer} >
+      <Route path=':atomId' component={AtomEditor} />
+      <IndexRoute component={RootAtomEditor} />
     </Route>
-    <Route path='*' component={NotFound}/>
+    <Route path='/login' component={WhoAmI} />
+    <Route path='*' component={NotFound} />
   </Router>,
   document.getElementById('main')
 )
