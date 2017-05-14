@@ -138,32 +138,43 @@ export default class extends React.Component {
 
   render() {
     return (
-      <div>
-        <h2>Welcome, {this.props.user.displayName}</h2>
-        <h3>Create a new project</h3>
-        <form onSubmit={this.createProject}>
-          <label>Project Name</label>
-          <input type="text" onChange={this.setProjectName} />
-          <button type="submit">Create</button>
-        </form>
-        <h3>Your Projects:</h3>
-        <select onChange={this.selectProject}>
-          <option> </option>
-          {this.state.projectList.map(project => {
-            const valueObj = project.id + ':' + project.currentAtom
-            return (<option value={valueObj} key={project.id}>{project.title}</option>)
-          })}
-        </select>
-        <button type='button' onClick={this.goToPage}>Go to project</button>
-        <h3>Shared Projects:</h3>
-        <select onChange={this.selectProject}>
-          <option> </option>
-          {this.state.collabList.map(collab => {
-            const valueObj = collab.id + ':' + collab.currentAtom
-            return (<option value={valueObj} key={collab.id}>{collab.title}</option>)
-          })}
-        </select>
-        <button type='button' onClick={this.goToPage}>Go to project</button>
+      <div className='user-page'>
+        <div className='left'>
+          <h2>Welcome, {this.props.user.displayName}</h2>
+        </div>
+        <div className='clearfix'></div>
+        <div className='project-selection form-group'>
+          <h3>Create a new project</h3>
+          <form onSubmit={this.createProject}>
+            <label className='control-label'>Project Name</label>
+            <input type='text' className='form-control projects-option' onChange={this.setProjectName} />
+            <div className='enter-btn'>
+              <button type='submit' className='btn btn-info'>Create</button>
+            </div>
+          </form>
+          <h3>Your Projects:</h3>
+          <div className='center form-group'>
+            <select onChange={this.selectProject} className='form-control projects-option'>
+              <option> </option>
+              {this.state.projectList.map(project => {
+                const valueObj = project.id + ':' + project.currentAtom
+                return (<option value={valueObj} key={project.id}>{project.title}</option>)
+              })}
+            </select>
+            <button type='button' className='btn btn-info' onClick={this.goToPage}>Go to project</button>
+          </div>
+          <h3>Shared Projects:</h3>
+          <div className='center form-group'>
+            <select onChange={this.selectProject} className='form-control projects-option'>
+              <option> </option>
+              {this.state.collabList.map(collab => {
+                const valueObj = collab.id + ':' + collab.currentAtom
+                return (<option value={valueObj} key={collab.id}>{collab.title}</option>)
+              })}
+            </select>
+            <button type='button' className='btn btn-info' onClick={this.goToPage}>Go to project</button>
+          </div>
+        </div>
       </div>
     )
   }
