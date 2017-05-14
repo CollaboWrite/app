@@ -56,8 +56,8 @@ export default class extends React.Component {
       // making a projects obj to add to projects list
       const projectObj = {}
       projectObj.key = projectSnap.key
-      projectsRef.child(projectSnap.key).on('value', project => {
-        projectObj.title = project.val().projectTitle
+      projectsRef.child(projectSnap.key).child('projectTitle').on('value', project => {
+        projectObj.title = project.val()
         this.setState({ projects: [...this.state.projects, projectObj] })
       })
     })
@@ -101,17 +101,17 @@ export default class extends React.Component {
     const atomId = this.props.params.atomId
     return (
       <div>
-        <div className='col-lg-12'>
+        <div className='col-xs-12'>
           <Toolbar projects={this.state.projects} projectId={projectId} />
         </div>
-        <div className='col-lg-3 sidebar-left'>
+        <div className='col-xs-3 sidebar-left'>
           <Binder toggleChildren={this.toggleChildren} uid={uid} atoms={this.state.binderView} projectId={projectId} root={this.state.root} />
           <Trashcan project={this.state.project} />
         </div>
         <div>
           <AtomEditor uid={uid} projectId={projectId} atomId={atomId} />
         </div>
-        <div className='col-lg-3 sidebar-right'>
+        <div className='col-xs-3 sidebar-right'>
           <CollabForm uid={uid} projectId={projectId} atomId={atomId} />
         </div>
       </div>

@@ -78,6 +78,15 @@ body {
     margin-bottom: auto;
 }
 
+.collab-list {
+    display: inline !important;
+}
+
+.delete-collab {
+    margin-right: 35%;
+    float: right;
+}
+
 
 /*
 #atom-name {
