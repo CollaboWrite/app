@@ -16,7 +16,11 @@ const Toolbar = (props) => {
     </select>
     <button>Tree View</button>
     <button>Timeline View</button>
-    <button><Link to="/login">Back to User Page</Link></button>
+    <button onClick={() => {
+      browserHistory.push('/login') // first reroute
+      browserHistory.go('/login') // this force-reloads after rerouting
+    }
+    }>Back to User Page</button>
     <button
       className='logout'
       onClick={() => {

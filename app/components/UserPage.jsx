@@ -17,7 +17,7 @@ export default class extends React.Component {
       collabKeys: []
     }
   }
-  componentDidMount() {
+  componentDidMount = () => {
     const userId = this.props.user.uid
     const usersProjectsRef = firebase.database().ref('users').child(userId).child('projects')
     const usersCollabRef = firebase.database().ref('users').child(userId).child('collaborations')
@@ -49,6 +49,7 @@ export default class extends React.Component {
     this.unsubscribe = () => {
       usersProjectsRef.off('child_added', projectListener)
       usersCollabRef.off('child_added', collabListener)
+      // unsubscribing from each 'value' loop above
       this.state.projectKeys.forEach(key => {
         firebase.database().ref('projects').child(key).off('value', innerProjectListener)
       })
@@ -119,7 +120,7 @@ export default class extends React.Component {
       if (!snapshot.val()) {
         firebase.database().ref('/users/' + this.props.user.uid).set(user)
       }
-      this.setState({ userKey: userKey, currentName: snapshot.val()[userKey].name})
+      this.setState({userKey: userKey, currentName: snapshot.val()[userKey].name})
     })
   }
 
@@ -136,6 +137,7 @@ export default class extends React.Component {
   }
 
   render() {
+    console.log(this.state)
     return (
       <div>
         <h2>Welcome, {this.props.user.displayName}</h2>
