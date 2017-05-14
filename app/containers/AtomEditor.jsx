@@ -42,6 +42,7 @@ export default class AtomEditor extends React.Component {
       const snapshotObj = snapshot.val()
       snapshotObj.timeStamp = Date.now() // can format as needed
       snapshotObj.snapshots = null // removing snapshots of new snapshot to preserve space
+      snapshotObj.messages = null // removing messages of new snapshot to preserve space
       projectsRef.child(this.props.projectId + '/snapshots').push(snapshotObj)
     })
   }
