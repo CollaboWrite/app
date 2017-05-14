@@ -62,13 +62,36 @@ export default class extends React.Component {
     }
   }
 
+  deleteAtom = (atomToDelete) => {
+    firebase.database().ref('projects').child(this.props.projectId).child('current').child('atoms').child(atomToDelete).once('value')
+    .then(snapshot => {
+      if (snapshot.children) {
+        snapshot.children(childSnap => {
+          this.deleteAtom(childSnap.key)
+        })
+      }
+      firebase.database().ref('projects').child(this.props.projectId).child('current').child('atoms').child(atomToDelete).remove()
+    })
+    .then(() => {
+      firebase.database().ref('projects').child(this.props.projectId).child('current').child('atoms').on('value', snapshot => {
+        snapshot.forEach(childSnap => {
+          firebase.database().ref('projects').child(this.props.projectId).child('current').child('atoms').child(childSnap.key).child('children').child(atomToDelete).remove()
+        })
+      })
+    })
+    console.log('deleted this atom', this.state.selectedAtom)
+  }
+
   render() {
     return (
       <div className='panel panel-info'>
         <div className='panel-heading'>
           <h3 id='binder-head'>Binder</h3>
+          <span className='fa fa-times delete-atom' 
+                onClick={() => this.deleteAtom(this.state.selectedAtom)} />
           <span className='fa fa-plus-circle add-atom'
                 onClick={this.addAtom} />
+          
         </div>
         <div className='panel-body'>
           <ul id='binder-list'>
