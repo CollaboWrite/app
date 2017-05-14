@@ -8,6 +8,44 @@ body {
     color: black;
 }
 
+.user-page * {
+    text-align: center;
+}
+
+.center {
+    text-align: center;
+}
+
+.right {
+    float: right;
+}
+
+.left {
+    float: left;
+}
+
+.project-selection {
+    margin-top: 5%;
+}
+
+.project-selection * {
+    margin-top: 1%
+}
+
+.enter-btn {
+    display: block;
+}
+
+.projects-option {
+    width: 20%;
+    margin-left: 40%;
+}
+
+.logout-div {
+    margin-right: 3%;
+    margin-top: 3%;
+}
+
 #react-quill {
     height: 80vh;
     width: 48vw;
