@@ -3,6 +3,8 @@ import { browserHistory } from 'react-router'
 
 import firebase from 'APP/server/db'
 
+var Infinite = require('react-infinite')
+
 export default class extends React.Component {
   constructor(props) {
     super(props)
@@ -70,6 +72,7 @@ export default class extends React.Component {
           <span className='fa fa-plus-circle add-atom'
                 onClick={this.addAtom} />
         </div>
+        <Infinite containerHeight={400} elementHeight={26}>
         <div className='panel-body'>
           <ul id='binder-list'>
             {
@@ -95,6 +98,7 @@ export default class extends React.Component {
             }
           </ul>
         </div>
+        </Infinite>
       </div>
     )
   }
