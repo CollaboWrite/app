@@ -14,7 +14,8 @@ export default class AtomEditor extends React.Component {
     super(props)
     this.state = {
       atomVal: {},
-      splitPane: false
+      splitPane: false,
+      selectedPane: ''
     }
   }
 
@@ -46,16 +47,22 @@ export default class AtomEditor extends React.Component {
     evt.preventDefault()
     this.setState({ splitPane: !this.state.splitPane })
   }
+  selectPane = (val) => {
+    console.log('value in select pane', val)
+    this.setState({ selectedPane: val })
+  }
   render() {
     const ref = this.state.atomRef || projectsRef.child(this.props.projectId).child('current').child('atoms').child(this.props.atomId)
     const splitPane = this.state.splitPane
+    // if splitPane is true, pass down atomRef to just the selected pane
+    console.log('this state in atomeditor', this.state)
     return (
       <div>
         <div className='col-xs-6 project-center'>
           <button onClick={this.toggleSplit}>Vertical Split View</button>
           {(splitPane) ? <SplitPane className='splitPane' defaultSize="50%" >
-              <Editor atomRef={ref} />
-              <Editor atomRef={ref} />
+              {(this.state.selectedPane === 'firstPane') ? <Editor atomRef={ref} pane={'firstPane'} selectPane={this.selectPane}/> : <Editor pane={'firstPane'} selectPane={this.selectPane}/>}
+              {(this.state.selectedPane === 'secondPane') ? <Editor atomRef={ref} pane={'secondPane'} selectPane={this.selectPane}/> : <Editor pane={'secondPane'} selectPane={this.selectPane}/>}
           </SplitPane>
           : <Editor atomRef={ref} />
           }

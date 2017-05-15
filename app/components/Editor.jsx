@@ -5,7 +5,8 @@ export default class extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      value: ''
+      value: '',
+      pane: ''
     }
     this.write = this.write.bind(this)
   }
@@ -13,11 +14,13 @@ export default class extends React.Component {
   componentDidMount() {
     // When the component mounts, start listening to the fireRef
     // we were given.
-    this.listenTo(this.props.atomRef.child('text'))
+    (this.props.atomRef) ? this.listenTo(this.props.atomRef.child('text')) : this.setState({ value: '' })
+    this.setState({ pane: this.props.pane })
   }
   componentWillReceiveProps(incoming) {
     // When the atomRef in the AtomEditor, we start listening to the new one
-    this.listenTo(incoming.atomRef.child('text'))
+    (incoming.atomRef) ? this.listenTo(incoming.atomRef.child('text')) : this.setState({ value: '' })
+    this.setState({ pane: this.props.pane })
   }
   componentWillUnmount() {
     // When we unmount, stop listening.
@@ -41,9 +44,14 @@ export default class extends React.Component {
   }
 
   render() {
+    console.log('state in editor', this.state)
     const text = this.props.atom ? this.props.atom.text : ''
     return (
-      <div className="split-pane">
+      <div className="split-pane" value={this.state.pane} onClick={() => {
+        console.log('pane before it calls selectpane', this.state.pane)
+        this.props.selectPane(this.state.pane)
+      }
+      }>
         <div>
           <ReactQuill id='react-quill'
             value={this.state.value}
