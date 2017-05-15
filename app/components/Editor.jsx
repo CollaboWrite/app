@@ -44,7 +44,6 @@ export default class Editor extends React.Component {
   }
 
   render() {
-    console.log('state in editor', this.state)
     return (
       <div className="split-pane" value={this.state.pane} onClick={() => {
         this.props.selectPane(this.state.pane)

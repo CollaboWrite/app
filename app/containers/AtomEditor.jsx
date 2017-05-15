@@ -13,18 +13,15 @@ export default class AtomEditor extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      atomVal: {},
       splitPane: false,
       selectedPane: '',
       firstPrevAtomId: '',
       secondPrevAtomId: ''
     }
   }
-
   componentDidMount() {
     // When the component mounts, start listening to the fireRef
     // we were given.
-    this.listenTo(firebase.database().ref('users').child(this.props.uid).child('projects').child(this.props.projectId))
     this.setState({ firstPrevAtomId: this.props.atomId, secondPrevAtomId: this.props.atomId })
   }
   componentWillReceiveProps(incoming) {
@@ -32,25 +29,7 @@ export default class AtomEditor extends React.Component {
       this.setState({ firstPrevAtomId: incoming.atomId })
     }
     if (this.state.selectedPane === 'secondPane') {
-      console.log('am i in second pane atom id reset')
       this.setState({ secondPrevAtomId: incoming.atomId })
-    }
-  }
-  componentWillUnmount() {
-    // When we unmount, stop listening.
-    this.unsubscribe()
-  }
-  // listen to the fireRef.child
-  listenTo(atomRef) {
-    // If we're already listening to a ref, stop listening there.
-    if (this.unsubscribe) this.unsubscribe()
-    // Whenever our ref's value changes, set {value} on our state.
-    const listener = atomRef.on('value', snapshot => {
-      console.log('atomval', snapshot.val())
-      this.setState({ atomVal: snapshot.val() })
-    })
-    this.unsubscribe = () => {
-      atomRef.off('value', listener)
     }
   }
   // toggle button between not split/split
@@ -89,13 +68,16 @@ export default class AtomEditor extends React.Component {
             }
         </div>
         <div className='col-xs-3 sidebar-right'>
-          <Summary atomRef={ref} />
-          <Notes atomRef={ref} />
+          {(splitPane) ?
+            ((this.state.selectedPane === 'firstPane') ? <Summary atomRef={firstPrevAtomRef} /> : <Summary atomRef={secondPrevAtomRef} />) :
+            <Summary atomRef={ref} />
+          }
+          {(splitPane) ?
+            ((this.state.selectedPane === 'firstPane') ? <Notes atomRef={firstPrevAtomRef} /> : <Notes atomRef={secondPrevAtomRef} />) :
+            <Notes atomRef={ref} />
+          }
         </div>
       </div>
     )
   }
 }
-
-// add resources function later for now
-// <Resources atom={this.state.selected} />
