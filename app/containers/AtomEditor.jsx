@@ -84,7 +84,7 @@ export default class AtomEditor extends React.Component {
             <form className="inline-form" onSubmit={this.snapshot}>
               <label>Save current version as: </label>
               <input type='text' onChange={this.handleChange} value={this.state.snapshotName} />
-              <button type="submit" >Save</button>
+              <button className='btn btn-xs' type="submit" >Save</button>
             </form>
             <button className='float-right' onClick={this.toggleSplit}>Vertical Split View</button>
           </div>
