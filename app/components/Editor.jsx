@@ -48,7 +48,6 @@ export default class extends React.Component {
     const text = this.props.atom ? this.props.atom.text : ''
     return (
       <div className="split-pane" value={this.state.pane} onClick={() => {
-        console.log('pane before it calls selectpane', this.state.pane)
         this.props.selectPane(this.state.pane)
       }
       }>

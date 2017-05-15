@@ -15,7 +15,8 @@ export default class AtomEditor extends React.Component {
     this.state = {
       atomVal: {},
       splitPane: false,
-      selectedPane: ''
+      selectedPane: '',
+      prevAtomId: ''
     }
   }
 
@@ -48,23 +49,28 @@ export default class AtomEditor extends React.Component {
     this.setState({ splitPane: !this.state.splitPane })
   }
   selectPane = (val) => {
-    console.log('value in select pane', val)
-    this.setState({ selectedPane: val })
+    this.setState({ prevAtomId: this.state.atomVal, selectedPane: val })
   }
   render() {
+    // when is this.state.atomRef ever being set???
     const ref = this.state.atomRef || projectsRef.child(this.props.projectId).child('current').child('atoms').child(this.props.atomId)
+    let prevAtomRef = ref
     const splitPane = this.state.splitPane
+    if (this.state.prevAtomId) {
+      prevAtomRef = projectsRef.child(this.props.projectId).child('current').child('atoms').child(this.state.prevAtomId)
+    }
     // if splitPane is true, pass down atomRef to just the selected pane
+    // may need to save previous atomRef to pass down to pane NOT selected
     console.log('this state in atomeditor', this.state)
     return (
       <div>
         <div className='col-xs-6 project-center'>
           <button onClick={this.toggleSplit}>Vertical Split View</button>
           {(splitPane) ? <SplitPane className='splitPane' defaultSize="50%" >
-              {(this.state.selectedPane === 'firstPane') ? <Editor atomRef={ref} pane={'firstPane'} selectPane={this.selectPane}/> : <Editor pane={'firstPane'} selectPane={this.selectPane}/>}
+              {(this.state.selectedPane === 'firstPane') ? <Editor atomRef={ref} pane={'firstPane'} selectPane={this.selectPane}/> : <Editor atomRef={prevAtomRef} pane={'firstPane'} selectPane={this.selectPane}/>}
               {(this.state.selectedPane === 'secondPane') ? <Editor atomRef={ref} pane={'secondPane'} selectPane={this.selectPane}/> : <Editor pane={'secondPane'} selectPane={this.selectPane}/>}
           </SplitPane>
-          : <Editor atomRef={ref} />
+          : <Editor atomRef={ref} selectPane={this.selectPane}/>
           }
         </div>
         <div className='col-xs-3 sidebar-right'>
