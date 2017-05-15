@@ -1,3 +1,8 @@
+
+.splitPane {
+    overflow: initial;
+}
+
 .container {
     margin: 0 50px;
 }
@@ -87,9 +92,7 @@ body {
     float: right;
 }
 
-
-/*
-#atom-name {
-    background-color: red;
+.splitPane {
+    overflow: initial !important;
+    width: 100%;
 }
-*/

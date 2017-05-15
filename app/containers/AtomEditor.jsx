@@ -1,4 +1,6 @@
 import React from 'react'
+import SplitPane from 'react-split-pane'
+
 import Editor from '../components/Editor'
 import Notes from '../components/Notes'
 import Summary from '../components/Summary'
@@ -12,6 +14,7 @@ export default class AtomEditor extends React.Component {
     super(props)
     this.state = {
       atomVal: {},
+      splitPane: false
     }
   }
 
@@ -39,13 +42,19 @@ export default class AtomEditor extends React.Component {
 
   updateAtom = (updateObj) =>
     projectsRef.child(this.props.params.id).child('current').child('atoms').child(this.props.params.atomId).update(updateObj)
-
+  toggleSplit = (evt) => {
+    evt.preventDefault()
+    this.setState({ splitPane: true })
+  }
   render() {
     const ref = this.state.atomRef || projectsRef.child(this.props.projectId).child('current').child('atoms').child(this.props.atomId)
     return (
       <div>
         <div className='col-xs-6 project-center'>
-          <Editor atomRef={ref} />
+          <SplitPane className='splitPane' defaultSize="50%" >
+              <Editor atomRef={ref} toggleSplit={this.toggleSplit}/>
+              <Editor atomRef={ref} toggleSplit={this.toggleSplit}/>
+          </SplitPane>
         </div>
         <div className='col-xs-3 sidebar-right'>
           <Summary atomRef={ref} />

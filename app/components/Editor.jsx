@@ -43,11 +43,14 @@ export default class extends React.Component {
   render() {
     const text = this.props.atom ? this.props.atom.text : ''
     return (
-      <div>
-        <ReactQuill id='react-quill'
-          value={this.state.value}
-          onChange={this.write}
-          theme={'snow'} />
+      <div className="split-pane">
+        <button onClick={this.props.toggleSplit}>Split View</button>
+        <div>
+          <ReactQuill id='react-quill'
+            value={this.state.value}
+            onChange={this.write}
+            theme={'snow'} />
+        </div>
       </div>
     )
   }
