@@ -8,39 +8,69 @@ var Infinite = require('react-infinite')
 export default class extends React.Component {
   constructor(props) {
     super(props)
-    this.state = {
-      showInput: false,
-      newAtom: ''
-    }
   }
 
-  // this is class property so we don't have to bind it (as if we put this entire function in the constructor)
-  handleChange = (evt) => {
-    evt.preventDefault()
-    // this.setState({ newContainer: evt.target.value })
+  // listening to the selected atom based on the passed down atom id from the params
+  componentDidMount() {
+    this.listenTo(firebase.database().ref('projects').child(this.props.projectId).child('current').child('atoms').child(this.props.atomId))
+  }
+
+  componentWillReceiveProps(incoming) {
+    this.listenTo(firebase.database().ref('projects').child(this.props.projectId).child('current').child('atoms').child(incoming.atomId))
+  }
+
+  componentWillUnmount() {
+    this.unsubsribe()
+  }
+
+  listenTo(selectedAtomChildrenRef) {
+    if (this.unsubscribe) this.unsubscribe()
+    const listener = selectedAtomChildrenRef.child('children').on('child_added', snapshot => {
+      this.setState({ selectedChildren: snapshot.val() })
+    })
+
+    this.unsubscribe = () => {
+      selectedAtomChildrenRef.off('value', listener)
+    }
   }
 
   handleSubmit = (evt) => {
     evt.preventDefault()
+    const parentArr = this.state.selectedAtomArr
     const newTitle = evt.target.value
     const parent = this.state.selectedAtom || this.props.root
     const newAtomKey = firebase.database().ref('projects').child(this.props.projectId).child('current').child('atoms').push().key
     const newAtom = {title: newTitle}
-    firebase.database().ref('projects').child(this.props.projectId).child('current').child('atoms').child(parent).child('children').child(newAtomKey).set(true)
-    firebase.database().ref('projects').child(this.props.projectId).child('current').child('atoms').child(newAtomKey).set(newAtom)
+    firebase.database().ref('projects').child(this.props.projectId).child('current').child('atoms').child(parent).child('children').child(newAtomKey).set(true, (err) => {
+      if (err) {
+        console.error(err)
+      } else {
+        firebase.database().ref('projects').child(this.props.projectId).child('current').child('atoms').child(newAtomKey).set(newAtom, (userErr) => {
+          if (userErr) {
+            console.error(userErr)
+          } else {
+              this.props.toggleAddedChildren(parentArr[0], parentArr[1], parentArr[2], parentArr[3])
+          }
+        })
+      }
+    })
     evt.target.remove()
   }
 
-  handleSelect = (evt) => {
+  handleClickSelect = (evt, atomArr) => {
     evt.preventDefault()
+    console.log('got the second argument', atomArr)
+    this.setState({ selectedAtomArr: atomArr })
     document.getElementsByClassName('current-atom')[0]
       ? document.getElementsByClassName('current-atom')[0].classList.remove('current-atom')
       : console.log()
     evt.target.classList.add('current-atom')
-    this.setState({selectedAtom: evt.target.value})
     browserHistory.push(`/${this.props.uid}/project/${this.props.projectId}/${evt.target.value}`)
-    firebase.database().ref('projects').child(this.props.projectId).child('current').child('atoms').child(evt.target.value).on('value', snapshot => {
-      firebase.database().ref('users').child(this.props.uid).child('projects').child(this.props.projectId).set(evt.target.value)
+    this.setState({selectedAtom: atomArr[0]})
+    const selectedAtom = atomArr[0]    
+    console.log('selected atom', selectedAtom)
+    firebase.database().ref('projects').child(this.props.projectId).child('current').child('atoms').child(selectedAtom).on('value', snapshot => {
+      firebase.database().ref('users').child(this.props.uid).child('projects').child(this.props.projectId).set(selectedAtom)
     })
   }
 
@@ -56,9 +86,9 @@ export default class extends React.Component {
     inputTitle.type = 'text'
 
     newAtom.append(inputTitle)
-
-    if (this.state.selectedAtom) {
-      document.getElementById(this.state.selectedAtom).after(newAtom)
+    console.log('selected atom', this.props.atomId)
+    if (this.props.atomId) {
+      document.getElementById(this.props.atomId).after(newAtom)
     } else {
       document.getElementById('binder-list').append(newAtom)
     }
@@ -104,7 +134,7 @@ export default class extends React.Component {
                 const atomObj = atomArr[1]
                 const level = atomArr[2]
                 const expanded = atomArr[3]
-                const iconClass = atomObj.children ? (expanded ? 'chevron-down' : 'chevron-right') : 'file-text-o'
+                const iconClass = atomObj && atomObj.children ? (expanded ? 'chevron-down' : 'chevron-right') : 'file-text-o'
                 return (
                   <li key={key} id={key}
                   style={{paddingLeft: level * 25}}>
@@ -113,7 +143,7 @@ export default class extends React.Component {
                       onClick={() => this.props.toggleChildren(key, ind, level, expanded)} />
                     <button className='binder-item'
                       value={key}
-                      onClick={this.handleSelect} >
+                      onClick={(evt) => this.handleClickSelect(evt, [key, ind, level, expanded])} >
                       {atomObj.title}
                     </button>
                   </li>)
