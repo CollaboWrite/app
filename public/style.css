@@ -93,6 +93,7 @@ body {
 }
 
 .splitPane {
-    overflow: initial !important;
+    position: relative !important;
+    overflow: hidden;
     width: 100%;
 }
