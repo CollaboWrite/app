@@ -2,7 +2,7 @@ import React from 'react'
 import firebase from 'APP/server/db'
 import Chat from './Chat'
 
-export default class extends React.Component {
+export default class CollabForm extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -72,7 +72,7 @@ export default class extends React.Component {
   }
   render() {
     // console.log('state', this.state)
-    // console.log('props', this.props)  
+    // console.log('props', this.props)
     const collaborators = this.state.collaborators
     return (
       <div className="panel panel-default">
@@ -83,10 +83,10 @@ export default class extends React.Component {
           <ul>
             {collaborators && collaborators.map((collab, idx) => {
               return (
-                <div>
-                  <li className='collab-list' key={collab}>
+                <div key={collab}>
+                  <li className='collab-list'>
                     {collab}
-                    <span className='fa fa-times delete-collab' 
+                    <span className='fa fa-times delete-collab'
                           onClick={() => this.deleteCollab(collab, this.state.collabKeys[idx])}>
                     </span>
                   </li>

@@ -3,7 +3,7 @@ import { browserHistory } from 'react-router'
 
 import firebase from 'APP/server/db'
 
-export default class extends React.Component {
+export default class Binder extends React.Component {
   constructor(props) {
     super(props)
     this.state = {

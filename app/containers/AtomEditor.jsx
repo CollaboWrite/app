@@ -25,6 +25,16 @@ export default class AtomEditor extends React.Component {
     // When the component mounts, start listening to the fireRef
     // we were given.
     this.listenTo(firebase.database().ref('users').child(this.props.uid).child('projects').child(this.props.projectId))
+    this.setState({ firstPrevAtomId: this.props.atomId, secondPrevAtomId: this.props.atomId })
+  }
+  componentWillReceiveProps(incoming) {
+    if (this.state.selectedPane === 'firstPane') {
+      this.setState({ firstPrevAtomId: incoming.atomId })
+    }
+    if (this.state.selectedPane === 'secondPane') {
+      console.log('am i in second pane atom id reset')
+      this.setState({ secondPrevAtomId: incoming.atomId })
+    }
   }
   componentWillUnmount() {
     // When we unmount, stop listening.
@@ -49,23 +59,16 @@ export default class AtomEditor extends React.Component {
     this.setState({ splitPane: !this.state.splitPane })
   }
   selectPane = (val) => {
-    // if reselecting already selected pane, don't reset the prevAtom/selectedPane
-    if (this.state.selectedPane !== val) {
-      // if firstPane selected, set current atomVal to it's prevAtomId and set current selectedPane to this
-      // same for secondPane
-      if (val === 'firstPane') {
-        this.setState({ firstPrevAtomId: this.props.atomId, selectedPane: val })
-      } else if (val === 'secondPane') {
-        this.setState({ secondPrevAtomId: this.props.atomId, selectedPane: val })
-      } else {
-        // this triggers when single pane view and the editor is clicked
-        this.setState({ firstPrevAtomId: this.props.atomId })
-      }
+    // if firstPane selected, set current selectedPane to this
+    // same for secondPane
+    if (val === 'firstPane') {
+      this.setState({ selectedPane: val })
+    } else if (val === 'secondPane') {
+      this.setState({ selectedPane: val })
     }
   }
   render() {
-    // 'this.state.atomRef' NEVER being set in this file...is this happening???
-    const ref = this.state.atomRef || projectsRef.child(this.props.projectId).child('current').child('atoms').child(this.props.atomId)
+    const ref = projectsRef.child(this.props.projectId).child('current').child('atoms').child(this.props.atomId)
     const splitPane = this.state.splitPane
     const firstAtomId = this.state.firstPrevAtomId || this.props.atomId
     const secondAtomId = this.state.secondPrevAtomId || this.props.atomId
@@ -74,14 +77,13 @@ export default class AtomEditor extends React.Component {
     const secondPrevAtomRef = projectsRef.child(this.props.projectId).child('current').child('atoms').child(secondAtomId)
     // if splitPane is true, pass down atomRef to just the selected pane & show render <SplitPane> with two <Editor> components as 'children'
     // else, just show the old Editor
-    console.log('this state in atomeditor', this.state)
     return (
       <div>
         <div className='col-xs-6 project-center'>
           <button onClick={this.toggleSplit}>Vertical Split View</button>
             {(splitPane) ? <SplitPane className='splitPane' defaultSize="50%" >
-                {<Editor atomRef={firstPrevAtomRef} pane={'firstPane'} selectPane={this.selectPane}/>}
-                {<Editor atomRef={secondPrevAtomRef} pane={'secondPane'} selectPane={this.selectPane}/>}
+                <Editor atomRef={firstPrevAtomRef} pane={'firstPane'} selectPane={this.selectPane}/>
+                <Editor atomRef={secondPrevAtomRef} pane={'secondPane'} selectPane={this.selectPane}/>
             </SplitPane>
             : <Editor atomRef={ref} selectPane={this.selectPane}/>
             }

@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactQuill from 'react-quill'
 
-export default class extends React.Component {
+export default class Editor extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -45,18 +45,15 @@ export default class extends React.Component {
 
   render() {
     console.log('state in editor', this.state)
-    const text = this.props.atom ? this.props.atom.text : ''
     return (
       <div className="split-pane" value={this.state.pane} onClick={() => {
         this.props.selectPane(this.state.pane)
       }
       }>
-        <div>
           <ReactQuill id='react-quill'
             value={this.state.value}
             onChange={this.write}
             theme={'snow'} />
-        </div>
       </div>
     )
   }
