@@ -78,6 +78,15 @@ body {
     margin-bottom: auto;
 }
 
+.delete-atom {
+    color: white;
+    float: right;
+    margin-right: 2%;
+    margin-top: auto;
+    font-size: 150% !important;
+    margin-bottom: auto;
+}
+
 .collab-list {
     display: inline !important;
 }
