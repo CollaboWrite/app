@@ -6,62 +6,61 @@ const auth = firebase.auth()
 
 const Toolbar = (props) => (
   <nav className="navbar navbar-default">
-  <div className="container-fluid">
+    <div className="container-fluid">
 
-    <div className="navbar-header">
-      <button type="button" className="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-        <span className="sr-only">Toggle navigation</span>
-        <span className="icon-bar"></span>
-        <span className="icon-bar"></span>
-        <span className="icon-bar"></span>
-      </button>
-      <a className="navbar-brand" id='navbar-title' href="#">CollaboWrite</a>
-    </div>
+      <div className="navbar-header">
+        <button type="button" className="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+          <span className="sr-only">Toggle navigation</span>
+          <span className="icon-bar"></span>
+          <span className="icon-bar"></span>
+          <span className="icon-bar"></span>
+        </button>
+        <a className="navbar-brand" id='navbar-title'>CollaboWrite</a>
+      </div>
 
-    <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-      <ul className="nav navbar-nav toolbar-list">
-        <li>
-          <a href='#'>
-            <label id='toolbar-label'>Current Project:</label>
-            <select className='toolbar-select' onChange={(evt) => {}}>
-              {
-                props.projects.length && props.projects.map((project, indx) => (
-                  <option value={project.key} key={project.key}>{project.title}</option>
-                ))
-              }
-            </select>
-          </a>
-        </li>
+      <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul className="nav navbar-nav toolbar-list">
+          <li>
+            <a>
+              <label id='toolbar-label'>Current Project:</label>
+              <select className='toolbar-select' onChange={(evt) => { }}>
+                {
+                  props.projects.length && props.projects.map((project, indx) => (
+                    <option value={project.key} key={project.key}>{project.title}</option>
+                  ))
+                }
+              </select>
+            </a>
+          </li>
 
-        <li><a href="#">History</a></li>
+          <li><a>History</a></li>
 
-      </ul>
+        </ul>
 
-      {/*<form className="navbar-form navbar-left" role="search">
+        {/*<form className="navbar-form navbar-left" role="search">
         <div className="form-group">
           <input type="text" className="form-control" placeholder="Search" />
         </div>
         <button type="submit" className="btn btn-default">Submit</button>
       </form>*/}
 
-      <ul className="nav navbar-nav navbar-right toolbar-list">
-        <li>
-          <a href='/login'>Account</a>
-        </li>
-        
-        <li
-          onClick={() => {
-          auth.signOut()
-          browserHistory.push('/login')
-          }
-        }><a href='#'>Log Out</a></li>
-      </ul>
+        <ul className="nav navbar-nav navbar-right toolbar-list">
+          <li>
+            <a href='/login'>Account</a>
+          </li>
+
+          <li
+            onClick={() => {
+              auth.signOut()
+            }
+            }><a href='/login'>Log Out</a></li>
+        </ul>
+      </div>
     </div>
-  </div>
-</nav>
+  </nav>
 )
 
-  {/*<nav className='navbar navbar-default'>
+{/*<nav className='navbar navbar-default'>
     <ul className='nav navbar-nav'>
       <select onChange={(evt) => {
       }}>

@@ -45,11 +45,6 @@ export default class Editor extends React.Component {
   render() {
     return (
       <div className='col-xs-6 project-center'>
-        <form onSubmit={this.props.snapshot}>
-          <label>Save current version as: </label>
-          <input type='text' onChange={this.props.handleChange} value={this.props.snapshotName} />
-          <button className="btn btn-xs" type="submit" >Save</button>
-        </form>
         <div className="split-pane" value={this.state.pane} onClick={() => {
           this.props.selectPane(this.state.pane)
         }
