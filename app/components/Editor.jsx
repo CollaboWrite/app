@@ -20,7 +20,6 @@ export default class Editor extends React.Component {
   componentWillReceiveProps(incoming) {
     // When the atomRef in the AtomEditor, we start listening to the new one
     this.listenTo(incoming.atomRef.child('text'))
-    // this.setState({ pane: this.props.pane })
   }
   componentWillUnmount() {
     // When we unmount, stop listening.
