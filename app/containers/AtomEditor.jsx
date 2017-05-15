@@ -44,17 +44,22 @@ export default class AtomEditor extends React.Component {
     projectsRef.child(this.props.params.id).child('current').child('atoms').child(this.props.params.atomId).update(updateObj)
   toggleSplit = (evt) => {
     evt.preventDefault()
-    this.setState({ splitPane: true })
+    this.setState({ splitPane: !this.state.splitPane })
   }
   render() {
     const ref = this.state.atomRef || projectsRef.child(this.props.projectId).child('current').child('atoms').child(this.props.atomId)
+    const splitPane = this.state.splitPane
+    console.log('state', this.state)
     return (
       <div>
         <div className='col-xs-6 project-center'>
-          <SplitPane className='splitPane' defaultSize="50%" >
+          <button onClick={this.toggleSplit}>Split View</button>
+          { (splitPane) ? <SplitPane className='splitPane' defaultSize="50%" >
               <Editor atomRef={ref} toggleSplit={this.toggleSplit}/>
               <Editor atomRef={ref} toggleSplit={this.toggleSplit}/>
           </SplitPane>
+          : <Editor atomRef={ref} toggleSplit={this.toggleSplit} />
+          }}
         </div>
         <div className='col-xs-3 sidebar-right'>
           <Summary atomRef={ref} />
