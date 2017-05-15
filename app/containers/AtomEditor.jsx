@@ -36,16 +36,22 @@ export default class AtomEditor extends React.Component {
       atomRef.off('value', listener)
     }
   }
-
-  updateAtom = (updateObj) =>
-    projectsRef.child(this.props.params.id).child('current').child('atoms').child(this.props.params.atomId).update(updateObj)
-
+  snapshot = (evt) => {
+    evt.preventDefault()
+    projectsRef.child(this.props.projectId).once('value', snapshot => {
+      const snapshotObj = snapshot.val()
+      snapshotObj.timeStamp = Date.now() // can format as needed
+      snapshotObj.snapshots = null // removing snapshots of new snapshot to preserve space
+      snapshotObj.messages = null // removing messages of new snapshot to preserve space
+      projectsRef.child(this.props.projectId + '/snapshots').push(snapshotObj)
+    })
+  }
   render() {
     const ref = this.state.atomRef || projectsRef.child(this.props.projectId).child('current').child('atoms').child(this.props.atomId)
     return (
       <div>
         <div className='col-xs-6 project-center'>
-          <Editor atomRef={ref} />
+          <Editor atomRef={ref} snapshot={this.snapshot}/>
         </div>
         <div className='col-xs-3 sidebar-right'>
           <Summary atomRef={ref} />
