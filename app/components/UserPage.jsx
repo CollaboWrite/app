@@ -1,5 +1,5 @@
 import React from 'react'
-import { browserHistory } from 'react-router'
+import { Link, browserHistory } from 'react-router'
 import firebase from 'APP/server/db'
 
 export default class extends React.Component {
@@ -11,50 +11,54 @@ export default class extends React.Component {
       collabList: [],
       newProjectName: '',
       userKey: '',
-      currentAtom: null
+      currentAtom: null,
+      currentName: '',
+      projectKeys: [],
+      collabKeys: []
     }
   }
-
-  componentDidMount() {
-    this.createUser()
+  componentDidMount = () => {
     const userId = this.props.user.uid
     const usersProjectsRef = firebase.database().ref('users').child(userId).child('projects')
-    // TO DO: to get collaborations
     const usersCollabRef = firebase.database().ref('users').child(userId).child('collaborations')
     this.listenTo(usersProjectsRef, usersCollabRef)
+    this.createUser()
   }
   listenTo = (usersProjectsRef, usersCollabRef) => {
     if (this.unsubscribe) this.unsubscribe()
-    const projectListener = usersProjectsRef.on('value', snapshot => {
-      // getting keys from the user's database
-      const projectKeys = Object.keys(snapshot.val())
-      // we are putting the key for each key into the projectList
-      projectKeys.forEach(projectKey => {
-        firebase.database().ref('projects').child(projectKey).on('value', snapshot => {
-          const currentProject = snapshot.val()
-          // add each project title into the projectsList - MUST BE DONE THIS WAY TO UPDATE STATE
-          this.setState({ projectList: [...this.state.projectList, { title: currentProject.projectTitle, id: projectKey, currentAtom: currentProject.current.root }] })
-        })
+    let innerProjectListener
+    const projectListener = usersProjectsRef.on('child_added', snapshot => {
+      const projectKey = snapshot.key
+      innerProjectListener = firebase.database().ref('projects').child(projectKey).on('value', project => {
+        const currentProject = project.val()
+        this.setState({
+          projectKeys: [...this.state.projectKeys, projectKey],
+          projectList: [...this.state.projectList, { title: currentProject.projectTitle, id: projectKey, currentAtom: currentProject.current.root }] })
       })
     })
-
-    const collabListener = usersCollabRef.on('value', snapshot => {
-      const collabKeys = Object.keys(snapshot.val())
-      // we are putting the key for each key into the projectList
-      collabKeys.forEach(collabKey => {
-        firebase.database().ref('projects').child(collabKey).on('value', snapshot => {
-          const currentCollab = snapshot.val()
-          // add each project title into the projectsList - MUST BE DONE THIS WAY TO UPDATE STATE
-          this.setState({ collabList: [...this.state.collabList, { title: currentCollab.projectTitle, id: collabKey, currentAtom: currentCollab.current.root }] })
-        })
+    let innerCollabListener
+    const collabListener = usersCollabRef.on('child_added', snapshot => {
+      const collabKey = snapshot.key
+      innerCollabListener = firebase.database().ref('projects').child(collabKey).on('value', project => {
+        const currentProject = project.val()
+        this.setState({
+          collabKeys: [...this.state.collabKeys, collabKey],
+          collabList: [...this.state.collabList, { title: currentProject.projectTitle, id: collabKey, currentAtom: currentProject.current.root }] })
       })
     })
-
     this.unsubscribe = () => {
-      usersProjectsRef.off('value', projectListener)
-      usersCollabRef.off('value', collabListener)
+      usersProjectsRef.off('child_added', projectListener)
+      usersCollabRef.off('child_added', collabListener)
+      // unsubscribing from each 'value' loop above
+      this.state.projectKeys.forEach(key => {
+        firebase.database().ref('projects').child(key).off('value', innerProjectListener)
+      })
+      this.state.collabKeys.forEach(key => {
+        firebase.database().ref('projects').child(key).off('value', innerCollabListener)
+      })
     }
   }
+  componentWillUnmount = () => this.unsubscribe()
 
   // ****** CREATE NEW PROJECTS ****** //
 
@@ -62,10 +66,16 @@ export default class extends React.Component {
     evt.preventDefault()
     this.setState({ newProjectName: evt.target.value })
   }
-  createProject = () => {
+  createProject = (evt) => {
+    evt.preventDefault()
     // create project object to add to projects db
+    const uid = this.props.user.uid
+    const collaboratorsObj = {}
+    const userKey = this.state.userKey
+    collaboratorsObj[userKey] = this.state.currentName
     const project = {
       projectTitle: this.state.newProjectName,
+      collaborators: collaboratorsObj,
       current: {
         atoms: {
           '0': {
@@ -77,22 +87,25 @@ export default class extends React.Component {
       }
     }
 
+    const updates = {}
     // create a new 'key' under 'projects' db
     const projectKey = firebase.database().ref('projects').push().key
-
-    // create updates object
-    const updates = {}
     // update projects db with new project
     updates['/projects/' + projectKey] = project
     // update users db at the current user's object with new {project key: project key} object
-    updates['/users/' + this.props.user.uid + '/projects/' + projectKey] = projectKey
+    updates['/users/' + this.props.user.uid + '/projects/' + projectKey] = '0'
+    // set the new project as the viewingProject
+    updates['/users/' + this.props.user.uid + '/viewingProject'] = projectKey
+    // redirect to the newly created project's root
+    browserHistory.push(`/${this.props.user.uid}/project/${projectKey}/0`)
+    this.setState({newProjectName: ''})
     return firebase.database().ref().update(updates)
   }
 
   // ****** CHECK FOR USER & CREATE USER ****** //
 
   createUser = () => {
-    const project = {'Ella&Maritza': 55}
+    const project = { 'Ella&Maritza': 55 }
     // create new user object
     const user = {
       name: this.props.user.displayName,
@@ -100,59 +113,69 @@ export default class extends React.Component {
       uid: this.props.user.uid,
       projects: project
     }
-
     // finding user by current user's uid
     firebase.database().ref('users').orderByChild('uid').equalTo(this.props.user.uid).on('value', snapshot => {
       // if there is no user with current user's uid, set create new user in users db
+      const userKey = Object.keys(snapshot.val())[0]
       if (!snapshot.val()) {
         firebase.database().ref('/users/' + this.props.user.uid).set(user)
       }
-      this.setState({ userKey: Object.keys(snapshot.val())[0] })
+      this.setState({userKey: userKey, currentName: snapshot.val()[userKey].name})
     })
   }
 
   // ******* SELECT & NAV TO SELECTED PAGE ****** //
 
-  goToPage = (evt) => {
-    // this needs to navigate to project selected, then to current atom on that project ${this.props.user.uid}
+  goToPage = () => {
     browserHistory.push(`/${this.props.user.uid}/project/${this.state.projectId}/${this.state.currentAtom}`)
   }
 
   selectProject = (evt) => {
-    // console.log('select project id & atom', evt.target.value)
     // had to do this b/c value can only carry string
     const valueObj = evt.target.value.split(':')
     this.setState({ projectId: valueObj[0], currentAtom: +valueObj[1] })
   }
 
   render() {
+    console.log(this.state)
     return (
-      <div>
-        <h2>Welcome, {this.props.user.displayName}</h2>
-        <h3>Create a new project</h3>
-        <form onSubmit={this.createProject}>
-          <label>Project Name</label>
-          <input type="text" onChange={this.setProjectName} />
-          <button type="submit">Create</button>
-        </form>
-        <h3>Your Projects:</h3>
-        <select onChange={this.selectProject}>
-          <option> </option>
-          {this.state.projectList.map(project => {
-            const valueObj = project.id + ':' + project.currentAtom
-            return (<option value={valueObj} key={project.id}>{project.title}</option>)
-          })}
-        </select>
-        <button type='button' onClick={this.goToPage}>Go to project</button>
-        <h3>Shared Projects:</h3>
-        <select onChange={this.selectProject}>
-          <option> </option>
-          {this.state.collabList.map(collab => {
-            const valueObj = collab.id + ':' + collab.currentAtom
-            return (<option value={valueObj} key={collab.id}>{collab.title}</option>)
-          })}
-        </select>
-        <button type='button' onClick={this.goToPage}>Go to project</button>
+      <div className='user-page'>
+        <div className='left'>
+          <h2>Welcome, {this.props.user.displayName}</h2>
+        </div>
+        <div className='clearfix'></div>
+        <div className='project-selection form-group'>
+          <h3>Create a new project</h3>
+          <form onSubmit={this.createProject}>
+            <label className='control-label'>Project Name</label>
+            <input type='text' className='form-control projects-option' onChange={this.setProjectName} />
+            <div className='enter-btn'>
+              <button type='submit' className='btn btn-info'>Create</button>
+            </div>
+          </form>
+          <h3>Your Projects:</h3>
+          <div className='center form-group'>
+            <select onChange={this.selectProject} className='form-control projects-option'>
+              <option> </option>
+              {this.state.projectList.map(project => {
+                const valueObj = project.id + ':' + project.currentAtom
+                return (<option value={valueObj} key={project.id}>{project.title}</option>)
+              })}
+            </select>
+            <button type='button' className='btn btn-info' onClick={this.goToPage}>Go to project</button>
+          </div>
+          <h3>Shared Projects:</h3>
+          <div className='center form-group'>
+            <select onChange={this.selectProject} className='form-control projects-option'>
+              <option> </option>
+              {this.state.collabList.map(collab => {
+                const valueObj = collab.id + ':' + collab.currentAtom
+                return (<option value={valueObj} key={collab.id}>{collab.title}</option>)
+              })}
+            </select>
+            <button type='button' className='btn btn-info' onClick={this.goToPage}>Go to project</button>
+          </div>
+        </div>
       </div>
     )
   }
@@ -161,3 +184,15 @@ export default class extends React.Component {
 
 // this.state.projectList map creates a 'valueObj' to pass into this.selectProject
 // since we need to grab both the project id & current atom of the project into option's value
+
+
+      // // getting keys from the user's database
+      // const projectKeys = Object.keys(snapshot.val())
+      // // we are putting the key for each key into the projectList
+      // projectKeys.forEach(projectKey => {
+      //   firebase.database().ref('projects').child(projectKey).on('value', snapshot => {
+      //     const currentProject = snapshot.val()
+      //     // add each project title into the projectsList - MUST BE DONE THIS WAY TO UPDATE STATE
+      //     this.setState({ projectList: [...this.state.projectList, { title: currentProject.projectTitle, id: projectKey, currentAtom: currentProject.current.root }] })
+      //   })
+      // })

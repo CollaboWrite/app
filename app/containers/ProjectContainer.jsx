@@ -42,10 +42,23 @@ export default class extends React.Component {
     const listener = projectRef.on('value', snapshot =>
       this.setState({ project: snapshot.val() })
     )
-    const listenerProjects = projectsRef.on('value', snapshot => {
-      snapshot.forEach(childsnap => {
-        let title = childsnap.child('projectTitle').val()
-        this.setState({ projects: [...this.state.projects, title] })
+    // grabs THIS user's projects and adds it as an object {projectKey: projectTitle}
+    const listenerProjects = firebase.database().ref(`/users/${this.props.params.uid}/projects`).on('child_added', projectSnap => {
+      // making a projects obj to add to projects list
+      const projectObj = {}
+      projectObj.key = projectSnap.key
+      projectsRef.child(projectSnap.key).on('value', project => {
+        projectObj.title = project.val().projectTitle
+        this.setState({ projects: [...this.state.projects, projectObj] })
+      })
+    })
+    const listenerCollabs = firebase.database().ref(`/users/${this.props.params.uid}/collaborations`).on('child_added', projectSnap => {
+      // making a projects obj to add to projects list
+      const projectObj = {}
+      projectObj.key = projectSnap.key
+      projectsRef.child(projectSnap.key).child('projectTitle').on('value', project => {
+        projectObj.title = project.val()
+        this.setState({ projects: [...this.state.projects, projectObj] })
       })
     })
     const rootListener = projectRef.child('atoms').child(this.state.root).child('children').once('value', snapshot =>
@@ -68,11 +81,11 @@ export default class extends React.Component {
     firebase.database().ref('projects').child(projectId).child('current').child('atoms').child(atomId).child('children').on('value', childList => {
       const newBinderView = [...this.state.binderView]
       if (expanded) {
-        newBinderView[ind][3]=false
+        newBinderView[ind][3] = false
         newBinderView.splice(++ind, Object.keys(childList.val()).length)
       } else {
         const newLevel = ++level
-        newBinderView[ind][3]=true
+        newBinderView[ind][3] = true
         childList.forEach(child => {
           atomPointer.child(child.key).once('value', atomSnap => {
             const atomToPush = [child.key, atomSnap.val(), newLevel, false]
@@ -116,7 +129,7 @@ export default class extends React.Component {
     const atomId = this.props.params.atomId
     return (
       <div>
-        <div className='col-lg-12'>
+        <div className='col-xs-12'>
           <Toolbar projects={this.state.projects} projectId={projectId} />
         </div>
         <div className='col-lg-3 sidebar-left'>
@@ -126,7 +139,7 @@ export default class extends React.Component {
         <div>
           <AtomEditor uid={uid} projectId={projectId} atomId={atomId} />
         </div>
-        <div className='col-lg-3 sidebar-right'>
+        <div className='col-xs-3 sidebar-right'>
           <CollabForm uid={uid} projectId={projectId} atomId={atomId} />
         </div>
       </div>

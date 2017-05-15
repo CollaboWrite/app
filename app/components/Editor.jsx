@@ -44,10 +44,17 @@ export default class extends React.Component {
     const text = this.props.atom ? this.props.atom.text : ''
     return (
       <div>
-        <ReactQuill id='react-quill'
-          value={this.state.value}
-          onChange={this.write}
-          theme={'snow'} />
+        <form onSubmit={this.props.snapshot}>
+          <label>Save current version as: </label>
+          <input type='text' onChange={this.props.handleChange} value={this.props.snapshotName}/>
+          <button type="submit" >Save</button>
+        </form>
+        <div className="editor-panel">
+          <ReactQuill id='react-quill'
+            value={this.state.value}
+            onChange={this.write}
+            theme={'snow'} />
+        </div>
       </div>
     )
   }
