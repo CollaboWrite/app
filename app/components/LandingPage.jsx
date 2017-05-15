@@ -7,7 +7,7 @@ const LandingPage = () => (
             <div className="mui--appbar-height"></div>
             <br />
             <br />
-            <div className="mui--text-display3">CollaboWrite</div>
+            <div className="mui--text-display3"><h1 id='app-title'>CollaboWrite</h1></div>
             <br />
             <br />
             <Link to='/login'><button className="mui-btn mui-btn--raised">Get started</button></Link>

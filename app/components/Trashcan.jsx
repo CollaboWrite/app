@@ -1,9 +1,9 @@
 import React from 'react'
 
 export default (props) =>
-  <div className="panel panel-default">
+  <div className="panel">
     <div className='panel-heading'>
-      <h3>Trashcan</h3>
+      <h3 className='panel-head'>Trashcan</h3>
     </div>
     <div className='panel-body'>
       <ul>

@@ -58,9 +58,7 @@ export default class AtomEditor extends React.Component {
     const ref = this.state.atomRef || projectsRef.child(this.props.projectId).child('current').child('atoms').child(this.props.atomId)
     return (
       <div>
-        <div className='col-xs-6 project-center'>
           <Editor atomRef={ref} snapshot={this.snapshot} handleChange={this.handleChange} snapshotName={this.state.snapshotName}/>
-        </div>
         <div className='col-xs-3 sidebar-right'>
           <Summary atomRef={ref} />
           <Notes atomRef={ref} />
