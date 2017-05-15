@@ -57,8 +57,8 @@ export default class extends React.Component {
       // making a projects obj to add to projects list
       const projectObj = {}
       projectObj.key = projectSnap.key
-      projectsRef.child(projectSnap.key).on('value', project => {
-        projectObj.title = project.val().projectTitle
+      projectsRef.child(projectSnap.key).child('projectTitle').on('value', project => {
+        projectObj.title = project.val()
         this.setState({ projects: [...this.state.projects, projectObj] })
       })
     })
@@ -75,10 +75,16 @@ export default class extends React.Component {
       browserHistory.push(`/${this.props.params.uid}/project/${newViewingProject}/0`)
     })
     this.unsubscribe = () => {
+<<<<<<< HEAD
       projectsRef.off('child_added', projectsListener)
       projectsRef.off('child_added', collabsListener)
       projectRef.off('value', rootListener)
       currentProjectRef.off('value', viewingProjectListener)
+=======
+      projectsRef.off('value', listener)
+      projectsRef.off('value', listenerProjects)
+      projectRef.off('value', rootListner)
+>>>>>>> master
     }
   }
 
@@ -90,7 +96,7 @@ export default class extends React.Component {
   toggleChildren = (atomId, ind, level, expanded) => {
     const projectId = this.props.params.id
     const atomPointer = firebase.database().ref('projects').child(projectId).child('current').child('atoms')
-    firebase.database().ref('projects').child(projectId).child('current').child('atoms').child(atomId).child('children').on('value', childList => {
+    atomPointer.child(atomId).child('children').on('value', childList => {
       const newBinderView = [...this.state.binderView]
       if (expanded) {
         newBinderView[ind][3] = false
@@ -109,23 +115,47 @@ export default class extends React.Component {
     })
   }
 
+  toggleAddedChildren = (atomId, ind, level, expanded) => {
+    const projectId = this.props.params.id
+    const atomPointer = firebase.database().ref('projects').child(projectId).child('current').child('atoms')
+    atomPointer.child(atomId).child('children').on('value', childList => {
+      const newBinderView = [...this.state.binderView]
+      if (expanded) {
+        newBinderView[ind][3]=false
+        newBinderView.splice(++ind, Object.keys(childList.val()).length)
+        this.setState({ binderView: newBinderView }, () => this.toggleChildren(atomId, ind, level, false))
+      } else {
+        const newLevel = ++level
+        newBinderView[ind][3]=true
+        childList.forEach(child => {
+          atomPointer.child(child.key).once('value', atomSnap => {
+            const atomToPush = [child.key, atomSnap.val(), newLevel, false]
+            newBinderView.splice(++ind, 0, atomToPush)
+          })
+        })
+        this.setState({ binderView: newBinderView })
+      }
+      
+    })
+  }
+
   render() {
     const uid = this.props.params.uid
     const projectId = this.state.viewingProject // Should this should be informed by users/uid/viewingProject?
     const atomId = this.props.params.atomId
     return (
       <div>
-        <div className='col-lg-12'>
+        <div className='col-xs-12'>
           <Toolbar projects={this.state.projects} projectId={projectId} toggleProject={this.toggleProject} />
         </div>
-        <div className='col-lg-3 sidebar-left'>
-          <Binder toggleChildren={this.toggleChildren} uid={uid} atoms={this.state.binderView} projectId={projectId} root={this.state.root} />
+        <div className='col-xs-3 sidebar-left'>
+          <Binder toggleChildren={this.toggleChildren} toggleAddedChildren={this.toggleAddedChildren} uid={uid} atoms={this.state.binderView} projectId={projectId} root={this.state.root} atomId={atomId} />
           <Trashcan />
         </div>
         <div>
           <AtomEditor uid={uid} projectId={projectId} atomId={atomId} />
         </div>
-        <div className='col-lg-3 sidebar-right'>
+        <div className='col-xs-3 sidebar-right'>
           <CollabForm uid={uid} projectId={projectId} atomId={atomId} />
         </div>
       </div>
