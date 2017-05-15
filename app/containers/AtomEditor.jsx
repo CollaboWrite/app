@@ -48,9 +48,9 @@ export default class AtomEditor extends React.Component {
       this.setState({ selectedPane: val })
     }
   }
-  
+
   handleChange = (evt) => {
-    this.setState({snapshotName: evt.target.value})
+    this.setState({ snapshotName: evt.target.value })
   }
 
   snapshot = (evt) => {
@@ -64,7 +64,7 @@ export default class AtomEditor extends React.Component {
       snapshotObj.collaborators = null // removing collaborators from snapshot
       projectsRef.child(this.props.projectId + '/snapshots').push(snapshotObj)
     })
-    this.setState({snapshotName: ''})
+    this.setState({ snapshotName: '' })
   }
 
   render() {
@@ -80,13 +80,20 @@ export default class AtomEditor extends React.Component {
     return (
       <div>
         <div className='col-xs-6 project-center'>
-          <button onClick={this.toggleSplit}>Vertical Split View</button>
-            {(splitPane) ? <SplitPane className='splitPane' defaultSize="50%" >
-                <Editor atomRef={firstPrevAtomRef} pane={'firstPane'} selectPane={this.selectPane}/>
-                <Editor atomRef={secondPrevAtomRef} pane={'secondPane'} selectPane={this.selectPane}/>
-            </SplitPane>
-            : <Editor atomRef={ref} selectPane={this.selectPane} snapshot={this.snapshot} handleChange={this.handleChange} snapshotName={this.state.snapshotName}/>
-            }
+          <div className="block clearfix">
+            <form className="inline-form" onSubmit={this.snapshot}>
+              <label>Save current version as: </label>
+              <input type='text' onChange={this.handleChange} value={this.state.snapshotName} />
+              <button type="submit" >Save</button>
+            </form>
+            <button className='float-right' onClick={this.toggleSplit}>Vertical Split View</button>
+          </div>
+          {(splitPane) ? <SplitPane className='splitPane' defaultSize="50%" >
+            <Editor atomRef={firstPrevAtomRef} pane={'firstPane'} selectPane={this.selectPane} />
+            <Editor atomRef={secondPrevAtomRef} pane={'secondPane'} selectPane={this.selectPane} />
+          </SplitPane>
+            : <Editor atomRef={ref} selectPane={this.selectPane} snapshot={this.snapshot} handleChange={this.handleChange} snapshotName={this.state.snapshotName} />
+          }
         </div>
         <div className='col-xs-3 sidebar-right'>
           {(splitPane) ?

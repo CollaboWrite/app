@@ -106,3 +106,15 @@ body {
     overflow: hidden;
     width: 100%;
 }
+
+.float-right {
+    float: right;
+}
+
+.inline-form {
+    float: left;
+}
+
+.block {
+    display: block;
+}
