@@ -1,3 +1,8 @@
+
+.splitPane {
+    overflow: initial;
+}
+
 .container {
     margin: 0 50px;
 }
@@ -91,6 +96,15 @@ body {
     margin-bottom: auto;
 }
 
+.delete-atom {
+    color: white;
+    float: right;
+    margin-right: 2%;
+    margin-top: auto;
+    font-size: 150% !important;
+    margin-bottom: auto;
+}
+
 .collab-list {
     display: inline !important;
 }
@@ -142,3 +156,20 @@ textarea {
     width: 100%;
 }
 
+.splitPane {
+    position: relative !important;
+    overflow: hidden;
+    width: 100%;
+}
+
+.float-right {
+    float: right;
+}
+
+.inline-form {
+    float: left;
+}
+
+.block {
+    display: block;
+}

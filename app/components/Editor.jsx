@@ -1,11 +1,12 @@
 import React from 'react'
 import ReactQuill from 'react-quill'
 
-export default class extends React.Component {
+export default class Editor extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      value: ''
+      value: '',
+      pane: ''
     }
     this.write = this.write.bind(this)
   }
@@ -14,6 +15,7 @@ export default class extends React.Component {
     // When the component mounts, start listening to the fireRef
     // we were given.
     this.listenTo(this.props.atomRef.child('text'))
+    this.setState({ pane: this.props.pane })
   }
   componentWillReceiveProps(incoming) {
     // When the atomRef in the AtomEditor, we start listening to the new one
@@ -41,7 +43,6 @@ export default class extends React.Component {
   }
 
   render() {
-    const text = this.props.atom ? this.props.atom.text : ''
     return (
       <div className='col-xs-6 project-center'>
         <form onSubmit={this.props.snapshot}>
@@ -49,6 +50,10 @@ export default class extends React.Component {
           <input type='text' onChange={this.props.handleChange} value={this.props.snapshotName}/>
           <button className="btn btn-xs" type="submit" >Save</button>
         </form>
+      <div className="split-pane" value={this.state.pane} onClick={() => {
+        this.props.selectPane(this.state.pane)
+      }
+      }>
         <div className="editor-panel">
           <ReactQuill id='react-quill'
             value={this.state.value}

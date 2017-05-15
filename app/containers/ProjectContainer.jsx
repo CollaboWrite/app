@@ -70,13 +70,15 @@ export default class extends React.Component {
     )
     this.unsubscribe = () => {
       projectsRef.off('value', listener)
+      projectsRef.off('value', listenerProjects)
+      projectRef.off('value', rootListner)
     }
   }
 
   toggleChildren = (atomId, ind, level, expanded) => {
     const projectId = this.props.params.id
     const atomPointer = firebase.database().ref('projects').child(projectId).child('current').child('atoms')
-    firebase.database().ref('projects').child(projectId).child('current').child('atoms').child(atomId).child('children').on('value', childList => {
+    atomPointer.child(atomId).child('children').on('value', childList => {
       const newBinderView = [...this.state.binderView]
       if (expanded) {
         newBinderView[ind][3] = false
@@ -95,6 +97,30 @@ export default class extends React.Component {
     })
   }
 
+  toggleAddedChildren = (atomId, ind, level, expanded) => {
+    const projectId = this.props.params.id
+    const atomPointer = firebase.database().ref('projects').child(projectId).child('current').child('atoms')
+    atomPointer.child(atomId).child('children').on('value', childList => {
+      const newBinderView = [...this.state.binderView]
+      if (expanded) {
+        newBinderView[ind][3]=false
+        newBinderView.splice(++ind, Object.keys(childList.val()).length)
+        this.setState({ binderView: newBinderView }, () => this.toggleChildren(atomId, ind, level, false))
+      } else {
+        const newLevel = ++level
+        newBinderView[ind][3]=true
+        childList.forEach(child => {
+          atomPointer.child(child.key).once('value', atomSnap => {
+            const atomToPush = [child.key, atomSnap.val(), newLevel, false]
+            newBinderView.splice(++ind, 0, atomToPush)
+          })
+        })
+        this.setState({ binderView: newBinderView })
+      }
+      
+    })
+  }
+
   render() {
     const uid = this.props.params.uid
     const projectId = this.props.params.id
@@ -104,8 +130,8 @@ export default class extends React.Component {
         <div >
           <Toolbar projects={this.state.projects} projectId={projectId} />
         </div>
-        <div className='col-xs-3 sidebar-left'>
-          <Binder toggleChildren={this.toggleChildren} uid={uid} atoms={this.state.binderView} projectId={projectId} root={this.state.root} />
+        <div className='col-lg-3 sidebar-left'>
+          <Binder toggleChildren={this.toggleChildren} toggleAddedChildren={this.toggleAddedChildren} uid={uid} atoms={this.state.binderView} projectId={projectId} root={this.state.root} atomId={atomId} />
           <Trashcan project={this.state.project} />
         </div>
         <div>

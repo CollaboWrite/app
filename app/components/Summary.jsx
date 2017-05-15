@@ -64,12 +64,10 @@ export default class Summary extends React.Component {
           <form>
             <div>
               <label>Status</label>
-              <select onChange={this.writeStatus}>
+              <select defaultValue={this.state.status} onChange={this.writeStatus}>
                 {
                   statusOptions.map(status =>
-                    status === this.state.status
-                      ? (<option value={status} key={status} selected>{status}</option>)
-                      : (<option value={status} key={status}>{status}</option>)
+                    <option value={status} key={status}>{status}</option>
                   )
                 }
               </select>
