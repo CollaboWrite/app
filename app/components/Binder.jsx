@@ -40,11 +40,6 @@ export default class Binder extends React.Component {
     const newTitle = evt.target.value
     const parent = this.state.selectedAtom || this.props.root
     const newAtomKey = firebase.database().ref('projects').child(this.props.projectId).child('current').child('atoms').push().key
-<<<<<<< HEAD
-    const newAtom = { title: newTitle }
-    firebase.database().ref('projects').child(this.props.projectId).child('current').child('atoms').child(parent).child('children').child(newAtomKey).set(true)
-    firebase.database().ref('projects').child(this.props.projectId).child('current').child('atoms').child(newAtomKey).set(newAtom)
-=======
     const newAtom = {title: newTitle}
     firebase.database().ref('projects').child(this.props.projectId).child('current').child('atoms').child(parent).child('children').child(newAtomKey).set(true, (err) => {
       if (err) {
@@ -59,7 +54,6 @@ export default class Binder extends React.Component {
         })
       }
     })
->>>>>>> master
     evt.target.remove()
   }
 
@@ -71,13 +65,9 @@ export default class Binder extends React.Component {
       ? document.getElementsByClassName('current-atom')[0].classList.remove('current-atom')
       : console.log()
     evt.target.classList.add('current-atom')
-<<<<<<< HEAD
-    this.setState({ selectedAtom: evt.target.value })
-=======
->>>>>>> master
     browserHistory.push(`/${this.props.uid}/project/${this.props.projectId}/${evt.target.value}`)
     this.setState({selectedAtom: atomArr[0]})
-    const selectedAtom = atomArr[0]    
+    const selectedAtom = atomArr[0]
     console.log('selected atom', selectedAtom)
     firebase.database().ref('projects').child(this.props.projectId).child('current').child('atoms').child(selectedAtom).on('value', snapshot => {
       firebase.database().ref('users').child(this.props.uid).child('projects').child(this.props.projectId).set(selectedAtom)
@@ -129,15 +119,10 @@ export default class Binder extends React.Component {
       <div className='panel'>
         <div className='panel-heading'>
           <h3 className='panel-head'>Binder</h3>
-          <span className='fa fa-times delete-atom' 
+          <span className='fa fa-times delete-atom'
                 onClick={() => this.deleteAtom(this.state.selectedAtom)} />
           <span className='fa fa-plus-circle add-atom'
-<<<<<<< HEAD
             onClick={this.addAtom} />
-=======
-                onClick={this.addAtom} />
-          
->>>>>>> master
         </div>
         <Infinite containerHeight={400} elementHeight={26}>
         <div className='panel-body'>
