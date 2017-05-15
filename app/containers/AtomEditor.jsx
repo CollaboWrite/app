@@ -67,6 +67,11 @@ export default class AtomEditor extends React.Component {
     this.setState({ snapshotName: '' })
   }
 
+  // GAME PLAN:
+  // 1. write a function that compares two inputs of text
+  // 2. write a function that takes a pane (left/right) and the text & sets it to the state (function setPaneText)
+  // 3. button that triggers comparison of two inputs (#1 inputs will be outputs of #2)
+
   render() {
     const ref = projectsRef.child(this.props.projectId).child('current').child('atoms').child(this.props.atomId)
     const splitPane = this.state.splitPane

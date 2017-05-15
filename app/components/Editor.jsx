@@ -39,9 +39,10 @@ export default class Editor extends React.Component {
     }
   }
   write(html) {
+    // this function sends the pane & the text (this.state.value) to atomEditor
+    // this.props.setPaneText (#2)
     this.props.atomRef.child('text').set(html)
   }
-
   render() {
     return (
       <div className='col-xs-6 project-center'>
