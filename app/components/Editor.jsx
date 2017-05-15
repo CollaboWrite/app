@@ -48,12 +48,6 @@ export default class Editor extends React.Component {
         this.props.selectPane(this.state.pane)
       }
       }>
-      <div>
-        <form onSubmit={this.props.snapshot}>
-          <label>Save current version as: </label>
-          <input type='text' onChange={this.props.handleChange} value={this.props.snapshotName}/>
-          <button type="submit" >Save</button>
-        </form>
         <div className="editor-panel">
           <ReactQuill id='react-quill'
             value={this.state.value}
