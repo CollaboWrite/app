@@ -34,7 +34,7 @@ export default class CollabForm extends React.Component {
       firebase.database().ref('users').child(snapshot.key).child('collaborations').child(this.props.projectId).remove()
       const deletedUserIndex = this.state.collabKeys.indexOf(snapshot.key)
       this.setState({collaborators: this.state.collaborators.splice(deletedUserIndex-1, 1), collabKeys: this.state.collabKeys.splice(deletedUserIndex-1, 1)})
-  })
+    })
     this.unsubscribe = () => ref.off('value', listener)
     this.unsubscribe = () => ref.off('value', removedCollabListener)
   }
@@ -64,6 +64,7 @@ export default class CollabForm extends React.Component {
         this.setState({collaboratorEmail: ''})
         return firebase.database().ref().update(updates)
       }
+      this.setState({collaboratorEmail: ''})
     })
   }
   deleteCollab = (name, uid) => {
@@ -91,11 +92,11 @@ export default class CollabForm extends React.Component {
                     </span>
                   </li>
                 </div>)
-              }) }
+            }) }
           </ul>
           <form onSubmit={this.handleSubmit}>
             <label>Collaborator Email</label>
-            <input value={this.state.collaboratorEmail} type='text' onChange={this.handleChange} />
+            <input value={this.state.collaboratorEmail} type='text' onChange={this.handleChange} value={this.state.collaboratorEmail}/>
             <button type='submit'>Add Collaborator</button>
           </form>
         </div>
