@@ -9,7 +9,7 @@
 
 body {
     font-family: Helvetica, sans-serif;
-    background-color: #f2edcb;
+    background-color: #C6DDF0;
     color: black;
 }
 
@@ -52,9 +52,17 @@ body {
 }
 
 #react-quill {
-    height: 80vh;
+    height: 95vh;
     width: 48vw;
     background-color: white;
+}
+
+.project-center, .ql-editor, .ql-container {
+    height: 90vh;
+}
+
+.editor-panel {
+    height: 100vh;
 }
 
 #binder-list {
@@ -67,11 +75,16 @@ body {
 }
 
 .current-atom {
-    background-color: lightblue;
+    background-color: #EAF6FF;
 }
 
-#binder-head {
+.panel-head {
     display: inline;
+    color: white;
+}
+
+.panel-heading {
+    background-color: #98A6D4;
 }
 
 .add-atom {
@@ -99,6 +112,48 @@ body {
 .delete-collab {
     margin-right: 35%;
     float: right;
+}
+
+h2, h3 {
+    font-family: 'Raleway';
+}
+
+.toolbar-list li {
+    font-family: 'Raleway';
+    color: white;
+}
+
+.navbar-default .navbar-nav > li > a {
+    color: white;
+}
+
+.toolbar-select {
+    color: black;
+}
+
+#app-title {
+    font-family: 'Satisfy';
+    font-size: 75px !important;
+    color: white;
+}
+
+nav.navbar {
+    background-color: #564D80;
+}
+
+#navbar-title {
+    font-family: 'Satisfy';
+    color: white;
+    text-transform: none;
+    font-size: 25px;
+}
+
+#toolbar-label {
+    padding-right: 5px;
+}
+
+textarea {
+    width: 100%;
 }
 
 .splitPane {

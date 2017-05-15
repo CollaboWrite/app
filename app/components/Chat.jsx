@@ -54,18 +54,12 @@ export default class Chat extends React.Component {
   }
   render() {
     const messages = this.state.messages
-    const chatHeaderStyle = {
-      backgroundColor: '#f5f5f5'
-      , borderStyle: 'solid'
-      , borderWidth: '1px'
-      , borderColor: '#dddddd'
-    }
     return (
       <div>
         <MuiThemeProvider>
           <List>
-            <Subheader style={chatHeaderStyle}><h3>Chats</h3></Subheader>
-            <Infinite containerHeight={200} elementHeight={72}
+            <Subheader className='panel-heading'><h3 className='panel-head'>Chats</h3></Subheader>
+            <Infinite containerHeight={200} elementHeight={50}
               displayBottomUpwards>
               {messages && messages.map(message => {
                 const senderName = Object.keys(message)

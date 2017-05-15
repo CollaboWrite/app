@@ -39,15 +39,14 @@ export default class Notes extends React.Component {
   }
   render() {
     return (
-      <div className="panel panel-info">
+      <div className="panel">
         <div className="panel-heading">
-          <h3>Notes</h3>
+          <h3 className='panel-head'>Notes</h3>
         </div>
         <div className="panel-body">
           <textarea
             onChange={this.write}
             rows={4}
-            cols={40}
             value={this.state.value}
           />
         </div>

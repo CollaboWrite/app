@@ -76,9 +76,9 @@ export default class CollabForm extends React.Component {
     // console.log('props', this.props)
     const collaborators = this.state.collaborators
     return (
-      <div className="panel panel-default">
+      <div className="panel">
         <div className='panel-heading'>
-          <h3>Collaborators</h3>
+          <h3 className='panel-head'>Collaborators</h3>
         </div>
         <div className='panel-body'>
           <ul>
@@ -97,7 +97,7 @@ export default class CollabForm extends React.Component {
           <form onSubmit={this.handleSubmit}>
             <label>Collaborator Email</label>
             <input value={this.state.collaboratorEmail} type='text' onChange={this.handleChange} value={this.state.collaboratorEmail}/>
-            <button type='submit'>Add Collaborator</button>
+            <button className='btn btn-xs' type='submit'>+</button>
           </form>
         </div>
         <Chat uid={this.props.uid} collaborators={this.props.collaborators} projectId={this.props.projectId} />

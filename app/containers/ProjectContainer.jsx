@@ -127,7 +127,7 @@ export default class extends React.Component {
     const atomId = this.props.params.atomId
     return (
       <div>
-        <div className='col-xs-12'>
+        <div >
           <Toolbar projects={this.state.projects} projectId={projectId} />
         </div>
         <div className='col-lg-3 sidebar-left'>
