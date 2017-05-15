@@ -16,15 +16,17 @@ export const name = user => {
 
 export const WhoAmI = ({user, auth}) =>
   <div className="whoami">
-    <span className="whoami-user-name">Hello, {name(user)}</span>
+    <span className="whoami-user-name"></span>
     { // If nobody is logged in, or the current user is anonymous,
       (!user || user.isAnonymous)?
       // ...then show signin links...
         <Login auth={auth}/>
       /// ...otherwise, show a logout button.
       : <div>
+          <div className='right logout-div'>
+            <button className='logout btn btn-danger' onClick={() => auth.signOut()}>logout</button>
+          </div>
           <UserPage user={user}/>
-          <button className='logout' onClick={() => auth.signOut()}>logout</button>
         </div> }
   </div>
 
