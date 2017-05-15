@@ -67,15 +67,11 @@ export default class AtomEditor extends React.Component {
     // 'this.state.atomRef' NEVER being set in this file...is this happening???
     const ref = this.state.atomRef || projectsRef.child(this.props.projectId).child('current').child('atoms').child(this.props.atomId)
     const splitPane = this.state.splitPane
-
+    const firstAtomId = this.state.firstPrevAtomId || this.props.atomId
+    const secondAtomId = this.state.secondPrevAtomId || this.props.atomId
     // if prevAtomId exists for either panes, send the prevRef is null
-    let firstPrevAtomRef, secondPrevAtomRef = null
-    if (this.state.firstPrevAtomId) {
-      firstPrevAtomRef = projectsRef.child(this.props.projectId).child('current').child('atoms').child(this.state.firstPrevAtomId)
-    }
-    if (this.state.secondPrevAtomId) {
-      secondPrevAtomRef = projectsRef.child(this.props.projectId).child('current').child('atoms').child(this.state.secondPrevAtomId)
-    }
+    const firstPrevAtomRef = projectsRef.child(this.props.projectId).child('current').child('atoms').child(firstAtomId)
+    const secondPrevAtomRef = projectsRef.child(this.props.projectId).child('current').child('atoms').child(secondAtomId)
     // if splitPane is true, pass down atomRef to just the selected pane & show render <SplitPane> with two <Editor> components as 'children'
     // else, just show the old Editor
     console.log('this state in atomeditor', this.state)
@@ -84,8 +80,8 @@ export default class AtomEditor extends React.Component {
         <div className='col-xs-6 project-center'>
           <button onClick={this.toggleSplit}>Vertical Split View</button>
             {(splitPane) ? <SplitPane className='splitPane' defaultSize="50%" >
-                {(this.state.selectedPane === 'firstPane') ? <Editor atomRef={ref} pane={'firstPane'} selectPane={this.selectPane}/> : <Editor atomRef={firstPrevAtomRef} pane={'firstPane'} selectPane={this.selectPane}/>}
-                {(this.state.selectedPane === 'secondPane') ? <Editor atomRef={ref} pane={'secondPane'} selectPane={this.selectPane}/> : <Editor atomRef={secondPrevAtomRef} pane={'secondPane'} selectPane={this.selectPane}/>}
+                {<Editor atomRef={firstPrevAtomRef} pane={'firstPane'} selectPane={this.selectPane}/>}
+                {<Editor atomRef={secondPrevAtomRef} pane={'secondPane'} selectPane={this.selectPane}/>}
             </SplitPane>
             : <Editor atomRef={ref} selectPane={this.selectPane}/>
             }

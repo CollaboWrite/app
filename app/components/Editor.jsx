@@ -14,13 +14,13 @@ export default class extends React.Component {
   componentDidMount() {
     // When the component mounts, start listening to the fireRef
     // we were given.
-    (this.props.atomRef) ? this.listenTo(this.props.atomRef.child('text')) : this.setState({ value: '' })
+    this.listenTo(this.props.atomRef.child('text'))
     this.setState({ pane: this.props.pane })
   }
   componentWillReceiveProps(incoming) {
     // When the atomRef in the AtomEditor, we start listening to the new one
-    (incoming.atomRef) ? this.listenTo(incoming.atomRef.child('text')) : this.setState({ value: '' })
-    this.setState({ pane: this.props.pane })
+    this.listenTo(incoming.atomRef.child('text'))
+    // this.setState({ pane: this.props.pane })
   }
   componentWillUnmount() {
     // When we unmount, stop listening.
