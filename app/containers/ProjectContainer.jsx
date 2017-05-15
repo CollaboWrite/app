@@ -78,7 +78,7 @@ export default class extends React.Component {
   toggleChildren = (atomId, ind, level, expanded) => {
     const projectId = this.props.params.id
     const atomPointer = firebase.database().ref('projects').child(projectId).child('current').child('atoms')
-    firebase.database().ref('projects').child(projectId).child('current').child('atoms').child(atomId).child('children').on('value', childList => {
+    atomPointer.child(atomId).child('children').on('value', childList => {
       const newBinderView = [...this.state.binderView]
       if (expanded) {
         newBinderView[ind][3] = false
