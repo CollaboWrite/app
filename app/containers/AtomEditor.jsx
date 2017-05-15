@@ -16,7 +16,8 @@ export default class AtomEditor extends React.Component {
       atomVal: {},
       splitPane: false,
       selectedPane: '',
-      prevAtomId: ''
+      firstPrevAtomId: '',
+      secondPrevAtomId: ''
     }
   }
 
@@ -35,43 +36,59 @@ export default class AtomEditor extends React.Component {
     if (this.unsubscribe) this.unsubscribe()
     // Whenever our ref's value changes, set {value} on our state.
     const listener = atomRef.on('value', snapshot => {
+      console.log('atomval', snapshot.val())
       this.setState({ atomVal: snapshot.val() })
     })
     this.unsubscribe = () => {
       atomRef.off('value', listener)
     }
   }
-
-  updateAtom = (updateObj) =>
-    projectsRef.child(this.props.params.id).child('current').child('atoms').child(this.props.params.atomId).update(updateObj)
+  // toggle button between not split/split
   toggleSplit = (evt) => {
     evt.preventDefault()
     this.setState({ splitPane: !this.state.splitPane })
   }
   selectPane = (val) => {
-    this.setState({ prevAtomId: this.state.atomVal, selectedPane: val })
+    // if reselecting already selected pane, don't reset the prevAtom/selectedPane
+    if (this.state.selectedPane !== val) {
+      // if firstPane selected, set current atomVal to it's prevAtomId and set current selectedPane to this
+      // same for secondPane
+      if (val === 'firstPane') {
+        this.setState({ firstPrevAtomId: this.props.atomId, selectedPane: val })
+      } else if (val === 'secondPane') {
+        this.setState({ secondPrevAtomId: this.props.atomId, selectedPane: val })
+      } else {
+        // this triggers when single pane view and the editor is clicked
+        this.setState({ firstPrevAtomId: this.props.atomId })
+      }
+    }
   }
   render() {
-    // when is this.state.atomRef ever being set???
+    // 'this.state.atomRef' NEVER being set in this file...is this happening???
     const ref = this.state.atomRef || projectsRef.child(this.props.projectId).child('current').child('atoms').child(this.props.atomId)
-    let prevAtomRef = ref
     const splitPane = this.state.splitPane
-    if (this.state.prevAtomId) {
-      prevAtomRef = projectsRef.child(this.props.projectId).child('current').child('atoms').child(this.state.prevAtomId)
+
+    // if prevAtomId exists for either panes, send the prevRef is null
+    let firstPrevAtomRef, secondPrevAtomRef = null
+    if (this.state.firstPrevAtomId) {
+      firstPrevAtomRef = projectsRef.child(this.props.projectId).child('current').child('atoms').child(this.state.firstPrevAtomId)
     }
-    // if splitPane is true, pass down atomRef to just the selected pane
-    // may need to save previous atomRef to pass down to pane NOT selected
+    if (this.state.secondPrevAtomId) {
+      secondPrevAtomRef = projectsRef.child(this.props.projectId).child('current').child('atoms').child(this.state.secondPrevAtomId)
+    }
+    // if splitPane is true, pass down atomRef to just the selected pane & show render <SplitPane> with two <Editor> components as 'children'
+    // else, just show the old Editor
     console.log('this state in atomeditor', this.state)
     return (
       <div>
         <div className='col-xs-6 project-center'>
           <button onClick={this.toggleSplit}>Vertical Split View</button>
-          {(splitPane) ? <SplitPane className='splitPane' defaultSize="50%" >
-              {(this.state.selectedPane === 'firstPane') ? <Editor atomRef={ref} pane={'firstPane'} selectPane={this.selectPane}/> : <Editor atomRef={prevAtomRef} pane={'firstPane'} selectPane={this.selectPane}/>}
-              {(this.state.selectedPane === 'secondPane') ? <Editor atomRef={ref} pane={'secondPane'} selectPane={this.selectPane}/> : <Editor pane={'secondPane'} selectPane={this.selectPane}/>}
-          </SplitPane>
-          : <Editor atomRef={ref} selectPane={this.selectPane}/>
-          }
+            {(splitPane) ? <SplitPane className='splitPane' defaultSize="50%" >
+                {(this.state.selectedPane === 'firstPane') ? <Editor atomRef={ref} pane={'firstPane'} selectPane={this.selectPane}/> : <Editor atomRef={firstPrevAtomRef} pane={'firstPane'} selectPane={this.selectPane}/>}
+                {(this.state.selectedPane === 'secondPane') ? <Editor atomRef={ref} pane={'secondPane'} selectPane={this.selectPane}/> : <Editor atomRef={secondPrevAtomRef} pane={'secondPane'} selectPane={this.selectPane}/>}
+            </SplitPane>
+            : <Editor atomRef={ref} selectPane={this.selectPane}/>
+            }
         </div>
         <div className='col-xs-3 sidebar-right'>
           <Summary atomRef={ref} />
