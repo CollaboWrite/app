@@ -12,6 +12,7 @@ export default class AtomEditor extends React.Component {
     super(props)
     this.state = {
       atomVal: {},
+      snapshotName: '',
     }
   }
 
@@ -36,22 +37,29 @@ export default class AtomEditor extends React.Component {
       atomRef.off('value', listener)
     }
   }
+  handleChange = (evt) => {
+    this.setState({snapshotName: evt.target.value})
+  }
+
   snapshot = (evt) => {
     evt.preventDefault()
     projectsRef.child(this.props.projectId).once('value', snapshot => {
       const snapshotObj = snapshot.val()
+      snapshotObj.title = this.state.snapshotName
       snapshotObj.timeStamp = Date.now() // can format as needed
       snapshotObj.snapshots = null // removing snapshots of new snapshot to preserve space
       snapshotObj.messages = null // removing messages of new snapshot to preserve space
+      snapshotObj.collaborators = null // removing collaborators from snapshot
       projectsRef.child(this.props.projectId + '/snapshots').push(snapshotObj)
     })
+    this.setState({snapshotName: ''})
   }
   render() {
     const ref = this.state.atomRef || projectsRef.child(this.props.projectId).child('current').child('atoms').child(this.props.atomId)
     return (
       <div>
         <div className='col-xs-6 project-center'>
-          <Editor atomRef={ref} snapshot={this.snapshot}/>
+          <Editor atomRef={ref} snapshot={this.snapshot} handleChange={this.handleChange} snapshotName={this.state.snapshotName}/>
         </div>
         <div className='col-xs-3 sidebar-right'>
           <Summary atomRef={ref} />
