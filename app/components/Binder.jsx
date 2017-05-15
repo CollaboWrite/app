@@ -126,9 +126,9 @@ export default class Binder extends React.Component {
 
   render() {
     return (
-      <div className='panel panel-info'>
+      <div className='panel'>
         <div className='panel-heading'>
-          <h3 id='binder-head'>Binder</h3>
+          <h3 className='panel-head'>Binder</h3>
           <span className='fa fa-times delete-atom' 
                 onClick={() => this.deleteAtom(this.state.selectedAtom)} />
           <span className='fa fa-plus-circle add-atom'

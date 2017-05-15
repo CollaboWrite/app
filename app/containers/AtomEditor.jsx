@@ -80,7 +80,14 @@ export default class AtomEditor extends React.Component {
     return (
       <div>
         <div className='col-xs-6 project-center'>
-          <button onClick={this.toggleSplit}>Vertical Split View</button>
+          <div className="block clearfix">
+            <form className="inline-form" onSubmit={this.snapshot}>
+              <label>Save current version as: </label>
+              <input type='text' onChange={this.handleChange} value={this.state.snapshotName} />
+              <button type="submit" >Save</button>
+            </form>
+            <button className='float-right' onClick={this.toggleSplit}>Vertical Split View</button>
+          </div>
           {(splitPane) ? <SplitPane className='splitPane' defaultSize="50%" >
             <Editor atomRef={firstPrevAtomRef} pane={'firstPane'} selectPane={this.selectPane} />
             <Editor atomRef={secondPrevAtomRef} pane={'secondPane'} selectPane={this.selectPane} />

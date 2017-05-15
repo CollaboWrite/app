@@ -44,21 +44,22 @@ export default class Editor extends React.Component {
 
   render() {
     return (
-      <div className="split-pane" value={this.state.pane} onClick={() => {
-        this.props.selectPane(this.state.pane)
-      }
-      }>
-      <div>
+      <div className='col-xs-6 project-center'>
         <form onSubmit={this.props.snapshot}>
           <label>Save current version as: </label>
-          <input type='text' onChange={this.props.handleChange} value={this.props.snapshotName}/>
-          <button type="submit" >Save</button>
+          <input type='text' onChange={this.props.handleChange} value={this.props.snapshotName} />
+          <button className="btn btn-xs" type="submit" >Save</button>
         </form>
-        <div className="editor-panel">
-          <ReactQuill id='react-quill'
-            value={this.state.value}
-            onChange={this.write}
-            theme={'snow'} />
+        <div className="split-pane" value={this.state.pane} onClick={() => {
+          this.props.selectPane(this.state.pane)
+        }
+        }>
+          <div className="editor-panel">
+            <ReactQuill id='react-quill'
+              value={this.state.value}
+              onChange={this.write}
+              theme={'snow'} />
+          </div>
         </div>
       </div>
     )

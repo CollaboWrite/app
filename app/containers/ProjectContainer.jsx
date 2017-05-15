@@ -75,16 +75,10 @@ export default class extends React.Component {
       browserHistory.push(`/${this.props.params.uid}/project/${newViewingProject}/0`)
     })
     this.unsubscribe = () => {
-<<<<<<< HEAD
       projectsRef.off('child_added', projectsListener)
       projectsRef.off('child_added', collabsListener)
       projectRef.off('value', rootListener)
       currentProjectRef.off('value', viewingProjectListener)
-=======
-      projectsRef.off('value', listener)
-      projectsRef.off('value', listenerProjects)
-      projectRef.off('value', rootListner)
->>>>>>> master
     }
   }
 

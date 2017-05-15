@@ -50,9 +50,9 @@ export default class Summary extends React.Component {
   }
   render() {
     return (
-      <div className="panel panel-info">
+      <div className="panel">
         <div className="panel-heading">
-          <h3>Summary</h3>
+          <h3 className='panel-head'>Summary</h3>
         </div>
         <div className="panel-body">
           <textarea
