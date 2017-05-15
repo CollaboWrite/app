@@ -3,7 +3,6 @@ import firebase from 'APP/server/db'
 import { Link, browserHistory } from 'react-router'
 
 const auth = firebase.auth()
-
 const Toolbar = (props) => (
   <nav className="navbar navbar-default">
     <div className="container-fluid">
@@ -23,7 +22,7 @@ const Toolbar = (props) => (
           <li>
             <a>
               <label id='toolbar-label'>Current Project:</label>
-              <select className='toolbar-select' onChange={(evt) => { }}>
+              <select className='toolbar-select' onChange={props.toggleProject}>
                 {
                   props.projects.length && props.projects.map((project, indx) => (
                     <option value={project.key} key={project.key}>{project.title}</option>

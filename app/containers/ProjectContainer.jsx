@@ -1,4 +1,5 @@
 import React from 'react'
+import { browserHistory } from 'react-router'
 
 import firebase from 'APP/server/db'
 import Toolbar from '../components/Toolbar'
@@ -9,15 +10,14 @@ import CollabForm from '../components/CollabForm'
 
 const projectsRef = firebase.database().ref('projects')
 
-
 export default class extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
       projects: {},
-      project: {},
       root: null,
-      binderView: []
+      binderView: [],
+      viewingProject: this.props.params.id
     }
     this.listenTo = this.listenTo.bind(this)
   }
@@ -25,9 +25,14 @@ export default class extends React.Component {
   componentDidMount() {
     // When the component mounts, start listening to the fireRef
     // we were given.
+    const currentProjectRef = firebase.database().ref('users').child(this.props.params.uid).child('viewingProject')
     const rootRef = projectsRef.child(this.props.params.id).child('current').child('root').once('value')
       .then(snapshot => { this.setState({ root: snapshot.val() }) })
-      .then(() => this.listenTo(projectsRef.child(this.props.params.id).child('current'), projectsRef))
+      .then(() => this.listenTo(
+        projectsRef.child(this.state.viewingProject).child('current')
+        , projectsRef
+        , currentProjectRef)
+      )
       .catch(error => console.error(error))
   }
   componentWillUnmount() {
@@ -35,15 +40,11 @@ export default class extends React.Component {
     this.unsubscribe()
   }
   // listen to the fireRef.child
-  listenTo(projectRef, projectsRef) {
+  listenTo(projectRef, projectsRef, currentProjectRef) {
     // If we're already listening to a ref, stop listening there.
     if (this.unsubscribe) this.unsubscribe()
-    // Whenever our ref's value changes, set {value} on our state.
-    const listener = projectRef.on('value', snapshot =>
-      this.setState({ project: snapshot.val() })
-    )
     // grabs THIS user's projects and adds it as an object {projectKey: projectTitle}
-    const listenerProjects = firebase.database().ref(`/users/${this.props.params.uid}/projects`).on('child_added', projectSnap => {
+    const projectsListener = firebase.database().ref(`/users/${this.props.params.uid}/projects`).on('child_added', projectSnap => {
       // making a projects obj to add to projects list
       const projectObj = {}
       projectObj.key = projectSnap.key
@@ -52,7 +53,7 @@ export default class extends React.Component {
         this.setState({ projects: [...this.state.projects, projectObj] })
       })
     })
-    const listenerCollabs = firebase.database().ref(`/users/${this.props.params.uid}/collaborations`).on('child_added', projectSnap => {
+    const collabsListener = firebase.database().ref(`/users/${this.props.params.uid}/collaborations`).on('child_added', projectSnap => {
       // making a projects obj to add to projects list
       const projectObj = {}
       projectObj.key = projectSnap.key
@@ -68,11 +69,22 @@ export default class extends React.Component {
         })
       })
     )
+    const viewingProjectListener = currentProjectRef.on('value', snapshot => {
+      const newViewingProject = snapshot.val()
+      this.setState({ viewingProject: newViewingProject })
+      browserHistory.push(`/${this.props.params.uid}/project/${newViewingProject}/0`)
+    })
     this.unsubscribe = () => {
-      projectsRef.off('value', listener)
-      projectsRef.off('value', listenerProjects)
-      projectRef.off('value', rootListner)
+      projectsRef.off('child_added', projectsListener)
+      projectsRef.off('child_added', collabsListener)
+      projectRef.off('value', rootListener)
+      currentProjectRef.off('value', viewingProjectListener)
     }
+  }
+
+  toggleProject = (evt) => {
+    const projectId = evt.target.value
+    firebase.database().ref('/users/' + this.props.params.uid + '/viewingProject').set(projectId)
   }
 
   toggleChildren = (atomId, ind, level, expanded) => {
@@ -123,16 +135,16 @@ export default class extends React.Component {
 
   render() {
     const uid = this.props.params.uid
-    const projectId = this.props.params.id
+    const projectId = this.state.viewingProject // Should this should be informed by users/uid/viewingProject?
     const atomId = this.props.params.atomId
     return (
       <div>
-        <div >
-          <Toolbar projects={this.state.projects} projectId={projectId} />
+        <div className='col-xs-12'>
+          <Toolbar projects={this.state.projects} projectId={projectId} toggleProject={this.toggleProject} />
         </div>
-        <div className='col-lg-3 sidebar-left'>
+        <div className='col-xs-3 sidebar-left'>
           <Binder toggleChildren={this.toggleChildren} toggleAddedChildren={this.toggleAddedChildren} uid={uid} atoms={this.state.binderView} projectId={projectId} root={this.state.root} atomId={atomId} />
-          <Trashcan project={this.state.project} />
+          <Trashcan />
         </div>
         <div>
           <AtomEditor uid={uid} projectId={projectId} atomId={atomId} />
