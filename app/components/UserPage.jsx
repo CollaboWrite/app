@@ -2,7 +2,7 @@ import React from 'react'
 import { Link, browserHistory } from 'react-router'
 import firebase from 'APP/server/db'
 
-export default class extends React.Component {
+export default class UserPage extends React.Component {
   constructor(props) {
     super(props)
     this.state = {

@@ -5,7 +5,7 @@ import firebase from 'APP/server/db'
 
 var Infinite = require('react-infinite')
 
-export default class extends React.Component {
+export default class Binder extends React.Component {
   constructor(props) {
     super(props)
   }
