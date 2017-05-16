@@ -88,7 +88,7 @@ export default class AtomEditor extends React.Component {
             </form>
             <button className='float-right' onClick={this.toggleSplit}>Vertical Split View</button>
           </div>
-          {(splitPane) ? <SplitPane className='splitPane' defaultSize="50%" >
+          {(splitPane) ? <SplitPane className='splitPane' defaultSize="50%" maxSize={50} >
             <Editor atomRef={firstPrevAtomRef} pane={'firstPane'} selectPane={this.selectPane} />
             <Editor atomRef={secondPrevAtomRef} pane={'secondPane'} selectPane={this.selectPane} />
           </SplitPane>
