@@ -65,13 +65,28 @@ body {
     height: 100vh;
 }
 
-#binder-list {
+#binder {
+    padding: 0;
+}
+
+.binder-list {
     list-style: none
 }
 
 .binder-item {
-    border: none;
-    background-color: transparent
+    text-decoration: none;
+    color: black;
+    padding: 0 10px;
+}
+
+.binder-item:hover {
+    text-decoration: none;
+    color: blue;
+}
+
+.binder-item:active, .binder-item:focus  {
+    text-decoration: none;
+    color: purple;
 }
 
 .current-atom {

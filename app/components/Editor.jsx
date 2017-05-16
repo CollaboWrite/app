@@ -1,5 +1,7 @@
 import React from 'react'
+import Quill from 'quill'
 import ReactQuill from 'react-quill'
+const Delta = Quill.import('delta')
 
 export default class Editor extends React.Component {
   constructor(props) {
@@ -38,6 +40,7 @@ export default class Editor extends React.Component {
       atomRef.off('value', listener)
     }
   }
+
   write(html) {
     // this function sends the pane & the text (this.state.value) to atomEditor
     // this.props.setPaneText (#2)

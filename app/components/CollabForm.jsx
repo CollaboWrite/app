@@ -15,16 +15,20 @@ export default class CollabForm extends React.Component {
     const collaboratorsRef = firebase.database().ref('projects').child(this.props.projectId).child('collaborators')
     this.listenTo(collaboratorsRef)
   }
+  componentWillReceiveProps(incoming) {
+    if (incoming.projectId !== this.props.projectId) {
+      const collaboratorsRef = firebase.database().ref('projects').child(incoming.projectId).child('collaborators')
+      this.setState({ collaborators: [], collabKeys: [] }, () => this.listenTo(collaboratorsRef))
+    }
+  }
+
   listenTo = (ref) => {
     if (this.unsubscribe) this.unsubscribe()
     // listen to each child on 'collaborators' branch for this project
     const listener = ref.on('child_added', snapshot => {
       // if the id matches current user, don't display him/herself as collaborators
       if (snapshot.key !== this.props.uid) {
-        this.setState({collaborators: [...this.state.collaborators, snapshot.val()]}) // gets the NAME value
-      }
-      if (snapshot.key !== this.props.uid) {
-        this.setState({collabKeys: [...this.state.collabKeys, snapshot.key]}) // gets the uid value
+        this.setState({ collaborators: [...this.state.collaborators, snapshot.val()], collabKeys: [...this.state.collabKeys, snapshot.key] })
       }
     })
     const removedCollabListener = ref.on('child_removed', snapshot => {
@@ -32,11 +36,15 @@ export default class CollabForm extends React.Component {
       // snapshot.key === uid, snapshot.val() === user name
       // deletes collaborator reference to this project under the removed user collaborator
       firebase.database().ref('users').child(snapshot.key).child('collaborations').child(this.props.projectId).remove()
+      const collabCopy = this.state.collaborators.slice()
+      const collabKeysCopy = this.state.collabKeys.slice()
       const deletedUserIndex = this.state.collabKeys.indexOf(snapshot.key)
-      this.setState({collaborators: this.state.collaborators.splice(deletedUserIndex-1, 1), collabKeys: this.state.collabKeys.splice(deletedUserIndex-1, 1)})
+      collabCopy.splice(deletedUserIndex, 1)
+      collabKeysCopy.splice(deletedUserIndex, 1)
+      this.setState({ collaborators: collabCopy, collabKeys: collabKeysCopy })
     })
-    this.unsubscribe = () => ref.off('value', listener)
-    this.unsubscribe = () => ref.off('value', removedCollabListener)
+    this.unsubscribe = () => ref.off('child_added', listener)
+    this.unsubscribe = () => ref.off('child_removed', removedCollabListener)
   }
   componentWillUnmount() {
     // When we unmount, stop listening.
@@ -52,7 +60,7 @@ export default class CollabForm extends React.Component {
     findUserByEmail.once('value', snapshot => {
       if (!snapshot.val()) {
         window.alert('Please enter a contributor email for a user who has an account with us!')
-        this.setState({collaboratorEmail: ''})
+        this.setState({ collaboratorEmail: '' })
       }
       const userObj = snapshot.val() // { uniqueKey: {}}
       const id = Object.keys(snapshot.val())[0] // grabs uniqueKey of user
@@ -65,12 +73,12 @@ export default class CollabForm extends React.Component {
         const name = userObj[id].name
         updates['/projects/' + projectId + '/collaborators/' + id] = name // saves {id: name} of new collaborator
         updates['/users/' + id + '/collaborations/' + projectId] = atomId // saves {projectId: root} for in collab field for new collaborator
-        this.setState({collaboratorEmail: ''})
+        this.setState({ collaboratorEmail: '' })
         return firebase.database().ref().update(updates)
       } else {
         window.alert('This user is already a collaborator!')
       }
-      this.setState({collaboratorEmail: ''})
+      this.setState({ collaboratorEmail: '' })
     })
   }
   deleteCollab = (name, uid) => {
@@ -94,15 +102,15 @@ export default class CollabForm extends React.Component {
                   <li className='collab-list'>
                     {collab}
                     <span className='fa fa-times delete-collab'
-                          onClick={() => this.deleteCollab(collab, this.state.collabKeys[idx])}>
+                      onClick={() => this.deleteCollab(collab, this.state.collabKeys[idx])}>
                     </span>
                   </li>
                 </div>)
-            }) }
+            })}
           </ul>
           <form onSubmit={this.handleSubmit}>
             <label>Collaborator Email</label>
-            <input value={this.state.collaboratorEmail} type='text' onChange={this.handleChange} value={this.state.collaboratorEmail}/>
+            <input value={this.state.collaboratorEmail} type='text' onChange={this.handleChange} value={this.state.collaboratorEmail} />
             <button className='btn btn-xs' type='submit'>+</button>
           </form>
         </div>

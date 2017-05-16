@@ -22,7 +22,7 @@ const Toolbar = (props) => (
           <li>
             <a>
               <label id='toolbar-label'>Current Project:</label>
-              <select className='toolbar-select' onChange={props.toggleProject}>
+              <select value={props.projectId} className='toolbar-select' onChange={props.toggleProject}>
                 {
                   props.projects.length && props.projects.map((project, indx) => (
                     <option value={project.key} key={project.key}>{project.title}</option>
