@@ -49,12 +49,13 @@ const RootAtomEditor = (props) => {
 
 render(
   <Router history={browserHistory}>
-    <Route path='/' component={LandingPage} />
+    <Route path='/' component={LandingPage}>
+      <Route path='/login' component={WhoAmI} />
+    </Route>
     <Route path='/:uid/project/:id' component={ProjectContainer} >
       <Route path=':atomId' component={AtomEditor} />
       <IndexRoute component={RootAtomEditor} />
     </Route>
-    <Route path='/login' component={WhoAmI} />
     <Route path='*' component={NotFound} />
   </Router>,
   document.getElementById('main')
