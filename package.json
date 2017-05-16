@@ -86,6 +86,7 @@
     "sinon": "^1.17.6",
     "sinon-chai": "^2.8.0",
     "superagent": "^3.5.2",
+    "text-diff": "^1.0.1",
     "textract": "^2.1.2",
     "xml2js": "^0.4.17"
   },
