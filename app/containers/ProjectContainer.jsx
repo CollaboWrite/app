@@ -62,15 +62,25 @@ export default class extends React.Component {
         this.setState({ projects: [...this.state.projects, projectObj] })
       })
     })
-    const rootListener = projectRef.child('atoms').child(this.state.root).child('children').once('value', snapshot =>
-      snapshot.forEach(childSnap => {
-        projectRef.child('atoms').child(childSnap.key).once('value', childSnap => {
-          this.setState({ binderView: [...this.state.binderView, [childSnap.key, childSnap.val(), 0, false]] })
+    const getBinder = (refOrRefId) => {
+      let _projectRef = refOrRefId
+      if (typeof refOrRefId === 'string') {
+        _projectRef = projectsRef.child(refOrRefId).child('current')
+      }
+      return _projectRef.child('atoms').child('0').child('children').once('value', snapshot => {
+        const newBinderView = []
+        snapshot.forEach(childSnap => {
+          _projectRef.child('atoms').child(childSnap.key).once('value', childSnap => {
+            newBinderView.push([childSnap.key, childSnap.val(), 0, false])
+          })
         })
+        this.setState({binderView: newBinderView})
       })
-    )
+    }
+    const rootListener = getBinder(projectRef)
     const viewingProjectListener = currentProjectRef.on('value', snapshot => {
       const newViewingProject = snapshot.val()
+      getBinder(newViewingProject)
       this.setState({ viewingProject: newViewingProject })
       browserHistory.push(`/${this.props.params.uid}/project/${newViewingProject}/0`)
     })
@@ -115,12 +125,12 @@ export default class extends React.Component {
     atomPointer.child(atomId).child('children').on('value', childList => {
       const newBinderView = [...this.state.binderView]
       if (expanded) {
-        newBinderView[ind][3]=false
+        newBinderView[ind][3] = false
         newBinderView.splice(++ind, Object.keys(childList.val()).length)
         this.setState({ binderView: newBinderView }, () => this.toggleChildren(atomId, ind, level, false))
       } else {
         const newLevel = ++level
-        newBinderView[ind][3]=true
+        newBinderView[ind][3] = true
         childList.forEach(child => {
           atomPointer.child(child.key).once('value', atomSnap => {
             const atomToPush = [child.key, atomSnap.val(), newLevel, false]
@@ -129,7 +139,7 @@ export default class extends React.Component {
         })
         this.setState({ binderView: newBinderView })
       }
-      
+
     })
   }
 

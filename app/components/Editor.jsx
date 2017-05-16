@@ -41,13 +41,13 @@ export default class Editor extends React.Component {
     }
   }
   write(html, delta, source, editor) {
-    console.log('delta is', delta)
-    console.log('source is', source)
-    console.log('selection', editor.getSelection())
-    const newDeltaObj = {
-      delta: delta,
-      index: editor.getSelection().index
-    }
+    // console.log('delta is', delta)
+    // console.log('source is', source)
+    // console.log('selection', editor.getSelection())
+    // const newDeltaObj = {
+    //   delta: delta,
+    //   index: editor.getSelection().index
+    // }
     // this.props.atomRef.push({deltas: newDeltaObj})
     this.props.atomRef.child('text').set(html)
   }

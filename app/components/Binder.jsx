@@ -148,6 +148,7 @@ export default class Binder extends React.Component {
                   </li>)
               })
             }
+            <li><input /></li>
           </ul>
         </div>
         </Infinite>
