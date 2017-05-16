@@ -1,5 +1,7 @@
 import React from 'react'
+import Quill from 'quill'
 import ReactQuill from 'react-quill'
+const Delta = Quill.import('delta')
 
 export default class Editor extends React.Component {
   constructor(props) {
@@ -38,7 +40,15 @@ export default class Editor extends React.Component {
       atomRef.off('value', listener)
     }
   }
-  write(html) {
+  write(html, delta, source, editor) {
+    console.log('delta is', delta)
+    console.log('source is', source)
+    console.log('selection', editor.getSelection())
+    const newDeltaObj = {
+      delta: delta,
+      index: editor.getSelection().index
+    }
+    // this.props.atomRef.push({deltas: newDeltaObj})
     this.props.atomRef.child('text').set(html)
   }
 
