@@ -173,3 +173,12 @@ textarea {
 .block {
     display: block;
 }
+
+del {
+    background: #ffe6e6;
+    text-decoration: line-through
+}
+
+ins {
+    background: #e6ffe6;
+}

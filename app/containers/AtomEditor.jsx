@@ -1,5 +1,8 @@
 import React from 'react'
 import SplitPane from 'react-split-pane'
+import ReactQuill from 'react-quill'
+
+var Diff = require('text-diff')
 
 import Editor from '../components/Editor'
 import Notes from '../components/Notes'
@@ -18,7 +21,11 @@ export default class AtomEditor extends React.Component {
       firstPrevAtomId: '',
       secondPrevAtomId: '',
       atomVal: {},
-      snapshotName: ''
+      snapshotName: '',
+      firstPaneText: '',
+      secondPaneText: '',
+      diffText: null,
+      diffPane: false
     }
   }
   componentDidMount() {
@@ -27,12 +34,28 @@ export default class AtomEditor extends React.Component {
     this.setState({ firstPrevAtomId: this.props.atomId, secondPrevAtomId: this.props.atomId })
   }
   componentWillReceiveProps(incoming) {
+    const updatedAtomRef = projectsRef.child(this.props.projectId).child('current').child('atoms').child(incoming.atomId).child('text')
+
     if (this.state.selectedPane === 'firstPane') {
       this.setState({ firstPrevAtomId: incoming.atomId })
+      this.listenToFirst(updatedAtomRef)
     }
     if (this.state.selectedPane === 'secondPane') {
       this.setState({ secondPrevAtomId: incoming.atomId })
+      this.listenToSecond(updatedAtomRef)
     }
+  }
+  listenToFirst = (firstRef) => {
+    firstRef.on('value', snapshot => {
+      var text = snapshot.val()
+      this.setState({firstPaneText: text})
+    })
+  }
+  listenToSecond = (secondRef) => {
+    secondRef.on('value', snapshot => {
+      var text = snapshot.val()
+      this.setState({secondPaneText: text})
+    })
   }
   // toggle button between not split/split
   toggleSplit = (evt) => {
@@ -66,7 +89,22 @@ export default class AtomEditor extends React.Component {
     })
     this.setState({ snapshotName: '' })
   }
-
+  compareDiff = (text1, text2) => {
+    console.log('text 1', text1, ' text2', text2)
+    this.setState({diffPane: !this.state.diffPane})
+    var diff = new Diff() // options may be passed to constructor; see below var textDiff = diff.main('text1', 'text2'); // produces diff array
+    var textDiff = diff.main(text1, text2) // produces diff array
+    console.log('difftext', diff.prettyHtml(textDiff))
+    this.setState({diffText: diff.prettyHtml(textDiff)}) // produces a formatted HTML string
+  }
+  // GAME PLAN:
+  // 1. write a function that compares two inputs of text
+  // 2. write a function that takes a pane (left/right) and the text & sets it to the state (function setPaneText)
+  // 3. button that triggers comparison of two inputs (#1 inputs will be outputs of #2)
+  clickDiff = (evt) => {
+    evt.preventDefault()
+    this.compareDiff(this.state.firstPaneText, this.state.secondPaneText)
+  }
   render() {
     const ref = projectsRef.child(this.props.projectId).child('current').child('atoms').child(this.props.atomId)
     const splitPane = this.state.splitPane
@@ -87,12 +125,16 @@ export default class AtomEditor extends React.Component {
               <button className='btn btn-xs' type="submit" >Save</button>
             </form>
             <button className='float-right' onClick={this.toggleSplit}>Vertical Split View</button>
+            <button className='float-right' onClick={this.clickDiff}>Compare</button>
           </div>
-          {(splitPane) ? <SplitPane className='splitPane' defaultSize="50%" maxSize={50} >
-            <Editor atomRef={firstPrevAtomRef} pane={'firstPane'} selectPane={this.selectPane} />
-            <Editor atomRef={secondPrevAtomRef} pane={'secondPane'} selectPane={this.selectPane} />
-          </SplitPane>
-            : <Editor atomRef={ref} selectPane={this.selectPane} snapshot={this.snapshot} handleChange={this.handleChange} snapshotName={this.state.snapshotName} />
+          {(splitPane) ? ((this.state.diffPane) ? (<div><SplitPane className='splitPane' defaultSize="50%" >
+              <Editor atomRef={firstPrevAtomRef} pane={'firstPane'} selectPane={this.selectPane} />
+              <Editor atomRef={secondPrevAtomRef} pane={'secondPane'} selectPane={this.selectPane} />
+            </SplitPane>
+            <div>{this.state.diffText}</div></div>) : (<div><SplitPane className='splitPane' defaultSize="50%" >
+              <Editor atomRef={firstPrevAtomRef} pane={'firstPane'} selectPane={this.selectPane} />
+              <Editor atomRef={secondPrevAtomRef} pane={'secondPane'} selectPane={this.selectPane} />
+            </SplitPane></div>)) : <Editor atomRef={ref} selectPane={this.selectPane} snapshot={this.snapshot} handleChange={this.handleChange} snapshotName={this.state.snapshotName} />
           }
         </div>
         <div className='col-xs-3 sidebar-right'>
@@ -109,3 +151,6 @@ export default class AtomEditor extends React.Component {
     )
   }
 }
+
+
+
