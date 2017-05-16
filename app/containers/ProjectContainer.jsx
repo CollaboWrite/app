@@ -23,25 +23,17 @@ export default class extends React.Component {
   }
 
   componentDidMount() {
-    // When the component mounts, start listening to the fireRef
-    // we were given.
     const currentProjectRef = firebase.database().ref('users').child(this.props.params.uid).child('viewingProject')
-    const rootRef = projectsRef.child(this.props.params.id).child('current').child('root').once('value')
-      .then(snapshot => { this.setState({ root: snapshot.val() }) })
-      .then(() => this.listenTo(
-        projectsRef.child(this.state.viewingProject).child('current')
-        , projectsRef
-        , currentProjectRef)
-      )
-      .catch(error => console.error(error))
+    this.listenTo(
+      projectsRef.child(this.state.viewingProject).child('current')
+      , projectsRef
+      , currentProjectRef)
   }
   componentWillUnmount() {
-    // When we unmount, stop listening.
     this.unsubscribe()
   }
-  // listen to the fireRef.child
+
   listenTo(projectRef, projectsRef, currentProjectRef) {
-    // If we're already listening to a ref, stop listening there.
     if (this.unsubscribe) this.unsubscribe()
     // grabs THIS user's projects and adds it as an object {projectKey: projectTitle}
     const projectsListener = firebase.database().ref(`/users/${this.props.params.uid}/projects`).on('child_added', projectSnap => {
@@ -62,13 +54,6 @@ export default class extends React.Component {
         this.setState({ projects: [...this.state.projects, projectObj] })
       })
     })
-    const rootListener = projectRef.child('atoms').child(this.state.root).child('children').once('value', snapshot =>
-      snapshot.forEach(childSnap => {
-        projectRef.child('atoms').child(childSnap.key).once('value', childSnap => {
-          this.setState({ binderView: [...this.state.binderView, [childSnap.key, childSnap.val(), 0, false]] })
-        })
-      })
-    )
     const viewingProjectListener = currentProjectRef.on('value', snapshot => {
       const newViewingProject = snapshot.val()
       this.setState({ viewingProject: newViewingProject })
@@ -77,7 +62,6 @@ export default class extends React.Component {
     this.unsubscribe = () => {
       projectsRef.off('child_added', projectsListener)
       projectsRef.off('child_added', collabsListener)
-      projectRef.off('value', rootListener)
       currentProjectRef.off('value', viewingProjectListener)
     }
   }
@@ -87,55 +71,9 @@ export default class extends React.Component {
     firebase.database().ref('/users/' + this.props.params.uid + '/viewingProject').set(projectId)
   }
 
-  toggleChildren = (atomId, ind, level, expanded) => {
-    const projectId = this.props.params.id
-    const atomPointer = firebase.database().ref('projects').child(projectId).child('current').child('atoms')
-    atomPointer.child(atomId).child('children').on('value', childList => {
-      const newBinderView = [...this.state.binderView]
-      if (expanded) {
-        newBinderView[ind][3] = false
-        newBinderView.splice(++ind, Object.keys(childList.val()).length)
-      } else {
-        const newLevel = ++level
-        newBinderView[ind][3] = true
-        childList.forEach(child => {
-          atomPointer.child(child.key).once('value', atomSnap => {
-            const atomToPush = [child.key, atomSnap.val(), newLevel, false]
-            newBinderView.splice(++ind, 0, atomToPush)
-          })
-        })
-      }
-      this.setState({ binderView: newBinderView })
-    })
-  }
-
-  toggleAddedChildren = (atomId, ind, level, expanded) => {
-    const projectId = this.props.params.id
-    const atomPointer = firebase.database().ref('projects').child(projectId).child('current').child('atoms')
-    atomPointer.child(atomId).child('children').on('value', childList => {
-      const newBinderView = [...this.state.binderView]
-      if (expanded) {
-        newBinderView[ind][3]=false
-        newBinderView.splice(++ind, Object.keys(childList.val()).length)
-        this.setState({ binderView: newBinderView }, () => this.toggleChildren(atomId, ind, level, false))
-      } else {
-        const newLevel = ++level
-        newBinderView[ind][3]=true
-        childList.forEach(child => {
-          atomPointer.child(child.key).once('value', atomSnap => {
-            const atomToPush = [child.key, atomSnap.val(), newLevel, false]
-            newBinderView.splice(++ind, 0, atomToPush)
-          })
-        })
-        this.setState({ binderView: newBinderView })
-      }
-      
-    })
-  }
-
   render() {
     const uid = this.props.params.uid
-    const projectId = this.state.viewingProject // Should this should be informed by users/uid/viewingProject?
+    const projectId = this.state.viewingProject
     const atomId = this.props.params.atomId
     return (
       <div>
@@ -143,8 +81,7 @@ export default class extends React.Component {
           <Toolbar projects={this.state.projects} projectId={projectId} toggleProject={this.toggleProject} />
         </div>
         <div className='col-xs-3 sidebar-left'>
-          <Binder toggleChildren={this.toggleChildren} toggleAddedChildren={this.toggleAddedChildren} uid={uid} atoms={this.state.binderView} projectId={projectId} root={this.state.root} atomId={atomId} />
-          <Trashcan />
+          <Binder uid={uid} projectId={projectId} />
         </div>
         <div>
           <AtomEditor uid={uid} projectId={projectId} atomId={atomId} />
