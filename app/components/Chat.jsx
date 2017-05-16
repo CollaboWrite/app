@@ -25,6 +25,12 @@ export default class Chat extends React.Component {
     const messagesRef = firebase.database().ref('/projects/' + this.props.projectId + '/messages/')
     this.listenTo(messagesRef)
   }
+  componentWillReceiveProps(incoming) {
+    if (incoming.projectId !== this.props.projectId) {
+      const messagesRef = firebase.database().ref('/projects/' + incoming.projectId + '/messages/')
+      this.setState({ messages: [] }, () => this.listenTo(messagesRef))
+    }
+  }
   listenTo = (ref) => {
     if (this.unsubscribe) this.unsubscribe()
     // retreiving all messages for this project
@@ -32,7 +38,7 @@ export default class Chat extends React.Component {
       this.setState({ messages: [...this.state.messages, snapshot.val()] })
     })
     this.unsubscribe = () => {
-      ref.off('value', listener)
+      ref.off('child_added', listener)
     }
   }
   componentWillUnmount() {
@@ -49,7 +55,7 @@ export default class Chat extends React.Component {
       const userName = snapshot.val()
       newMessage[userName] = this.state.currentMessage
       firebase.database().ref('/projects/' + this.props.projectId + '/messages/').push(newMessage)
-      this.setState({currentMessage: ''})
+      this.setState({ currentMessage: '' })
     })
   }
   render() {
@@ -65,9 +71,9 @@ export default class Chat extends React.Component {
                 const senderName = Object.keys(message)
                 return (<div key={idx}>
                   <ListItem
-                  leftAvatar={<span className={'fa fa-user fa-3'}></span>}
-                  primaryText={senderName}
-                  secondaryText={<p>{message[senderName]}</p>} />
+                    leftAvatar={<span className={'fa fa-user fa-3'}></span>}
+                    primaryText={senderName}
+                    secondaryText={<p>{message[senderName]}</p>} />
                   <Divider inset={true} />
                 </div>)
               })
