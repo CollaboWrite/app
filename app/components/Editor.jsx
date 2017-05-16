@@ -1,5 +1,6 @@
 import React from 'react'
 import ReactQuill from 'react-quill'
+import { MultiCursor } from 'quill'
 
 export default class Editor extends React.Component {
   constructor(props) {
@@ -53,7 +54,8 @@ export default class Editor extends React.Component {
             <ReactQuill id='react-quill'
               value={this.state.value}
               onChange={this.write}
-              theme={'snow'} />
+              theme={'snow'}
+              modules={MultiCursor}/>
           </div>
         </div>
       </div>
