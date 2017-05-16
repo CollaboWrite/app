@@ -7,6 +7,7 @@ import Binder from '../components/Binder'
 import Trashcan from '../components/Trashcan'
 import AtomEditor from './AtomEditor'
 import CollabForm from '../components/CollabForm'
+import Tree from '../components/Tree'
 
 const projectsRef = firebase.database().ref('projects')
 
@@ -154,7 +155,7 @@ export default class extends React.Component {
         </div>
         <div className='col-xs-3 sidebar-left'>
           <Binder toggleChildren={this.toggleChildren} toggleAddedChildren={this.toggleAddedChildren} uid={uid} atoms={this.state.binderView} projectId={projectId} root={this.state.root} atomId={atomId} />
-          <Trashcan />
+          <ul><Tree uid={uid} projectId={projectId} atomId='0' /></ul>
         </div>
         <div>
           <AtomEditor uid={uid} projectId={projectId} atomId={atomId} />

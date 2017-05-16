@@ -61,9 +61,9 @@ export default class Chat extends React.Component {
             <Subheader className='panel-heading'><h3 className='panel-head'>Chats</h3></Subheader>
             <Infinite containerHeight={200} elementHeight={50}
               displayBottomUpwards>
-              {messages && messages.map(message => {
+              {messages && messages.map((message, idx) => {
                 const senderName = Object.keys(message)
-                return (<div key={message[senderName]} >
+                return (<div key={idx}>
                   <ListItem
                   leftAvatar={<span className={'fa fa-user fa-3'}></span>}
                   primaryText={senderName}
