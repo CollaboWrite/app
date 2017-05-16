@@ -13,10 +13,15 @@ buttons {
 
 #landing-page {
   height: 100vh;
-  background-image: url('./images/landingpage.jpg');
-  background-size: cover;
+  background-color: #98A6D4;
 }
-
+.landing-page-top {
+  margin-top: -21px;
+  background-image: url('./images/landingpage.jpg');
+  height: 65vh;
+  width: 100vw;
+  background-size: cover !important;
+}
 
 /**
  * Header CSS
@@ -57,4 +62,18 @@ footer {
 
 .mui--text-display3 {
     color: white;
+}
+
+#landing-page-info {
+  font-family: 'Raleway';
+  text-align: center;
+  padding-top: 50px;
+  padding-bottom: 50px;
+}
+
+.container {
+  margin: 0 auto !important;
+  width: 65%;
+  padding-right: 15px;
+  padding-left: 15px;
 }
