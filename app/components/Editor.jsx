@@ -40,6 +40,7 @@ export default class Editor extends React.Component {
     }
   }
   write(html) {
+    MultiCursor.update()
     this.props.atomRef.child('text').set(html)
   }
 
