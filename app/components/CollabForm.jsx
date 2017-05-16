@@ -49,12 +49,16 @@ export default class CollabForm extends React.Component {
   handleSubmit = (evt) => {
     const findUserByEmail = firebase.database().ref('users').orderByChild('email').equalTo(this.state.collaboratorEmail)
     evt.preventDefault()
-    findUserByEmail.on('value', snapshot => {
+    findUserByEmail.once('value', snapshot => {
+      if (!snapshot.val()) {
+        window.alert('Please enter a contributor email for a user who has an account with us!')
+        this.setState({collaboratorEmail: ''})
+      }
       const userObj = snapshot.val() // { uniqueKey: {}}
       const id = Object.keys(snapshot.val())[0] // grabs uniqueKey of user
       // if newCollaborator doesn't have any projects OR isn't the owner of THIS project
       // then they can be a collaborator
-      if (!userObj[id].projects || !userObj[id].projects[this.props.projectId]) {
+      if ((!userObj[id].projects || !userObj[id].projects[this.props.projectId]) && (!userObj[id].collaborations || !userObj[id].collaborations[this.props.projectId])) {
         const updates = {}
         const projectId = this.props.projectId
         const atomId = this.props.atomId
@@ -63,6 +67,8 @@ export default class CollabForm extends React.Component {
         updates['/users/' + id + '/collaborations/' + projectId] = atomId // saves {projectId: root} for in collab field for new collaborator
         this.setState({collaboratorEmail: ''})
         return firebase.database().ref().update(updates)
+      } else {
+        window.alert('This user is already a collaborator!')
       }
       this.setState({collaboratorEmail: ''})
     })

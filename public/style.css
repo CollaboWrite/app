@@ -53,7 +53,7 @@ body {
 
 #react-quill {
     height: 95vh;
-    width: 48vw;
+    width: 100%;
     background-color: white;
 }
 
@@ -159,7 +159,7 @@ textarea {
 .splitPane {
     position: relative !important;
     overflow: hidden;
-    width: 100%;
+    width: 95%;
 }
 
 .float-right {

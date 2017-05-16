@@ -67,7 +67,7 @@ export default class Binder extends React.Component {
     evt.target.classList.add('current-atom')
     browserHistory.push(`/${this.props.uid}/project/${this.props.projectId}/${evt.target.value}`)
     this.setState({selectedAtom: atomArr[0]})
-    const selectedAtom = atomArr[0]    
+    const selectedAtom = atomArr[0]
     console.log('selected atom', selectedAtom)
     firebase.database().ref('projects').child(this.props.projectId).child('current').child('atoms').child(selectedAtom).on('value', snapshot => {
       firebase.database().ref('users').child(this.props.uid).child('projects').child(this.props.projectId).set(selectedAtom)
@@ -119,11 +119,10 @@ export default class Binder extends React.Component {
       <div className='panel'>
         <div className='panel-heading'>
           <h3 className='panel-head'>Binder</h3>
-          <span className='fa fa-times delete-atom' 
+          <span className='fa fa-times delete-atom'
                 onClick={() => this.deleteAtom(this.state.selectedAtom)} />
           <span className='fa fa-plus-circle add-atom'
-                onClick={this.addAtom} />
-          
+            onClick={this.addAtom} />
         </div>
         <Infinite containerHeight={400} elementHeight={26}>
         <div className='panel-body'>
@@ -137,7 +136,7 @@ export default class Binder extends React.Component {
                 const iconClass = atomObj && atomObj.children ? (expanded ? 'chevron-down' : 'chevron-right') : 'file-text-o'
                 return (
                   <li key={key} id={key}
-                  style={{paddingLeft: level * 25}}>
+                    style={{ paddingLeft: level * 25 }}>
                     <span className={`fa fa-${iconClass}`}
                       value='value'
                       onClick={() => this.props.toggleChildren(key, ind, level, expanded)} />

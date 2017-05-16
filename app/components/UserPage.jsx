@@ -33,7 +33,8 @@ export default class UserPage extends React.Component {
         const currentProject = project.val()
         this.setState({
           projectKeys: [...this.state.projectKeys, projectKey],
-          projectList: [...this.state.projectList, { title: currentProject.projectTitle, id: projectKey, currentAtom: currentProject.current.root }] })
+          projectList: [...this.state.projectList, { title: currentProject.projectTitle, id: projectKey, currentAtom: currentProject.current.root }]
+        })
       })
     })
     let innerCollabListener
@@ -43,7 +44,8 @@ export default class UserPage extends React.Component {
         const currentProject = project.val()
         this.setState({
           collabKeys: [...this.state.collabKeys, collabKey],
-          collabList: [...this.state.collabList, { title: currentProject.projectTitle, id: collabKey, currentAtom: currentProject.current.root }] })
+          collabList: [...this.state.collabList, { title: currentProject.projectTitle, id: collabKey, currentAtom: currentProject.current.root }]
+        })
       })
     })
     this.unsubscribe = () => {
@@ -98,7 +100,7 @@ export default class UserPage extends React.Component {
     updates['/users/' + this.props.user.uid + '/viewingProject'] = projectKey
     // redirect to the newly created project's root
     browserHistory.push(`/${this.props.user.uid}/project/${projectKey}/0`)
-    this.setState({newProjectName: ''})
+    this.setState({ newProjectName: '' })
     return firebase.database().ref().update(updates)
   }
 
@@ -115,12 +117,12 @@ export default class UserPage extends React.Component {
     }
     // finding user by current user's uid
     firebase.database().ref('users').orderByChild('uid').equalTo(this.props.user.uid).on('value', snapshot => {
-      // if there is no user with current user's uid, set create new user in users db
-      const userKey = Object.keys(snapshot.val())[0]
+      // if there is no user with current user's uid, set create new user in users db 
+      const userKey = this.props.user.uid
       if (!snapshot.val()) {
         firebase.database().ref('/users/' + this.props.user.uid).set(user)
       }
-      this.setState({userKey: userKey, currentName: snapshot.val()[userKey].name})
+      this.setState({ userKey: userKey, currentName: snapshot.val()[userKey].name })
     })
   }
 

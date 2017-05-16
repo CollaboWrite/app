@@ -54,12 +54,12 @@ export default class Editor extends React.Component {
 
   render() {
     return (
-      <div className='col-xs-6 project-center'>
+      <div className='col-xs-12 project-center'>
         <div className="split-pane" value={this.state.pane} onClick={() => {
           this.props.selectPane(this.state.pane)
         }
         }>
-          <div className="editor-panel">
+          <div className="editor-panel clearfix">
             <ReactQuill id='react-quill'
               value={this.state.value}
               onChange={this.write}
