@@ -64,12 +64,12 @@ export default class Chat extends React.Component {
       <div>
         <MuiThemeProvider>
           <List>
-            <Subheader className='panel-heading'><h3 className='panel-head'>Chats</h3></Subheader>
+            <Subheader className='panel-heading'><h3 className='panel-head'>Chat</h3></Subheader>
             <Infinite containerHeight={200} elementHeight={50}
               displayBottomUpwards>
               {messages && messages.map((message, idx) => {
                 const senderName = Object.keys(message)
-                return (<div key={idx}>
+                return (<div className='chat-line' key={idx}>
                   <ListItem
                     leftAvatar={<span className={'fa fa-user fa-3'}></span>}
                     primaryText={senderName}
@@ -81,9 +81,9 @@ export default class Chat extends React.Component {
             </Infinite>
           </List>
         </MuiThemeProvider>
-        <form onSubmit={this.submitMessage}>
-          <input onChange={this.handleMessage} value={this.state.currentMessage}></input>
-          <button>Send</button>
+        <form onSubmit={this.submitMessage} className='form-bar'>
+          <input onChange={this.handleMessage} value={this.state.currentMessage} />
+          <button className='form-button'><span className='form-icon' className='fa fa-arrow-circle-up' /></button>
         </form>
       </div>
     )

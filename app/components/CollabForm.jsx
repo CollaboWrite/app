@@ -107,12 +107,12 @@ export default class CollabForm extends React.Component {
                 </div>)
             })}
           </ul>
-          <form onSubmit={this.handleSubmit}>
-            <label>Collaborator Email</label>
-            <input value={this.state.collaboratorEmail} type='text' onChange={this.handleChange} value={this.state.collaboratorEmail} />
-            <button className='btn btn-xs' type='submit'>+</button>
-          </form>
         </div>
+        <form className='form-bar' onSubmit={this.handleSubmit}>
+            <label>Email:</label>
+            <input value={this.state.collaboratorEmail} type='text' onChange={this.handleChange} value={this.state.collaboratorEmail} />
+            <button className='form-button' type='submit'><span className='form-icon' className='fa fa-arrow-circle-up' /></button>
+          </form>
       </div>
     )
   }
