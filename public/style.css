@@ -31,7 +31,6 @@ body {
 .project-selection {
     width: 30vw;
     background-color: white;
-    
     border-radius: 15%;
     margin: 0 auto;
     padding: 1% 0;
@@ -198,7 +197,6 @@ textarea {
 .float-right {
     float: right;
 }
-
 
 .block {
     display: block;

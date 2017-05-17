@@ -43,6 +43,7 @@ export default class CollabForm extends React.Component {
       collabKeysCopy.splice(deletedUserIndex, 1)
       this.setState({ collaborators: collabCopy, collabKeys: collabKeysCopy })
     })
+    
     this.unsubscribe = () => ref.off('child_added', listener)
     this.unsubscribe = () => ref.off('child_removed', removedCollabListener)
   }
@@ -86,8 +87,6 @@ export default class CollabForm extends React.Component {
     firebase.database().ref('projects').child(this.props.projectId).child('collaborators').child(uid).remove()
   }
   render() {
-    // console.log('state', this.state)
-    // console.log('props', this.props)
     const collaborators = this.state.collaborators
     return (
       <div className="panel">
@@ -114,7 +113,6 @@ export default class CollabForm extends React.Component {
             <button className='btn btn-xs' type='submit'>+</button>
           </form>
         </div>
-        <Chat uid={this.props.uid} collaborators={this.props.collaborators} projectId={this.props.projectId} />
       </div>
     )
   }
