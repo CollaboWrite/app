@@ -34,7 +34,7 @@ export default class Summary extends React.Component {
       this.setState({ summary: newSummary })
     })
     const statusListener = statusAtomRef.on('value', snapshot => {
-      const newStatus = snapshot.val()
+      const newStatus = snapshot.val() || ''
       this.setState({ status: newStatus })
     })
     this.unsubscribe = () => {
@@ -64,11 +64,15 @@ export default class Summary extends React.Component {
           <form>
             <div>
               <label>Status</label>
-              <select defaultValue={this.state.status} onChange={this.writeStatus}>
+              <select value={this.state.status} onChange={this.writeStatus}>
                 {
-                  statusOptions.map(status =>
-                    <option value={status} key={status}>{status}</option>
-                  )
+                  statusOptions.map(status => {
+                    if (status === this.state.status) {
+                      return (<option selected value={status} key={status}>{status}</option>)
+                    } else {
+                      return (<option value={status} key={status}>{status}</option>)
+                    }
+                  })
                 }
               </select>
             </div>
