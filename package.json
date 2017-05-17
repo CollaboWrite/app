@@ -85,6 +85,7 @@
     "sequelize": "^3.24.6",
     "sinon": "^1.17.6",
     "sinon-chai": "^2.8.0",
+    "string-to-dom": "^0.1.5",
     "superagent": "^3.5.2",
     "text-diff": "^1.0.1",
     "textract": "^2.1.2",
