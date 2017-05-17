@@ -29,25 +29,30 @@ body {
 }
 
 .project-selection {
-    margin-top: 5%;
+    width: 30vw;
+    background-color: white;
+    
+    border-radius: 15%;
+    margin: 0 auto;
+    padding: 1% 0;
 }
 
-.project-selection * {
-    margin-top: 1%
+#login {
+    padding: 10vh 0;
 }
 
-.enter-btn {
-    display: block;
+#welcome {
+    margin: 0;
+    color: white;
 }
 
 .projects-option {
-    width: 20%;
-    margin-left: 40%;
+    width: 70%;
+    margin: 0 auto;
 }
 
-.logout-div {
-    margin-right: 3%;
-    margin-top: 3%;
+.welcome-div {
+    margin: 3%;
 }
 
 #react-quill {
@@ -96,8 +101,18 @@ body {
 }
 
 .panel-head {
+    padding: auto 0;
     display: inline;
     color: white;
+}
+
+.btn-color {
+    background-color: #564D80;
+    color: white;
+}
+
+.inline-form {
+    display: inline;
 }
 
 .panel-heading {
@@ -184,9 +199,6 @@ textarea {
     float: right;
 }
 
-.inline-form {
-    float: left;
-}
 
 .block {
     display: block;

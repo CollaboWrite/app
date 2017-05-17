@@ -1,12 +1,10 @@
 import React from 'react'
-import firebase from 'APP/server/db'
-const auth = firebase.auth()
-
-import Login from './Login'
 import UserPage from './UserPage'
 
+import firebase from 'APP/server/db'
+const auth = firebase.auth()
+const google = new firebase.auth.GoogleAuthProvider()
 auth.onAuthStateChanged(user => user || auth.signInAnonymously())
-
 
 export const name = user => {
   if (!user) return 'Nobody'
@@ -14,25 +12,25 @@ export const name = user => {
   return user.displayName || user.email
 }
 
-export const WhoAmI = ({user, auth}) =>
-  <div className="whoami">
+export const WhoAmI = ({ user, auth }) =>
+  <div id="whoami">
     <span className="whoami-user-name"></span>
     { // If nobody is logged in, or the current user is anonymous,
-      (!user || user.isAnonymous)?
-      // ...then show signin links...
-        <Login auth={auth}/>
-      /// ...otherwise, show a logout button.
-      : <div>
-          <div className='right logout-div'>
-            <button className='logout btn btn-danger' onClick={() => auth.signOut()}>logout</button>
-          </div>
-          <UserPage user={user}/>
-        </div> }
+      (!user || user.isAnonymous) ?
+        // ...then show signin links...
+        <div id="login">
+          <h1 id='app-title'>CollaboWrite</h1>
+          <button className='mui-btn mui-btn--raised'
+            onClick={() => auth.signInWithPopup(google)}>Log In with Google</button>
+        </div>
+        /// ...otherwise, bring in the UserPage
+        : <UserPage auth={auth} user={user} />
+    }
   </div>
 
 export default class extends React.Component {
   componentDidMount() {
-    this.unsubscribe = auth.onAuthStateChanged(user => this.setState({user}))
+    this.unsubscribe = auth.onAuthStateChanged(user => this.setState({ user }))
   }
 
   componentWillUnmount() {
@@ -40,7 +38,7 @@ export default class extends React.Component {
   }
 
   render() {
-    const {user} = this.state || {}
-    return <WhoAmI user={user} auth={auth}/>
+    const { user } = this.state || {}
+    return <WhoAmI user={user} auth={auth} />
   }
 }
