@@ -6,6 +6,7 @@ import firebase from 'APP/server/db'
 import { atomRef, snapshotRef } from 'APP/server/db/model'
 
 const Diff = require('text-diff')
+const Infinite = require('react-infinite')
 
 export default class ComparisonView extends React.Component {
   constructor(props) {
@@ -62,10 +63,10 @@ export default class ComparisonView extends React.Component {
   }
 
   compareDiff = (text1, text2) => {
-    const slicedText1 = text1.slice(3, text1.length - 4)
-    const slicedText2 = text2.slice(3, text2.length - 4)
+    // const slicedText1 = text1.slice(3, text1.length - 4)
+    // const slicedText2 = text2.slice(3, text2.length - 4)
     var diff = new Diff() // options may be passed to constructor; see below var textDiff = diff.main('text1', 'text2'); // produces diff array
-    var textDiff = diff.main(slicedText1, slicedText2) // produces diff array
+    var textDiff = diff.main(text1, text2) // produces diff array
     const diffHTML = diff.prettyHtml(textDiff)
     this.setState({ diffText: diffHTML }) // produces a formatted HTML string
   }
@@ -85,14 +86,16 @@ export default class ComparisonView extends React.Component {
     return (
       <div>
         <h3>Comparison View</h3>
-        <button className='btn btn-xs' onClick={this.clickCompare}>Compare</button>
-        <select onChange={this.handleSelect}>
-          <option></option>
-          {
-            this.state.snapshots && this.state.snapshots.map(snapshot =>
-              <option key={snapshot.key} value={snapshot.key}>{snapshot.title}</option>)
-          }
-        </select>
+        <div id='snapshot-select' className='float-right'>
+          <select onChange={this.handleSelect}>
+            <option></option>
+            {
+              this.state.snapshots && this.state.snapshots.map(snapshot =>
+                <option key={snapshot.key} value={snapshot.key}>{snapshot.title}</option>)
+            }
+          </select>
+          <button className='btn btn-xs' onClick={this.clickCompare}>Compare</button>
+        </div>
         <SplitPane className='splitPane' defaultSize="50%" >
           <Editor
             atomRef={this.props.firstPrevAtomRef}
@@ -102,7 +105,9 @@ export default class ComparisonView extends React.Component {
             currentText={this.state.currentText}
             snapshotText={this.state.snapshotText}
              />
+        <Infinite containerHeight={1000} elementHeight={50}>
           <div id='diff-text' dangerouslySetInnerHTML={{ __html: this.state.diffText }}></div>
+        </Infinite>
         </SplitPane>
       </div>
     )
