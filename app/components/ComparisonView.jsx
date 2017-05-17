@@ -7,7 +7,6 @@ import { atomRef, snapshotRef } from 'APP/server/db/model'
 
 const Diff = require('text-diff')
 const Infinite = require('react-infinite')
-const stringToDom = require('string-to-dom')
 
 export default class ComparisonView extends React.Component {
   constructor(props) {
@@ -29,7 +28,7 @@ export default class ComparisonView extends React.Component {
 
     const currentAtomRef = atomRef(this.props.projectId, this.props.atomId).child('text')
 
-    this.listenTo(snapshotsRef, currentAtomRef, selectedSnapshotRef)
+    this.listenTo(snapshotsRef, currentAtomRef)
   }
 
   componentWillReceiveProps(incoming) {
@@ -75,7 +74,7 @@ export default class ComparisonView extends React.Component {
   }
   componentWillUnmount = () => {
     this.unsubscribe()
-    this.unsubscribeFromSnapshot()
+    if (this.unsubscribeFromSnapshot) this.unsubscribeFromSnapshot()
   }
   compareDiff = (text1, text2) => {
     const slicedText1 = text1.slice(3, text1.length - 4)
@@ -129,6 +128,3 @@ export default class ComparisonView extends React.Component {
     )
   }
 }
-
-
-          // <div id='diff-text' dangerouslySetInnerHTML={{ __html: this.state.diffText }}></div>
