@@ -1,6 +1,8 @@
 import React from 'react'
 import SplitPane from 'react-split-pane'
 import ReactQuill from 'react-quill'
+import {Tabs, Tab} from 'material-ui/Tabs'
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 
 import Editor from '../components/Editor'
 import Notes from '../components/Notes'
@@ -24,7 +26,8 @@ export default class AtomEditor extends React.Component {
       snapshotName: '',
       firstPaneText: '',
       secondPaneText: '',
-      diffPane: false
+      diffPane: false,
+      view: 'normal'
     }
   }
   componentDidMount() {
@@ -56,12 +59,7 @@ export default class AtomEditor extends React.Component {
       this.setState({ secondPaneText: text })
     })
   }
-  // toggle button between not split/split
-  toggleSplit = (evt) => {
-    evt.preventDefault()
-    if (this.state.diffPane) this.setState({ splitPane: true, diffPane: false })
-    else this.setState({ splitPane: true })
-  }
+  
   selectPane = (val) => {
     // if firstPane selected, set current selectedPane to this
     // same for secondPane
@@ -94,6 +92,14 @@ export default class AtomEditor extends React.Component {
   // 1. write a function that compares two inputs of text
   // 2. write a function that takes a pane (left/right) and the text & sets it to the state (function setPaneText)
   // 3. button that triggers comparison of two inputs (#1 inputs will be outputs of #2)
+  
+  // toggle button between not split/split
+  toggleSplit = (evt) => {
+    evt.preventDefault()
+    if (this.state.diffPane) this.setState({ splitPane: true, diffPane: false })
+    else this.setState({ splitPane: true })
+  }
+  
   clickComparisonView = (evt) => {
     evt.preventDefault()
     if (this.state.splitPane) this.setState({diffPane: true, splitPane: false})
@@ -104,6 +110,23 @@ export default class AtomEditor extends React.Component {
     evt.preventDefault()
     this.setState({diffPane: false, splitPane: false})
   }
+
+  // toggleEditorView = (value) => {
+  //   console.log('value in toggle editor view', value)
+  //   // this.setState({ view: value })
+  // }
+
+  toggleEditorView = (value) => {
+    if (value === 'normal') {
+      this.setState({diffPane: false, splitPane: false})
+    } else if (value === 'split') {
+      this.setState({ splitPane: true, diffPane: false })
+    } else if (value === 'compare') {
+      this.setState({diffPane: true, splitPane: false})
+    }
+    this.setState({ view: value })
+  }
+
   render() {
     const ref = projectsRef.child(this.props.projectId).child('current').child('atoms').child(this.props.atomId)
     const splitPane = this.state.splitPane
@@ -124,9 +147,16 @@ export default class AtomEditor extends React.Component {
               <input type='text' onChange={this.handleChange} value={this.state.snapshotName} />
               <button className='btn btn-xs' type="submit" >Save</button>
             </form>
-            <button className='float-right' onClick={this.showSingleView}>Normal View</button>
+            <MuiThemeProvider>
+              <Tabs value={this.state.view} onChange={this.toggleEditorView}>
+                <Tab label='Single View' value='normal' onClick={() => this.toggleEditorView('normal')}></Tab>
+                <Tab label='Split View' value='split' onClick={() => this.toggleEditorView('split')}></Tab>
+                <Tab label='Campare View' value='compare' onClick={() => this.toggleEditorView('compare')}></Tab>
+              </Tabs>
+            </MuiThemeProvider>
+            {/*<button className='float-right' onClick={this.showSingleView}>Normal View</button>
             <button className='float-right' onClick={this.toggleSplit}>Vertical Split View</button>
-            <button className='float-right' onClick={this.clickComparisonView}>Comparison View</button>
+            <button className='float-right' onClick={this.clickComparisonView}>Comparison View</button>*/}
           </div>
           {(!splitPane && !diffPane) ?
             <Editor atomRef={ref} selectPane={this.selectPane} snapshot={this.snapshot} handleChange={this.handleChange} snapshotName={this.state.snapshotName} />
