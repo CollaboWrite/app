@@ -24,8 +24,8 @@ const Toolbar = (props) => (
               <label id='toolbar-label'>Current Project:</label>
               <select value={props.projectId} className='toolbar-select' onChange={props.toggleProject}>
                 {
-                  props.projects.length && props.projects.map((project, indx) => (
-                    <option value={project.key} key={project.key}>{project.title}</option>
+                  props.projects.length && props.projects.map((projectArr, indx) => (
+                    <option value={projectArr[0]} key={projectArr[0]}>{projectArr[1].projectTitle}</option>
                   ))
                 }
               </select>

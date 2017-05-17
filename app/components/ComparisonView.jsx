@@ -28,7 +28,7 @@ export default class ComparisonView extends React.Component {
 
     const currentAtomRef = atomRef(this.props.projectId, this.props.atomId).child('text')
 
-    this.listenTo(snapshotsRef, currentAtomRef, selectedSnapshotRef)
+    this.listenTo(snapshotsRef, currentAtomRef)
   }
 
   componentWillReceiveProps(incoming) {
@@ -40,11 +40,12 @@ export default class ComparisonView extends React.Component {
 
       const currentAtomRef = atomRef(incoming.projectId, incoming.atomId).child('text')
 
-      this.listenTo(snapshotsRef, currentAtomRef, selectedSnapshotRef)
+      this.listenTo(snapshotsRef, currentAtomRef)
+      this.listenToSnapshot(selectedSnapshotRef)
     }
   }
 
-  listenTo = (snapshotsRef, currentAtomRef, snapshotRef) => {
+  listenTo = (snapshotsRef, currentAtomRef) => {
     snapshotsRef.once('value', snapshot => {
       const snapshotArr = []
       snapshot.forEach(childSnap => {
@@ -56,12 +57,25 @@ export default class ComparisonView extends React.Component {
 
       this.setState({ snapshots: snapshotArr })
     })
-
-    if (snapshotRef) snapshotRef.on('value', snapshot => this.setState({ snapshotText: snapshot.val() }))
-
-    currentAtomRef.on('value', snapshot => this.setState({ currentText: snapshot.val() }))
+    const currentAtomListener = currentAtomRef.on('value', snapshot => this.setState({ currentText: snapshot.val() }))
+    this.unsubscribe = () => {
+      currentAtomRef.off('value', currentAtomListener)
+    }
   }
-
+  listenToSnapshot = (snapshotRef) => {
+    if (snapshotRef) {
+      const snapshotListener = snapshotRef.on('value', snapshot => {
+        this.setState({ snapshotText: snapshot.val() })
+      })
+      this.unsubscribeFromSnapshot = () => {
+        snapshotRef.off('value', snapshotListener)
+      }
+    }
+  }
+  componentWillUnmount = () => {
+    this.unsubscribe()
+    if (this.unsubscribeFromSnapshot) this.unsubscribeFromSnapshot()
+  }
   compareDiff = (text1, text2) => {
     const slicedText1 = text1.slice(3, text1.length - 4)
     const slicedText2 = text2.slice(3, text2.length - 4)
@@ -79,10 +93,11 @@ export default class ComparisonView extends React.Component {
   handleSelect = (evt) => {
     evt.preventDefault()
     this.setState({ snapshotId: evt.target.value })
+    const selectedSnapshotRef = snapshotRef(this.props.projectId, evt.target.value, this.props.atomId)
+    this.listenToSnapshot(selectedSnapshotRef)
   }
 
   render() {
-    console.log('comparison view state', this.state)
     return (
       <div>
         <SplitPane className='splitPane split-view' defaultSize="50%" >
@@ -110,5 +125,3 @@ export default class ComparisonView extends React.Component {
     )
   }
 }
-
-

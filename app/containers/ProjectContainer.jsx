@@ -15,7 +15,7 @@ export default class extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      projects: {},
+      projects: [],
       root: null,
       binderView: [],
       viewingProject: this.props.params.id
@@ -37,22 +37,18 @@ export default class extends React.Component {
   listenTo(projectRef, projectsRef, currentProjectRef) {
     if (this.unsubscribe) this.unsubscribe()
     // grabs THIS user's projects and adds it as an object {projectKey: projectTitle}
-    const projectsListener = firebase.database().ref(`/users/${this.props.params.uid}/projects`).on('child_added', projectSnap => {
-      // making a projects obj to add to projects list
-      const projectObj = {}
-      projectObj.key = projectSnap.key
+    const projectsListener = firebase.database().ref(`/users/${this.props.params.uid}/projects`).once('child_added', projectSnap => {
       projectsRef.child(projectSnap.key).on('value', project => {
-        projectObj.title = project.val().projectTitle
-        this.setState({ projects: [...this.state.projects, projectObj] })
+        if (project.val()) {
+          this.setState({ projects: [...this.state.projects, [project.key, project.val()]] })
+        }
       })
     })
-    const collabsListener = firebase.database().ref(`/users/${this.props.params.uid}/collaborations`).on('child_added', projectSnap => {
-      // making a projects obj to add to projects list
-      const projectObj = {}
-      projectObj.key = projectSnap.key
-      projectsRef.child(projectSnap.key).child('projectTitle').on('value', project => {
-        projectObj.title = project.val()
-        this.setState({ projects: [...this.state.projects, projectObj] })
+    const collabsListener = firebase.database().ref(`/users/${this.props.params.uid}/collaborations`).once('child_added', projectSnap => {
+      projectsRef.child(projectSnap.key).on('value', project => {
+        if (project.val()) {
+          this.setState({ projects: [...this.state.projects, [project.key, project.val()]] })
+        }
       })
     })
     const viewingProjectListener = currentProjectRef.on('value', snapshot => {
