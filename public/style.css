@@ -177,6 +177,10 @@ textarea {
     width: 95%;
 }
 
+#diff-text {
+    background-color: white;
+}
+
 .float-right {
     float: right;
 }

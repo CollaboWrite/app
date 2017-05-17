@@ -2,8 +2,6 @@ import React from 'react'
 import SplitPane from 'react-split-pane'
 import ReactQuill from 'react-quill'
 
-var Diff = require('text-diff')
-
 import Editor from '../components/Editor'
 import Notes from '../components/Notes'
 import Summary from '../components/Summary'
@@ -26,7 +24,6 @@ export default class AtomEditor extends React.Component {
       snapshotName: '',
       firstPaneText: '',
       secondPaneText: '',
-      diffText: null,
       diffPane: false
     }
   }
@@ -92,14 +89,7 @@ export default class AtomEditor extends React.Component {
     })
     this.setState({ snapshotName: '' })
   }
-  compareDiff = (text1, text2) => {
-    const slicedText1 = text1.slice(3, text1.length - 4)
-    const slicedText2 = text2.slice(3, text2.length - 4)
-    var diff = new Diff() // options may be passed to constructor; see below var textDiff = diff.main('text1', 'text2'); // produces diff array
-    var textDiff = diff.main(slicedText1, slicedText2) // produces diff array
-    const diffHTML = diff.prettyHtml(textDiff)
-    this.setState({ diffText: diffHTML }) // produces a formatted HTML string
-  }
+
   // GAME PLAN:
   // 1. write a function that compares two inputs of text
   // 2. write a function that takes a pane (left/right) and the text & sets it to the state (function setPaneText)
@@ -109,10 +99,7 @@ export default class AtomEditor extends React.Component {
     if (this.state.splitPane) this.setState({diffPane: true, splitPane: false})
     else this.setState({diffPane: true})
   }
-  clickCompare = (evt) => {
-    evt.preventDefault()
-    this.compareDiff(this.state.firstPaneText, this.state.secondPaneText)
-  }
+
   showSingleView = (evt) => {
     evt.preventDefault()
     this.setState({diffPane: false, splitPane: false})
@@ -128,7 +115,6 @@ export default class AtomEditor extends React.Component {
     const secondPrevAtomRef = projectsRef.child(this.props.projectId).child('current').child('atoms').child(secondAtomId)
     // if splitPane is true, pass down atomRef to just the selected pane & show render <SplitPane> with two <Editor> components as 'children'
     // else, just show the old Editor
-    console.log('state', this.state)
     return (
       <div>
         <div className='col-xs-6 project-center'>
@@ -147,7 +133,7 @@ export default class AtomEditor extends React.Component {
             :
             (splitPane ?
               <SplitView firstPrevAtomRef={firstPrevAtomRef} secondPrevAtomRef={secondPrevAtomRef} selectPane={this.selectPane} /> :
-              <ComparisonView firstPrevAtomRef={firstPrevAtomRef} secondPrevAtomRef={secondPrevAtomRef} selectPane={this.selectPane} diffText={this.state.diffText} clickCompare={this.clickCompare} />)
+              <ComparisonView firstPrevAtomRef={firstPrevAtomRef} selectPane={this.selectPane} projectId={this.props.projectId} atomId={this.props.atomId} />)
           }
         </div>
         <div className='col-xs-3 sidebar-right'>
