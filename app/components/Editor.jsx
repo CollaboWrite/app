@@ -48,7 +48,6 @@ export default class Editor extends React.Component {
     if (this.props.compareDiff && this.props.snapshotText) this.props.compareDiff(this.props.snapshotText, this.props.currentText)
   }
   render() {
-    console.log('editor state', this.state)
     const atom = this.state.value
     return (
       <div className='col-xs-12 project-center'>
