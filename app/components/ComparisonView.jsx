@@ -100,18 +100,7 @@ export default class ComparisonView extends React.Component {
   render() {
     return (
       <div>
-        <h3>Comparison View</h3>
-        <div id='snapshot-select' className='float-right'>
-          <select onChange={this.handleSelect}>
-            <option></option>
-            {
-              this.state.snapshots && this.state.snapshots.map(snapshot =>
-                <option key={snapshot.key} value={snapshot.key}>{snapshot.title}</option>)
-            }
-          </select>
-          <button className='btn btn-xs' onClick={this.clickCompare}>Compare</button>
-        </div>
-        <SplitPane className='splitPane' defaultSize="50%" >
+        <SplitPane className='splitPane split-view' defaultSize="50%" >
           <Editor
             atomRef={this.props.firstPrevAtomRef}
             pane={'firstPane'}
@@ -119,10 +108,18 @@ export default class ComparisonView extends React.Component {
             compareDiff={this.compareDiff}
             currentText={this.state.currentText}
             snapshotText={this.state.snapshotText}
-          />
-          <Infinite containerHeight={1000} elementHeight={50}>
-            <div id='diff-text' dangerouslySetInnerHTML={{ __html: this.state.diffText }}></div>
-          </Infinite>
+             />
+        <Infinite containerHeight={1000} elementHeight={50}>
+           <select id='snapshot-select' onChange={this.handleSelect}>
+            <option></option>
+            {
+              this.state.snapshots && this.state.snapshots.map(snapshot =>
+                <option key={snapshot.key} value={snapshot.key}>{snapshot.title}</option>)
+            }
+          </select>
+          <button className='btn btn-xs' onClick={this.clickCompare}>Compare</button>
+          <div id='diff-text' dangerouslySetInnerHTML={{ __html: this.state.diffText }}></div>
+        </Infinite>
         </SplitPane>
       </div>
     )

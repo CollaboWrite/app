@@ -67,25 +67,7 @@ export default class extends React.Component {
     const projectId = evt.target.value
     firebase.database().ref('/users/' + this.props.params.uid + '/viewingProject').set(projectId)
   }
-
-  handleChange = (evt) => {
-    this.setState({ snapshotName: evt.target.value })
-  }
-
-  snapshot = (evt) => {
-    evt.preventDefault()
-    projectsRef.child(this.state.viewingProject).once('value', snapshot => {
-      const snapshotObj = snapshot.val()
-      snapshotObj.title = this.state.snapshotName
-      snapshotObj.timeStamp = Date.now() // can format as needed
-      snapshotObj.snapshots = null // removing snapshots of new snapshot to preserve space
-      snapshotObj.messages = null // removing messages of new snapshot to preserve space
-      snapshotObj.collaborators = null // removing collaborators from snapshot
-      projectsRef.child(this.state.viewingProject + '/snapshots').push(snapshotObj)
-    })
-    this.setState({ snapshotName: '' })
-  }
-
+  
   render() {
     const uid = this.props.params.uid
     const projectId = this.state.viewingProject
@@ -97,18 +79,13 @@ export default class extends React.Component {
         </div>
         <div className='col-xs-3 sidebar-left'>
           <Binder uid={uid} projectId={projectId} />
-          <form className="inline-form" onSubmit={this.snapshot}>
-            <label>Save current version as: </label>
-            <input type='text' onChange={this.handleChange} value={this.state.snapshotName} />
-            <button className='btn btn-xs' type="submit" >Save</button>
-          </form>
           <CollabForm uid={uid} projectId={projectId} atomId={atomId} />
         </div>
         <div>
           <AtomEditor uid={uid} projectId={projectId} atomId={atomId} />
         </div>
         <div className='col-xs-3 sidebar-right'>
-          <Chat uid={uid} projectId={projectId} />          
+          <Chat uid={uid} projectId={projectId} />
         </div>
       </div>
     )

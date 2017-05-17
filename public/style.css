@@ -51,7 +51,9 @@ body {
 }
 
 .welcome-div {
-    margin: 3%;
+    margin-top: 3%;
+    margin-left:3%;
+    margin-right:3%;
 }
 
 #react-quill {
@@ -146,7 +148,8 @@ body {
 }
 
 h2,
-h3 {
+h3,
+h4 {
     font-family: 'Raleway';
 }
 
@@ -197,14 +200,14 @@ textarea {
 
 #diff-text {
     background-color: white;
-    padding: 10px 10px 10px 10px;
+    padding: 50px 10px;
     font-size: small;
     height: 70vh;
 }
 
 #snapshot-select {
-    margin-right: 30px;
-    margin-bottom: 10px;
+    font-family: 'Raleway';
+    margin: 10.5px 5px;
 }
 
 .float-right {
@@ -252,4 +255,34 @@ ins {
 
 .toggle-views {
     background-color: #98A6D4 !important;
+}
+
+.chat-line {
+    background-color: white;
+}
+
+.form-bar {
+    background-color: #98A6D4 !important;
+    padding: 0 3%;
+}
+
+.form-bar > label {
+    color: white;
+}
+
+.form-bar > input {
+    margin: 1%;
+    width: 60%;
+}
+
+.form-button {
+    background-color: none;
+    color: white;
+    border: none;
+}
+
+.form-icon {
+    color: #564D80 !important;
+    size: 200%;
+    padding-left: 1%;
 }
