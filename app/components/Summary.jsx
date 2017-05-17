@@ -35,7 +35,7 @@ export default class Summary extends React.Component {
     })
     const statusListener = statusAtomRef.on('value', snapshot => {
       const newStatus = snapshot.val() || ''
-      this.setState({ status: newStatus }, () => console.log('whats the status', this.state.status))
+      this.setState({ status: newStatus })
     })
     this.unsubscribe = () => {
       summaryAtomRef.off('value', summaryListener)
