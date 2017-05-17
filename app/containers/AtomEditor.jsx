@@ -70,52 +70,6 @@ export default class AtomEditor extends React.Component {
     }
   }
 
-  handleChange = (evt) => {
-    this.setState({ snapshotName: evt.target.value })
-  }
-
-  snapshot = (evt) => {
-    evt.preventDefault()
-    projectsRef.child(this.props.projectId).once('value', snapshot => {
-      const snapshotObj = snapshot.val()
-      snapshotObj.title = this.state.snapshotName
-      snapshotObj.timeStamp = Date.now() // can format as needed
-      snapshotObj.snapshots = null // removing snapshots of new snapshot to preserve space
-      snapshotObj.messages = null // removing messages of new snapshot to preserve space
-      snapshotObj.collaborators = null // removing collaborators from snapshot
-      projectsRef.child(this.props.projectId + '/snapshots').push(snapshotObj)
-    })
-    this.setState({ snapshotName: '' })
-  }
-
-  // GAME PLAN:
-  // 1. write a function that compares two inputs of text
-  // 2. write a function that takes a pane (left/right) and the text & sets it to the state (function setPaneText)
-  // 3. button that triggers comparison of two inputs (#1 inputs will be outputs of #2)
-  
-  // toggle button between not split/split
-  toggleSplit = (evt) => {
-    evt.preventDefault()
-    if (this.state.diffPane) this.setState({ splitPane: true, diffPane: false })
-    else this.setState({ splitPane: true })
-  }
-  
-  clickComparisonView = (evt) => {
-    evt.preventDefault()
-    if (this.state.splitPane) this.setState({diffPane: true, splitPane: false})
-    else this.setState({diffPane: true})
-  }
-
-  showSingleView = (evt) => {
-    evt.preventDefault()
-    this.setState({diffPane: false, splitPane: false})
-  }
-
-  // toggleEditorView = (value) => {
-  //   console.log('value in toggle editor view', value)
-  //   // this.setState({ view: value })
-  // }
-
   toggleEditorView = (value) => {
     if (value === 'normal') {
       this.setState({diffPane: false, splitPane: false})
@@ -142,21 +96,13 @@ export default class AtomEditor extends React.Component {
       <div>
         <div className='col-xs-6 project-center'>
           <div className="block clearfix">
-            <form className="inline-form" onSubmit={this.snapshot}>
-              <label>Save current version as: </label>
-              <input type='text' onChange={this.handleChange} value={this.state.snapshotName} />
-              <button className='btn btn-xs' type="submit" >Save</button>
-            </form>
             <MuiThemeProvider>
               <Tabs value={this.state.view} onChange={this.toggleEditorView}>
-                <Tab label='Single View' value='normal' onClick={() => this.toggleEditorView('normal')}></Tab>
-                <Tab label='Split View' value='split' onClick={() => this.toggleEditorView('split')}></Tab>
-                <Tab label='Campare View' value='compare' onClick={() => this.toggleEditorView('compare')}></Tab>
+                <Tab label='Single View' value='normal' onClick={() => this.toggleEditorView('normal')} className='toggle-views'></Tab>
+                <Tab label='Split View' value='split' onClick={() => this.toggleEditorView('split')} className='toggle-views'></Tab>
+                <Tab label='Compare View' value='compare' onClick={() => this.toggleEditorView('compare')} className='toggle-views'></Tab>
               </Tabs>
             </MuiThemeProvider>
-            {/*<button className='float-right' onClick={this.showSingleView}>Normal View</button>
-            <button className='float-right' onClick={this.toggleSplit}>Vertical Split View</button>
-            <button className='float-right' onClick={this.clickComparisonView}>Comparison View</button>*/}
           </div>
           {(!splitPane && !diffPane) ?
             <Editor atomRef={ref} selectPane={this.selectPane} snapshot={this.snapshot} handleChange={this.handleChange} snapshotName={this.state.snapshotName} />

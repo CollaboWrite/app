@@ -47,7 +47,6 @@ export default class Editor extends React.Component {
     this.props.atomRef.child('text').set(html)
   }
   render() {
-    // console.log('state in editor', this.state)
     const atom = this.state.value
     return (
       <div className='col-xs-12 project-center'>
