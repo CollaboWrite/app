@@ -63,10 +63,10 @@ export default class ComparisonView extends React.Component {
   }
 
   compareDiff = (text1, text2) => {
-    // const slicedText1 = text1.slice(3, text1.length - 4)
-    // const slicedText2 = text2.slice(3, text2.length - 4)
+    const slicedText1 = text1.slice(3, text1.length - 4)
+    const slicedText2 = text2.slice(3, text2.length - 4)
     var diff = new Diff() // options may be passed to constructor; see below var textDiff = diff.main('text1', 'text2'); // produces diff array
-    var textDiff = diff.main(text1, text2) // produces diff array
+    var textDiff = diff.main(slicedText1, slicedText2) // produces diff array
     const diffHTML = diff.prettyHtml(textDiff)
     this.setState({ diffText: diffHTML }) // produces a formatted HTML string
   }
