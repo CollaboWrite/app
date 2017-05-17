@@ -142,21 +142,24 @@ export default class UserPage extends React.Component {
     console.log(this.state)
     return (
       <div className='user-page'>
-        <div className='left'>
-          <h2>Welcome, {this.props.user.displayName}</h2>
+        <div className='left welcome-div'>
+          <h2 id='welcome'>Welcome, {this.props.user.displayName}</h2>
         </div>
+
+        <div className='right welcome-div'>
+          <button className='mui-btn mui-btn--raised' onClick={() => this.props.auth.signOut()}>logout</button>
+        </div>
+
         <div className='clearfix'></div>
-        <div className='project-selection form-group'>
-          <h3>Create a new project</h3>
+        <div className='project-selection form-group mui--text-center'>
+
           <form onSubmit={this.createProject}>
-            <label className='control-label'>Project Name</label>
+            <h3>Create Project:</h3>
             <input type='text' className='form-control projects-option' onChange={this.setProjectName} />
-            <div className='enter-btn'>
-              <button type='submit' className='btn btn-info'>Create</button>
-            </div>
+            <button type='submit' className='mui-btn mui-btn--raised btn-color'>Create</button>
           </form>
           <h3>Your Projects:</h3>
-          <div className='center form-group'>
+          <div className='form-group inline-form'>
             <select onChange={this.selectProject} className='form-control projects-option'>
               <option> </option>
               {this.state.projectList.map(project => {
@@ -164,10 +167,10 @@ export default class UserPage extends React.Component {
                 return (<option value={valueObj} key={project.id}>{project.title}</option>)
               })}
             </select>
-            <button type='button' className='btn btn-info' onClick={this.goToPage}>Go to project</button>
+            <button type='button' className='mui-btn mui-btn--raised btn-color' onClick={this.goToPage}>Go</button>
           </div>
           <h3>Shared Projects:</h3>
-          <div className='center form-group'>
+          <div className='form-group'>
             <select onChange={this.selectProject} className='form-control projects-option'>
               <option> </option>
               {this.state.collabList.map(collab => {
@@ -175,26 +178,10 @@ export default class UserPage extends React.Component {
                 return (<option value={valueObj} key={collab.id}>{collab.title}</option>)
               })}
             </select>
-            <button type='button' className='btn btn-info' onClick={this.goToPage}>Go to project</button>
+            <button type='button' className='mui-btn mui-btn--raised btn-color' onClick={this.goToPage}>Go</button>
           </div>
         </div>
       </div>
     )
   }
 }
-
-
-// this.state.projectList map creates a 'valueObj' to pass into this.selectProject
-// since we need to grab both the project id & current atom of the project into option's value
-
-
-      // // getting keys from the user's database
-      // const projectKeys = Object.keys(snapshot.val())
-      // // we are putting the key for each key into the projectList
-      // projectKeys.forEach(projectKey => {
-      //   firebase.database().ref('projects').child(projectKey).on('value', snapshot => {
-      //     const currentProject = snapshot.val()
-      //     // add each project title into the projectsList - MUST BE DONE THIS WAY TO UPDATE STATE
-      //     this.setState({ projectList: [...this.state.projectList, { title: currentProject.projectTitle, id: projectKey, currentAtom: currentProject.current.root }] })
-      //   })
-      // })
