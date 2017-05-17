@@ -99,7 +99,8 @@ export default class ComparisonView extends React.Component {
             pane={'firstPane'}
             selectPane={this.props.selectPane}
             compareDiff={this.compareDiff}
-            currentText={this.currentText}
+            currentText={this.state.currentText}
+            snapshotText={this.state.snapshotText}
              />
           <div id='diff-text' dangerouslySetInnerHTML={{ __html: this.state.diffText }}></div>
         </SplitPane>
