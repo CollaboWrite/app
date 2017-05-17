@@ -94,7 +94,13 @@ export default class ComparisonView extends React.Component {
           }
         </select>
         <SplitPane className='splitPane' defaultSize="50%" >
-          <Editor atomRef={this.props.firstPrevAtomRef} pane={'firstPane'} selectPane={this.props.selectPane} />
+          <Editor
+            atomRef={this.props.firstPrevAtomRef}
+            pane={'firstPane'}
+            selectPane={this.props.selectPane}
+            compareDiff={this.compareDiff}
+            currentText={this.currentText}
+             />
           <div id='diff-text' dangerouslySetInnerHTML={{ __html: this.state.diffText }}></div>
         </SplitPane>
       </div>
