@@ -7,6 +7,7 @@ import Binder from '../components/Binder'
 import Trashcan from '../components/Trashcan'
 import AtomEditor from './AtomEditor'
 import CollabForm from '../components/CollabForm'
+import Chat from '../components/Chat'
 
 const projectsRef = firebase.database().ref('projects')
 
@@ -82,12 +83,13 @@ export default class extends React.Component {
         </div>
         <div className='col-xs-3 sidebar-left'>
           <Binder uid={uid} projectId={projectId} />
+          <CollabForm uid={uid} projectId={projectId} atomId={atomId} />
         </div>
         <div>
           <AtomEditor uid={uid} projectId={projectId} atomId={atomId} />
         </div>
         <div className='col-xs-3 sidebar-right'>
-          <CollabForm uid={uid} projectId={projectId} atomId={atomId} />
+          <Chat uid={uid} projectId={projectId} />          
         </div>
       </div>
     )
