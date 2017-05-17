@@ -45,6 +45,7 @@ export default class Editor extends React.Component {
     // this function sends the pane & the text (this.state.value) to atomEditor
     // this.props.setPaneText (#2)
     this.props.atomRef.child('text').set(html)
+    if (this.props.compareDiff) this.props.compareDiff(this.props.snapshotText, this.props.currentText)
   }
   render() {
     return (

@@ -8,7 +8,7 @@ import Subheader from 'material-ui/Subheader'
 import { grey400, darkBlack, lightBlack } from 'material-ui/styles/colors'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 
-var Infinite = require('react-infinite')
+const Infinite = require('react-infinite')
 
 const auth = firebase.auth()
 auth.onAuthStateChanged(user => user || auth.signInAnonymously())
