@@ -194,12 +194,26 @@ textarea {
     width: 95%;
 }
 
+#diff-text {
+    background-color: white;
+}
+
 .float-right {
     float: right;
 }
 
 .block {
     display: block;
+}
+
+
+del {
+    background: #ffe6e6;
+    text-decoration: line-through
+}
+
+ins {
+    background: #e6ffe6;
 }
 
 .toolbar-navbar {

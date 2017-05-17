@@ -1,10 +1,13 @@
 import React from 'react'
 import SplitPane from 'react-split-pane'
+import ReactQuill from 'react-quill'
 
 import Editor from '../components/Editor'
 import Notes from '../components/Notes'
 import Summary from '../components/Summary'
 import Resources from '../components/Resources'
+import ComparisonView from '../components/ComparisonView'
+import SplitView from '../components/SplitView'
 
 import firebase from 'APP/server/db'
 const projectsRef = firebase.database().ref('projects')
@@ -18,7 +21,10 @@ export default class AtomEditor extends React.Component {
       firstPrevAtomId: '',
       secondPrevAtomId: '',
       atomVal: {},
-      snapshotName: ''
+      snapshotName: '',
+      firstPaneText: '',
+      secondPaneText: '',
+      diffPane: false
     }
   }
   componentDidMount() {
@@ -27,17 +33,34 @@ export default class AtomEditor extends React.Component {
     this.setState({ firstPrevAtomId: this.props.atomId, secondPrevAtomId: this.props.atomId })
   }
   componentWillReceiveProps(incoming) {
+    const updatedAtomRef = projectsRef.child(this.props.projectId).child('current').child('atoms').child(incoming.atomId).child('text')
+
     if (this.state.selectedPane === 'firstPane') {
       this.setState({ firstPrevAtomId: incoming.atomId })
+      this.listenToFirst(updatedAtomRef)
     }
     if (this.state.selectedPane === 'secondPane') {
       this.setState({ secondPrevAtomId: incoming.atomId })
+      this.listenToSecond(updatedAtomRef)
     }
+  }
+  listenToFirst = (firstRef) => {
+    firstRef.on('value', snapshot => {
+      var text = snapshot.val()
+      this.setState({ firstPaneText: text })
+    })
+  }
+  listenToSecond = (secondRef) => {
+    secondRef.on('value', snapshot => {
+      var text = snapshot.val()
+      this.setState({ secondPaneText: text })
+    })
   }
   // toggle button between not split/split
   toggleSplit = (evt) => {
     evt.preventDefault()
-    this.setState({ splitPane: !this.state.splitPane })
+    if (this.state.diffPane) this.setState({ splitPane: true, diffPane: false })
+    else this.setState({ splitPane: true })
   }
   selectPane = (val) => {
     // if firstPane selected, set current selectedPane to this
@@ -67,9 +90,24 @@ export default class AtomEditor extends React.Component {
     this.setState({ snapshotName: '' })
   }
 
+  // GAME PLAN:
+  // 1. write a function that compares two inputs of text
+  // 2. write a function that takes a pane (left/right) and the text & sets it to the state (function setPaneText)
+  // 3. button that triggers comparison of two inputs (#1 inputs will be outputs of #2)
+  clickComparisonView = (evt) => {
+    evt.preventDefault()
+    if (this.state.splitPane) this.setState({diffPane: true, splitPane: false})
+    else this.setState({diffPane: true})
+  }
+
+  showSingleView = (evt) => {
+    evt.preventDefault()
+    this.setState({diffPane: false, splitPane: false})
+  }
   render() {
     const ref = projectsRef.child(this.props.projectId).child('current').child('atoms').child(this.props.atomId)
     const splitPane = this.state.splitPane
+    const diffPane = this.state.diffPane
     const firstAtomId = this.state.firstPrevAtomId || this.props.atomId
     const secondAtomId = this.state.secondPrevAtomId || this.props.atomId
     // if prevAtomId exists for either panes, send the prevRef is null
@@ -86,13 +124,16 @@ export default class AtomEditor extends React.Component {
               <input type='text' onChange={this.handleChange} value={this.state.snapshotName} />
               <button className='btn btn-xs' type="submit" >Save</button>
             </form>
+            <button className='float-right' onClick={this.showSingleView}>Normal View</button>
             <button className='float-right' onClick={this.toggleSplit}>Vertical Split View</button>
+            <button className='float-right' onClick={this.clickComparisonView}>Comparison View</button>
           </div>
-          {(splitPane) ? <SplitPane className='splitPane' defaultSize="50%" maxSize={50} >
-            <Editor atomRef={firstPrevAtomRef} pane={'firstPane'} selectPane={this.selectPane} />
-            <Editor atomRef={secondPrevAtomRef} pane={'secondPane'} selectPane={this.selectPane} />
-          </SplitPane>
-            : <Editor atomRef={ref} selectPane={this.selectPane} snapshot={this.snapshot} handleChange={this.handleChange} snapshotName={this.state.snapshotName} />
+          {(!splitPane && !diffPane) ?
+            <Editor atomRef={ref} selectPane={this.selectPane} snapshot={this.snapshot} handleChange={this.handleChange} snapshotName={this.state.snapshotName} />
+            :
+            (splitPane ?
+              <SplitView firstPrevAtomRef={firstPrevAtomRef} secondPrevAtomRef={secondPrevAtomRef} selectPane={this.selectPane} /> :
+              <ComparisonView firstPrevAtomRef={firstPrevAtomRef} selectPane={this.selectPane} projectId={this.props.projectId} atomId={this.props.atomId} />)
           }
         </div>
         <div className='col-xs-3 sidebar-right'>
