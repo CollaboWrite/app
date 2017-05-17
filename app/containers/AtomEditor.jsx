@@ -1,6 +1,8 @@
 import React from 'react'
 import SplitPane from 'react-split-pane'
 import ReactQuill from 'react-quill'
+import {Tabs, Tab} from 'material-ui/Tabs'
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 
 import Editor from '../components/Editor'
 import Notes from '../components/Notes'
@@ -24,7 +26,8 @@ export default class AtomEditor extends React.Component {
       snapshotName: '',
       firstPaneText: '',
       secondPaneText: '',
-      diffPane: false
+      diffPane: false,
+      view: 'normal'
     }
   }
   componentDidMount() {
@@ -56,12 +59,7 @@ export default class AtomEditor extends React.Component {
       this.setState({ secondPaneText: text })
     })
   }
-  // toggle button between not split/split
-  toggleSplit = (evt) => {
-    evt.preventDefault()
-    if (this.state.diffPane) this.setState({ splitPane: true, diffPane: false })
-    else this.setState({ splitPane: true })
-  }
+  
   selectPane = (val) => {
     // if firstPane selected, set current selectedPane to this
     // same for secondPane
@@ -72,38 +70,17 @@ export default class AtomEditor extends React.Component {
     }
   }
 
-  handleChange = (evt) => {
-    this.setState({ snapshotName: evt.target.value })
+  toggleEditorView = (value) => {
+    if (value === 'normal') {
+      this.setState({diffPane: false, splitPane: false})
+    } else if (value === 'split') {
+      this.setState({ splitPane: true, diffPane: false })
+    } else if (value === 'compare') {
+      this.setState({diffPane: true, splitPane: false})
+    }
+    this.setState({ view: value })
   }
 
-  snapshot = (evt) => {
-    evt.preventDefault()
-    projectsRef.child(this.props.projectId).once('value', snapshot => {
-      const snapshotObj = snapshot.val()
-      snapshotObj.title = this.state.snapshotName
-      snapshotObj.timeStamp = Date.now() // can format as needed
-      snapshotObj.snapshots = null // removing snapshots of new snapshot to preserve space
-      snapshotObj.messages = null // removing messages of new snapshot to preserve space
-      snapshotObj.collaborators = null // removing collaborators from snapshot
-      projectsRef.child(this.props.projectId + '/snapshots').push(snapshotObj)
-    })
-    this.setState({ snapshotName: '' })
-  }
-
-  // GAME PLAN:
-  // 1. write a function that compares two inputs of text
-  // 2. write a function that takes a pane (left/right) and the text & sets it to the state (function setPaneText)
-  // 3. button that triggers comparison of two inputs (#1 inputs will be outputs of #2)
-  clickComparisonView = (evt) => {
-    evt.preventDefault()
-    if (this.state.splitPane) this.setState({diffPane: true, splitPane: false})
-    else this.setState({diffPane: true})
-  }
-
-  showSingleView = (evt) => {
-    evt.preventDefault()
-    this.setState({diffPane: false, splitPane: false})
-  }
   render() {
     const ref = projectsRef.child(this.props.projectId).child('current').child('atoms').child(this.props.atomId)
     const splitPane = this.state.splitPane
@@ -119,14 +96,13 @@ export default class AtomEditor extends React.Component {
       <div>
         <div className='col-xs-6 project-center'>
           <div className="block clearfix">
-            <form className="inline-form" onSubmit={this.snapshot}>
-              <label>Save current version as: </label>
-              <input type='text' onChange={this.handleChange} value={this.state.snapshotName} />
-              <button className='btn btn-xs' type="submit" >Save</button>
-            </form>
-            <button className='float-right' onClick={this.showSingleView}>Normal View</button>
-            <button className='float-right' onClick={this.toggleSplit}>Vertical Split View</button>
-            <button className='float-right' onClick={this.clickComparisonView}>Comparison View</button>
+            <MuiThemeProvider>
+              <Tabs value={this.state.view} onChange={this.toggleEditorView}>
+                <Tab label='Single View' value='normal' onClick={() => this.toggleEditorView('normal')} className='toggle-views'></Tab>
+                <Tab label='Split View' value='split' onClick={() => this.toggleEditorView('split')} className='toggle-views'></Tab>
+                <Tab label='Compare View' value='compare' onClick={() => this.toggleEditorView('compare')} className='toggle-views'></Tab>
+              </Tabs>
+            </MuiThemeProvider>
           </div>
           {(!splitPane && !diffPane) ?
             <Editor atomRef={ref} selectPane={this.selectPane} snapshot={this.snapshot} handleChange={this.handleChange} snapshotName={this.state.snapshotName} />

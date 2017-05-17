@@ -16,12 +16,12 @@ export default class Editor extends React.Component {
   componentDidMount() {
     // When the component mounts, start listening to the fireRef
     // we were given.
-    this.listenTo(this.props.atomRef.child('text'))
+    this.listenTo(this.props.atomRef)
     this.setState({ pane: this.props.pane })
   }
   componentWillReceiveProps(incoming) {
     // When the atomRef in the AtomEditor, we start listening to the new one
-    this.listenTo(incoming.atomRef.child('text'))
+    this.listenTo(incoming.atomRef)
   }
   componentWillUnmount() {
     // When we unmount, stop listening.
@@ -48,15 +48,17 @@ export default class Editor extends React.Component {
     if (this.props.compareDiff) this.props.compareDiff(this.props.snapshotText, this.props.currentText)
   }
   render() {
+    const atom = this.state.value
     return (
       <div className='col-xs-12 project-center'>
         <div className="split-pane" value={this.state.pane} onClick={() => {
           this.props.selectPane(this.state.pane)
         }
         }>
+          <h4>{atom.title}</h4>
           <div className="editor-panel clearfix">
             <ReactQuill id='react-quill'
-              value={this.state.value}
+              value={atom.text}
               onChange={this.write}
               theme={'snow'} />
           </div>

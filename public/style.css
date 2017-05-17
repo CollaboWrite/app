@@ -231,3 +231,25 @@ ins {
     padding-right: 1%;
     border-top: none;
 }
+
+#split-view-left {
+    width: 50%;
+    float: left;
+}
+
+#split-view-right {
+    width: 50%;
+    float: left;
+}
+
+#left-split-title {
+    margin-left: 5%;
+}
+
+.split-view {
+    width: 100% !important;
+}
+
+.toggle-views {
+    background-color: #98A6D4 !important;
+}
