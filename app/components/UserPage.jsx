@@ -156,7 +156,7 @@ export default class UserPage extends React.Component {
           <form onSubmit={this.createProject}>
             <h3>Create Project:</h3>
             <input type='text' className='form-control projects-option' onChange={this.setProjectName} />
-            <button type='submit' className='btn btn-info'>Create</button>
+            <button type='submit' className='mui-btn mui-btn--raised btn-color'>Create</button>
           </form>
           <h3>Your Projects:</h3>
           <div className='form-group inline-form'>
@@ -167,7 +167,7 @@ export default class UserPage extends React.Component {
                 return (<option value={valueObj} key={project.id}>{project.title}</option>)
               })}
             </select>
-            <button type='button' className='btn btn-info' onClick={this.goToPage}>Go to project</button>
+            <button type='button' className='mui-btn mui-btn--raised btn-color' onClick={this.goToPage}>Go</button>
           </div>
           <h3>Shared Projects:</h3>
           <div className='form-group'>
@@ -178,26 +178,10 @@ export default class UserPage extends React.Component {
                 return (<option value={valueObj} key={collab.id}>{collab.title}</option>)
               })}
             </select>
-            <button type='button' className='btn btn-info' onClick={this.goToPage}>Go to project</button>
+            <button type='button' className='mui-btn mui-btn--raised btn-color' onClick={this.goToPage}>Go</button>
           </div>
         </div>
       </div>
     )
   }
 }
-
-
-// this.state.projectList map creates a 'valueObj' to pass into this.selectProject
-// since we need to grab both the project id & current atom of the project into option's value
-
-
-      // // getting keys from the user's database
-      // const projectKeys = Object.keys(snapshot.val())
-      // // we are putting the key for each key into the projectList
-      // projectKeys.forEach(projectKey => {
-      //   firebase.database().ref('projects').child(projectKey).on('value', snapshot => {
-      //     const currentProject = snapshot.val()
-      //     // add each project title into the projectsList - MUST BE DONE THIS WAY TO UPDATE STATE
-      //     this.setState({ projectList: [...this.state.projectList, { title: currentProject.projectTitle, id: projectKey, currentAtom: currentProject.current.root }] })
-      //   })
-      // })

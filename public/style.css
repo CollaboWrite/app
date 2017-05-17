@@ -32,6 +32,7 @@ body {
 .project-selection {
     width: 30vw;
     background-color: white;
+    
     border-radius: 15%;
     margin: 0 auto;
     padding: 1% 0;
@@ -98,8 +99,18 @@ body {
 }
 
 .panel-head {
+    padding: auto 0;
     display: inline;
     color: white;
+}
+
+.btn-color {
+    background-color: #564D80;
+    color: white;
+}
+
+.inline-form {
+    display: inline;
 }
 
 .panel-heading {
