@@ -199,15 +199,22 @@ textarea {
 }
 
 #diff-text {
-    background-color: white;
     padding: 50px 10px;
     font-size: small;
     height: 70vh;
 }
 
+#diff-scroll {
+    background-color: white;
+}
+
 #snapshot-select {
     font-family: 'Raleway';
     margin: 10.5px 5px;
+}
+
+#select-snapshot {
+    background-color: #C6DDF0 !important;
 }
 
 .float-right {
@@ -219,12 +226,12 @@ textarea {
 }
 
 del {
-    background: #ffe6e6;
+    background: #f9aeae;
     text-decoration: line-through
 }
 
 ins {
-    background: #e6ffe6;
+    background: #a3f9a3;
 }
 
 .toolbar-navbar {
