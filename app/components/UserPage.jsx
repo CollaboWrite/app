@@ -117,7 +117,7 @@ export default class UserPage extends React.Component {
     }
     // finding user by current user's uid
     firebase.database().ref('users').orderByChild('uid').equalTo(this.props.user.uid).on('value', snapshot => {
-      // if there is no user with current user's uid, set create new user in users db 
+      // if there is no user with current user's uid, set create new user in users db
       const userKey = this.props.user.uid
       if (!snapshot.val()) {
         firebase.database().ref('/users/' + this.props.user.uid).set(user)
@@ -139,7 +139,6 @@ export default class UserPage extends React.Component {
   }
 
   render() {
-    console.log(this.state)
     return (
       <div className='user-page'>
         <div className='left welcome-div'>
