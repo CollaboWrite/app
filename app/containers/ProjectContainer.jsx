@@ -37,14 +37,14 @@ export default class ProjectContainer extends React.Component {
   listenTo(projectRef, projectsRef, currentProjectRef) {
     if (this.unsubscribe) this.unsubscribe()
     // grabs THIS user's projects and adds it as an object {projectKey: projectTitle}
-    const projectsListener = firebase.database().ref(`/users/${this.props.params.uid}/projects`).on('child_added', projectSnap => {
+    const projectsListener = firebase.database().ref(`/users/${this.props.params.uid}/projects`).once('child_added', projectSnap => {
       projectsRef.child(projectSnap.key).on('value', project => {
         if (project.val()) {
           this.setState(previousState => ({ projects: [...previousState.projects, [project.key, project.val()]] }))
         }
       })
     })
-    const collabsListener = firebase.database().ref(`/users/${this.props.params.uid}/collaborations`).on('child_added', projectSnap => {
+    const collabsListener = firebase.database().ref(`/users/${this.props.params.uid}/collaborations`).once('child_added', projectSnap => {
       projectsRef.child(projectSnap.key).on('value', project => {
         if (project.val()) {
           this.setState(previousState => ({ projects: [...previousState.projects, [project.key, project.val()]] }))

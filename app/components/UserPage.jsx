@@ -108,13 +108,11 @@ export default class UserPage extends React.Component {
   // ****** CHECK FOR USER & CREATE USER ****** //
 
   createUser = () => {
-    const project = { 'Ella&Maritza': 55 }
     // create new user object
     const user = {
       name: this.props.user.displayName,
       email: this.props.user.email,
-      uid: this.props.user.uid,
-      projects: project
+      uid: this.props.user.uid
     }
     // finding user by current user's uid
     firebase.database().ref('users').orderByChild('uid').equalTo(this.props.user.uid).on('value', snapshot => {
@@ -130,6 +128,7 @@ export default class UserPage extends React.Component {
   // ******* SELECT & NAV TO SELECTED PAGE ****** //
 
   goToPage = () => {
+    console.log('projectId', this.state.projectId)
     userRef(this.props.user.uid).child('viewingProject').set(this.state.projectId)
     browserHistory.push(`/${this.props.user.uid}/project/${this.state.projectId}/0`)
   }
@@ -172,10 +171,9 @@ export default class UserPage extends React.Component {
           <div className='form-group'>
             <select onChange={this.selectProject} className='form-control projects-option'>
               <option> </option>
-              {this.state.collabList.map(collab => {
-                const valueObj = collab.id + ':' + collab.currentAtom
-                return (<option value={valueObj} key={collab.id}>{collab.title}</option>)
-              })}
+              {this.state.collabList.map(collab =>
+                <option value={collab.id} key={collab.id}>{collab.title}</option>
+              )}
             </select>
             <button type='button' className='mui-btn mui-btn--raised btn-color' onClick={this.goToPage}>Go</button>
           </div>

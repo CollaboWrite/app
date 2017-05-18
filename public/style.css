@@ -57,15 +57,18 @@ body {
 }
 
 #react-quill {
-    height: 95vh;
+    height: 67.5vh;
     width: 100%;
     background-color: white;
 }
 
 .project-center,
-.ql-editor,
-.ql-container {
+.ql-editor {
     height: 90vh;
+}
+
+.ql-container {
+    height: 63vh
 }
 
 .editor-panel {
