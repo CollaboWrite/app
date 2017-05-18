@@ -108,13 +108,11 @@ export default class UserPage extends React.Component {
   // ****** CHECK FOR USER & CREATE USER ****** //
 
   createUser = () => {
-    const project = { 'Ella&Maritza': 55 }
     // create new user object
     const user = {
       name: this.props.user.displayName,
       email: this.props.user.email,
-      uid: this.props.user.uid,
-      projects: project
+      uid: this.props.user.uid
     }
     // finding user by current user's uid
     firebase.database().ref('users').orderByChild('uid').equalTo(this.props.user.uid).on('value', snapshot => {
