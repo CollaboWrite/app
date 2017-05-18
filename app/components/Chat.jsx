@@ -63,10 +63,10 @@ export default class Chat extends React.Component {
     return (
       <div>
         <MuiThemeProvider>
-          <List>
+          <List className='no-padding'>
             <Subheader className='panel-heading'><h3 className='panel-head'>Chat</h3></Subheader>
             <Infinite containerHeight={200} elementHeight={50}
-              displayBottomUpwards>
+              displayBottomUpwards className='chat-background'>
               {messages && messages.map((message, idx) => {
                 const senderName = Object.keys(message)
                 return (<div className='chat-line' key={idx}>

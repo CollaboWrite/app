@@ -52,8 +52,8 @@ body {
 
 .welcome-div {
     margin-top: 3%;
-    margin-left:3%;
-    margin-right:3%;
+    margin-left: 3%;
+    margin-right: 3%;
 }
 
 #react-quill {
@@ -266,11 +266,11 @@ ins {
     padding: 0 3%;
 }
 
-.form-bar > label {
+.form-bar>label {
     color: white;
 }
 
-.form-bar > input {
+.form-bar>input {
     margin: 1%;
     width: 60%;
 }
@@ -285,4 +285,12 @@ ins {
     color: #564D80 !important;
     size: 200%;
     padding-left: 1%;
+}
+
+.no-padding {
+    padding: 0 !important;
+}
+
+.chat-background {
+    background-color: white;
 }
