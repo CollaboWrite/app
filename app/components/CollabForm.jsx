@@ -28,7 +28,10 @@ export default class CollabForm extends React.Component {
     const listener = ref.on('child_added', snapshot => {
       // if the id matches current user, don't display him/herself as collaborators
       if (snapshot.key !== this.props.uid) {
-        this.setState({ collaborators: [...this.state.collaborators, snapshot.val()], collabKeys: [...this.state.collabKeys, snapshot.key] })
+        this.setState((previousState) => ({
+          collaborators: [...previousState.collaborators, snapshot.val()],
+          collabKeys: [...previousState.collabKeys, snapshot.key]
+        }))
       }
     })
     const removedCollabListener = ref.on('child_removed', snapshot => {
@@ -43,7 +46,7 @@ export default class CollabForm extends React.Component {
       collabKeysCopy.splice(deletedUserIndex, 1)
       this.setState({ collaborators: collabCopy, collabKeys: collabKeysCopy })
     })
-    
+
     this.unsubscribe = () => ref.off('child_added', listener)
     this.unsubscribe = () => ref.off('child_removed', removedCollabListener)
   }

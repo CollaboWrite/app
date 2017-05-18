@@ -36,7 +36,7 @@ export default class Binder extends React.Component {
         </div>
         <Infinite containerHeight={400} elementHeight={26}>
           <div className='panel-body'>
-            <ul id='binder' className='binder-list'><Tree uid={this.props.uid} projectId={this.props.projectId} atomId='0' /></ul>
+            <ul id='binder' className='binder-list'><Tree expanded={true} uid={this.props.uid} projectId={this.props.projectId} atomId='0' /></ul>
           </div>
         </Infinite>
         <form className='form-bar' onSubmit={this.snapshot}>

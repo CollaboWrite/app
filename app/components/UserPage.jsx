@@ -2,6 +2,8 @@ import React from 'react'
 import { Link, browserHistory } from 'react-router'
 import firebase from 'APP/server/db'
 
+const { projectRef, userRef } = require('APP/server/db/model')
+
 export default class UserPage extends React.Component {
   constructor(props) {
     super(props)
@@ -11,7 +13,6 @@ export default class UserPage extends React.Component {
       collabList: [],
       newProjectName: '',
       userKey: '',
-      currentAtom: null,
       currentName: '',
       projectKeys: [],
       collabKeys: []
@@ -19,8 +20,8 @@ export default class UserPage extends React.Component {
   }
   componentDidMount = () => {
     const userId = this.props.user.uid
-    const usersProjectsRef = firebase.database().ref('users').child(userId).child('projects')
-    const usersCollabRef = firebase.database().ref('users').child(userId).child('collaborations')
+    const usersProjectsRef = userRef(userId).child('projects')
+    const usersCollabRef = userRef(userId).child('collaborations')
     this.listenTo(usersProjectsRef, usersCollabRef)
     this.createUser()
   }
@@ -33,7 +34,7 @@ export default class UserPage extends React.Component {
         const currentProject = project.val()
         this.setState({
           projectKeys: [...this.state.projectKeys, projectKey],
-          projectList: [...this.state.projectList, { title: currentProject.projectTitle, id: projectKey, currentAtom: currentProject.current.root }]
+          projectList: [...this.state.projectList, { title: currentProject.projectTitle, id: projectKey }]
         })
       })
     })
@@ -44,7 +45,7 @@ export default class UserPage extends React.Component {
         const currentProject = project.val()
         this.setState({
           collabKeys: [...this.state.collabKeys, collabKey],
-          collabList: [...this.state.collabList, { title: currentProject.projectTitle, id: collabKey, currentAtom: currentProject.current.root }]
+          collabList: [...this.state.collabList, { title: currentProject.projectTitle, id: collabKey }]
         })
       })
     })
@@ -117,7 +118,7 @@ export default class UserPage extends React.Component {
     }
     // finding user by current user's uid
     firebase.database().ref('users').orderByChild('uid').equalTo(this.props.user.uid).on('value', snapshot => {
-      // if there is no user with current user's uid, set create new user in users db 
+      // if there is no user with current user's uid, set create new user in users db
       const userKey = this.props.user.uid
       if (!snapshot.val()) {
         firebase.database().ref('/users/' + this.props.user.uid).set(user)
@@ -129,17 +130,16 @@ export default class UserPage extends React.Component {
   // ******* SELECT & NAV TO SELECTED PAGE ****** //
 
   goToPage = () => {
-    browserHistory.push(`/${this.props.user.uid}/project/${this.state.projectId}/${this.state.currentAtom}`)
+    userRef(this.props.user.uid).child('viewingProject').set(this.state.projectId)
+    browserHistory.push(`/${this.props.user.uid}/project/${this.state.projectId}/0`)
   }
 
   selectProject = (evt) => {
     // had to do this b/c value can only carry string
-    const valueObj = evt.target.value.split(':')
-    this.setState({ projectId: valueObj[0], currentAtom: +valueObj[1] })
+    this.setState({ projectId: evt.target.value })
   }
 
   render() {
-    console.log(this.state)
     return (
       <div className='user-page'>
         <div className='left welcome-div'>
@@ -162,10 +162,9 @@ export default class UserPage extends React.Component {
           <div className='form-group inline-form'>
             <select onChange={this.selectProject} className='form-control projects-option'>
               <option> </option>
-              {this.state.projectList.map(project => {
-                const valueObj = project.id + ':' + project.currentAtom
-                return (<option value={valueObj} key={project.id}>{project.title}</option>)
-              })}
+              {this.state.projectList.map(project =>
+                <option value={project.id} key={project.id}>{project.title}</option>
+              )}
             </select>
             <button type='button' className='mui-btn mui-btn--raised btn-color' onClick={this.goToPage}>Go</button>
           </div>

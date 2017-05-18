@@ -5,6 +5,7 @@ import {atomRef, projectRef} from 'APP/server/db/model'
 export default class Tree extends React.Component {
   componentDidMount() {
     this.listenTo(this.props)
+    if (this.props.expanded) this.setState({ expanded: true })
   }
 
   componentWillReceiveProps(incoming) {

@@ -10,4 +10,7 @@ const projectRef = (projectId) =>
 const snapshotRef = (projectId, snapshotId, atomId) =>
     db.ref('projects').child(projectId).child('snapshots').child(snapshotId).child('current').child('atoms').child(atomId).child('text')
 
-module.exports = { atomRef, projectRef, snapshotRef }
+const userRef = (userId) =>
+    db.ref('users').child(userId)
+
+module.exports = { atomRef, projectRef, snapshotRef, userRef }

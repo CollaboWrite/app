@@ -35,7 +35,9 @@ export default class Chat extends React.Component {
     if (this.unsubscribe) this.unsubscribe()
     // retreiving all messages for this project
     const listener = ref.on('child_added', snapshot => {
-      this.setState({ messages: [...this.state.messages, snapshot.val()] })
+      this.setState(previousState => ({
+        messages: [...previousState.messages, snapshot.val()]
+      }))
     })
     this.unsubscribe = () => {
       ref.off('child_added', listener)

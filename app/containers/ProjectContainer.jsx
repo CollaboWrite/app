@@ -11,7 +11,7 @@ import Chat from '../components/Chat'
 
 const projectsRef = firebase.database().ref('projects')
 
-export default class extends React.Component {
+export default class ProjectContainer extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -37,17 +37,17 @@ export default class extends React.Component {
   listenTo(projectRef, projectsRef, currentProjectRef) {
     if (this.unsubscribe) this.unsubscribe()
     // grabs THIS user's projects and adds it as an object {projectKey: projectTitle}
-    const projectsListener = firebase.database().ref(`/users/${this.props.params.uid}/projects`).once('child_added', projectSnap => {
+    const projectsListener = firebase.database().ref(`/users/${this.props.params.uid}/projects`).on('child_added', projectSnap => {
       projectsRef.child(projectSnap.key).on('value', project => {
         if (project.val()) {
-          this.setState({ projects: [...this.state.projects, [project.key, project.val()]] })
+          this.setState(previousState => ({ projects: [...previousState.projects, [project.key, project.val()]] }))
         }
       })
     })
-    const collabsListener = firebase.database().ref(`/users/${this.props.params.uid}/collaborations`).once('child_added', projectSnap => {
+    const collabsListener = firebase.database().ref(`/users/${this.props.params.uid}/collaborations`).on('child_added', projectSnap => {
       projectsRef.child(projectSnap.key).on('value', project => {
         if (project.val()) {
-          this.setState({ projects: [...this.state.projects, [project.key, project.val()]] })
+          this.setState(previousState => ({ projects: [...previousState.projects, [project.key, project.val()]] }))
         }
       })
     })
@@ -67,7 +67,7 @@ export default class extends React.Component {
     const projectId = evt.target.value
     firebase.database().ref('/users/' + this.props.params.uid + '/viewingProject').set(projectId)
   }
-  
+
   render() {
     const uid = this.props.params.uid
     const projectId = this.state.viewingProject
