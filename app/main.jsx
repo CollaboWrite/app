@@ -40,12 +40,12 @@ import firebase from 'APP/server/db'
 // Our root App component just renders a little frame with a nav
 // and whatever children the router gave us.
 
-const RootAtomEditor = (props) => {
-  firebase.database().ref('projects').child(props.params.id).child('current').child('root').on('value', snapshot => {
-    browserHistory.push(`${props.params.uid}/project/${props.params.id}/${snapshot.val()}`)
-  })
-  return (<p>Loading...</p>)
-}
+// const RootAtomEditor = (props) => {
+//   firebase.database().ref('projects').child(props.params.id).child('current').child('root').on('value', snapshot => {
+//     browserHistory.push(`${props.params.uid}/project/${props.params.id}/${snapshot.val()}`)
+//   })
+//   return (<p>Loading...</p>)
+// }
 
 render(
   <Router history={browserHistory}>
@@ -54,7 +54,6 @@ render(
     </Route>
     <Route path='/:uid/project/:id' component={ProjectContainer} >
       <Route path=':atomId' component={AtomEditor} />
-      <IndexRoute component={RootAtomEditor} />
     </Route>
     <Route path='*' component={NotFound} />
   </Router>,
