@@ -1,12 +1,14 @@
-# Hi, I'm CollaboWrite
+# Welcome to CollaboWrite
 
-I'm an online web app to facilitate collaborative and organized writing projects.
+CollaboWrite is an online web app for large scale writing projects and facilitates collaboration and organization. 
 
-Made by Arin, Jodie, Kate and Sarah
+### Made by 
+* Arin Choi (https://github.com/arinchoi03)
+* Jodie Ly (https://github.com/jodiely)
+* Kate Caldwell (https://github.com/katecald)
+* Sarah Herr (https://github.com/sarahdherr)
 
-## More information here
+## Where to find it?
 
-# Deployed
-
-Check it out at collabowriteapp.com
+Check out CollaboWrite at collabowriteapp.com
 For questions or compliments, please email fablerGHA@gmail.com
