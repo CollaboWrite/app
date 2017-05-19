@@ -16,6 +16,6 @@ CollaboWrite is an online web app for large scale writing projects and facilitat
 
 ## Where to find it?
 
-Check out CollaboWrite at collabowriteapp.com
+Check out CollaboWrite at https://collabowriteapp.com/
 
 For questions or compliments, please email fablerGHA@gmail.com
