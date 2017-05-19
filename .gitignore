@@ -13,3 +13,8 @@ npm-debug.log
 
 # Firebase debug log
 firebase-debug.log
+
+#Ignore all bootstrap/styling
+journal.bootstrap.css
+landingpage.css
+style.css
