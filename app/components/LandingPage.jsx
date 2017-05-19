@@ -16,7 +16,7 @@ const LandingPage = () => (
         </div>
         <footer>
             <div className="mui-container mui--text-center">
-                Made by Kate Caldwell, Sarah Herr, Arin Choi and Jodie Ly
+                Made by Arin Choi, Jodie Ly, Kate Caldwell and Sarah Herr
                 </div>
         </footer>
     </div>
