@@ -1,6 +1,7 @@
 import React from 'react'
 import UserPage from './UserPage'
 import { browserHistory } from 'react-router'
+const { userRef } = require('APP/server/db/model')
 
 import firebase from 'APP/server/db'
 const auth = firebase.auth()
@@ -24,7 +25,10 @@ export const WhoAmI = ({ user, auth }) =>
           <button className='mui-btn mui-btn--raised'
             onClick={() => auth.signInWithPopup(google)}>Log In with Google</button>
           <button className='mui-btn mui-btn--raised'
-            onClick={() => browserHistory.push('/qln1WPVpP1fGQPBRAnigIrhOOi23/project/-KkM-Rqjj-RUjD2jsgL_/0')}>Try the Demo</button>
+            onClick={() => {
+              userRef('qln1WPVpP1fGQPBRAnigIrhOOi23').child('viewingProject').set('-KkM-Rqjj-RUjD2jsgL_')
+              browserHistory.push('/qln1WPVpP1fGQPBRAnigIrhOOi23/project/-KkM-Rqjj-RUjD2jsgL_/0')
+            }}>Try the Demo</button>
         </div>
         /// ...otherwise, bring in the UserPage
         : <UserPage auth={auth} user={user} />
