@@ -128,7 +128,6 @@ export default class UserPage extends React.Component {
   // ******* SELECT & NAV TO SELECTED PAGE ****** //
 
   goToPage = () => {
-    console.log('projectId', this.state.projectId)
     userRef(this.props.user.uid).child('viewingProject').set(this.state.projectId)
     browserHistory.push(`/${this.props.user.uid}/project/${this.state.projectId}/0`)
   }
