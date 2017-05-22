@@ -24,7 +24,7 @@ export const WhoAmI = ({ user, auth }) =>
           <button className='mui-btn mui-btn--raised'
             onClick={() => auth.signInWithPopup(google)}>Log In with Google</button>
           <button className='mui-btn mui-btn--raised'
-            onClick={() => browserHistory.push('/qln1WPVpP1fGQPBRAnigIrhOOi23/project/-Kkcl44-dQ2ZUrIURI3h/0')}>Try the Demo</button>
+            onClick={() => browserHistory.push('/qln1WPVpP1fGQPBRAnigIrhOOi23/project/-Kkcl44-dQ2ZUrIURI3h/0')}>Demo</button>
         </div>
         /// ...otherwise, bring in the UserPage
         : <UserPage auth={auth} user={user} />
