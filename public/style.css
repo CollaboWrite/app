@@ -62,9 +62,12 @@ body {
     background-color: white;
 }
 
-.project-center,
-.ql-editor {
+.project-center {
     height: 90vh;
+}
+
+.ql-editor {
+    height: 63vh;
 }
 
 .ql-container {
