@@ -28,7 +28,7 @@ export const WhoAmI = ({ user, auth }) =>
             onClick={() => {
               userRef('qln1WPVpP1fGQPBRAnigIrhOOi23').child('viewingProject').set('-KkM-Rqjj-RUjD2jsgL_')
               browserHistory.push('/qln1WPVpP1fGQPBRAnigIrhOOi23/project/-KkM-Rqjj-RUjD2jsgL_/0')
-            }}>Try the Demo</button>
+            }}>Demo</button>
         </div>
         /// ...otherwise, bring in the UserPage
         : <UserPage auth={auth} user={user} />
