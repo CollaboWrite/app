@@ -15,7 +15,7 @@ CollaboWrite is an online web app for large scale writing projects and facilitat
 * A variety of npm's
 
 ### Demo Video 
-[![](https://img.youtube.com/vi/UC54Y8tpSC8/0.jpg)](https://youtu.be/UC54Y8tpSC8)
+[![](https://img.youtube.com/vi/UC54Y8tpSC8/9.jpg)](https://youtu.be/UC54Y8tpSC8)
 
 ## Where to find it?
 
